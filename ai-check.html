@@ -1921,10 +1921,6 @@ function renderStep1() {
       <input type="text" id="industry-field" placeholder="${S.s1_ph_industry}" value="${cIndustry}">
     </div>
     <div class="info-box">${S.s1_info}</div>
-    <div class="form-group">
-      <label>${S.s1_lbl_url}</label>
-      <input type="url" id="company-url" placeholder="${S.s1_ph_url}" value="${state.companyUrl}" oninput="state.companyUrl=this.value.trim()">
-    </div>
   `;
 }
 
@@ -2126,7 +2122,6 @@ function syncCompanyName() {
   const input = document.getElementById('company-name');
   if (!input) return;
   state.companyName = input.value.trim();
-  const urlEl = document.getElementById('company-url'); if (urlEl) state.companyUrl = urlEl.value.trim();
   const display = state.companyName || 'your company';
   document.querySelectorAll('.company-name-display').forEach(el => el.textContent = display);
   ['score-company-label','check-company-label','roadmap-company-label'].forEach(id => {
