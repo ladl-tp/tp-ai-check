@@ -2454,311 +2454,288 @@ async function generateDOCS() {
     const company = state.companyName || (lang === 'it' ? 'la tua azienda' : 'your company');
     const today = new Date().toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-GB', { day:'2-digit', month:'long', year:'numeric' });
 
-    // Scenario
     const scenarios = SCENARIOS[lang];
     let scenario = null;
     if (state.selectedScenario !== null) scenario = scenarios.find(s => s.id === state.selectedScenario);
     if (!scenario) scenario = scenarios.find(s => s.trigger(state.scores)) || scenarios[0];
 
-    // Roadmap & plan
     const roadmap = ROADMAPS[lang][scoreTier];
     const recPlanKey = state.planChoice.recommended;
     const recPlan = recPlanKey ? PLAN_DATA[recPlanKey] : null;
     const tierColor = { red:'E74C3C', yellow:'F5A623', green:'00B67A' }[scoreTier];
 
-    // ── docx helpers ──────────────────────────────────────────────
     const D = docx;
-    const cit = n => D.convertInchesToTwip(n);
-    const noBorder = {
-      top:     { style: D.BorderStyle.NONE, size: 0, color: 'auto' },
-      bottom:  { style: D.BorderStyle.NONE, size: 0, color: 'auto' },
-      left:    { style: D.BorderStyle.NONE, size: 0, color: 'auto' },
-      right:   { style: D.BorderStyle.NONE, size: 0, color: 'auto' },
-      insideH: { style: D.BorderStyle.NONE, size: 0, color: 'auto' },
-      insideV: { style: D.BorderStyle.NONE, size: 0, color: 'auto' },
-    };
-    const thinBorder = {
-      top:     { style: D.BorderStyle.SINGLE, size: 4, color: 'E0E0E0' },
-      bottom:  { style: D.BorderStyle.SINGLE, size: 4, color: 'E0E0E0' },
-      left:    { style: D.BorderStyle.SINGLE, size: 4, color: 'E0E0E0' },
-      right:   { style: D.BorderStyle.SINGLE, size: 4, color: 'E0E0E0' },
-    };
 
-    // Colored full-width header bar
-    const hdrBar = (text, fill, textColor='FFFFFF', sz=28) => new D.Table({
-      width: { size: 100, type: D.WidthType.PERCENTAGE },
+    // Content width: A4 (11906) - margins (2×1224) = 9458 twips
+    const W = 9458;
+    const cm = n => Math.round(n * 567); // centimetres to twips
+
+    const noBorder = { top:{style:D.BorderStyle.NONE,size:0,color:'auto'}, bottom:{style:D.BorderStyle.NONE,size:0,color:'auto'}, left:{style:D.BorderStyle.NONE,size:0,color:'auto'}, right:{style:D.BorderStyle.NONE,size:0,color:'auto'}, insideH:{style:D.BorderStyle.NONE,size:0,color:'auto'}, insideV:{style:D.BorderStyle.NONE,size:0,color:'auto'} };
+
+    const run = (text, opts={}) => new D.TextRun({
+      text, font:'Calibri',
+      color: opts.color||'222222',
+      bold: opts.bold||false,
+      size: opts.size||22,
+      italics: opts.italics||false,
+    });
+
+    const para = (runs, opts={}) => new D.Paragraph({
+      children: Array.isArray(runs) ? runs : [runs],
+      spacing: { before: opts.before||0, after: opts.after !== undefined ? opts.after : cm(0.1) },
+      alignment: opts.align || D.AlignmentType.LEFT,
+    });
+
+    // Full-width dark header bar
+    const hdrBar = (text, fill='191919', textColor='FFFFFF', sz=28) => new D.Table({
+      width: { size: W, type: D.WidthType.DXA },
+      columnWidths: [W],
       borders: noBorder,
       rows: [new D.TableRow({ children: [new D.TableCell({
-        shading: { type: D.ShadingType.CLEAR, fill, color: 'auto' },
-        children: [new D.Paragraph({
-          children: [new D.TextRun({ text, color: textColor, bold: true, size: sz, font: 'Calibri' })],
-          spacing: { before: cit(0.05), after: cit(0.05) }
-        })],
-        margins: { top: cit(0.09), bottom: cit(0.09), left: cit(0.14), right: cit(0.14) }
+        width: { size: W, type: D.WidthType.DXA },
+        shading: { type: D.ShadingType.CLEAR, fill, color:'auto' },
+        children: [para(run(text, { color:textColor, bold:true, size:sz }), { before:cm(0.1), after:cm(0.1) })],
+        margins: { top:cm(0.12), bottom:cm(0.12), left:cm(0.2), right:cm(0.2) },
       })]})],
     });
 
-    // Section label (small caps style)
-    const sectionLbl = (text, color='666666') => new D.Paragraph({
-      children: [new D.TextRun({ text, color, bold: true, size: 22, font: 'Calibri' })],
-      spacing: { before: cit(0.16), after: cit(0.05) }
-    });
+    // Section label
+    const sectionLbl = (text, color='555555') => para(
+      run(text, { color, bold:true, size:20 }),
+      { before:cm(0.3), after:cm(0.1) }
+    );
 
-    // Simple paragraph
-    const para = (text, opts={}) => new D.Paragraph({
-      children: [new D.TextRun({ text, color: opts.color||'191919', bold: opts.bold||false, size: opts.size||20, italics: opts.italics||false, font: 'Calibri' })],
-      spacing: { before: opts.before||0, after: opts.after !== undefined ? opts.after : cit(0.05) }
-    });
-
-    // Colored box (single-cell table)
-    const colorBox = (children, fill, borderColor) => new D.Table({
-      width: { size: 100, type: D.WidthType.PERCENTAGE },
-      borders: borderColor ? {
-        top: { style: D.BorderStyle.SINGLE, size: 6, color: borderColor },
-        bottom: { style: D.BorderStyle.SINGLE, size: 6, color: borderColor },
-        left: { style: D.BorderStyle.SINGLE, size: 6, color: borderColor },
-        right: { style: D.BorderStyle.SINGLE, size: 6, color: borderColor },
-      } : noBorder,
-      rows: [new D.TableRow({ children: [new D.TableCell({
-        shading: { type: D.ShadingType.CLEAR, fill, color: 'auto' },
-        children,
-        margins: { top: cit(0.1), bottom: cit(0.1), left: cit(0.14), right: cit(0.14) }
-      })]})],
+    // Thin horizontal rule
+    const rule = () => new D.Paragraph({
+      children: [],
+      border: { bottom:{ style:D.BorderStyle.SINGLE, size:4, color:'DDDDDD' } },
+      spacing: { before:0, after:cm(0.15) }
     });
 
     const children = [];
 
-    // ══════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════
     // PAGE 1: Title · Stats · Score · Checklist
-    // ══════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════
 
-    // Title header (dark)
     children.push(hdrBar(
-      lang==='it' ? 'AI Check — Il tuo AI Relevance Score & LLM Visibility Audit'
-                  : 'AI Check — Your AI Relevance Score & LLM Visibility Audit',
-      '191919', 'FFFFFF', 30
+      lang==='it' ? 'AI Check — AI Relevance Score & LLM Visibility Audit'
+                  : 'AI Check — AI Relevance Score & LLM Visibility Audit',
+      '191919', 'FFFFFF', 28
     ));
 
-    // Prepared for
-    const prepLabel = lang==='it' ? 'Preparato per' : 'Prepared for';
-    children.push(new D.Paragraph({
-      children: [
-        new D.TextRun({ text: `${prepLabel}: `, color: '777777', size: 22, font: 'Calibri' }),
-        new D.TextRun({ text: company, color: '191919', bold: true, size: 22, font: 'Calibri' }),
-        new D.TextRun({ text: `  ·  ${today}`, color: '777777', size: 22, font: 'Calibri' }),
-      ],
-      spacing: { before: cit(0.1), after: cit(0.08) }
-    }));
+    children.push(para([
+      run((lang==='it'?'Preparato per: ':'Prepared for: '), { color:'888888', size:22 }),
+      run(company, { bold:true, size:22 }),
+      run('   ·   '+today, { color:'888888', size:22 }),
+    ], { before:cm(0.2), after:cm(0.25) }));
 
-    // ── 4 Stats (2×2 table) ─────────────────────────────────────
+    // ── KEY STATS: 1 row × 4 columns ──
+    children.push(sectionLbl(lang==='it'?'DATI CHIAVE':'KEY STATISTICS', '00B67A'));
     const statsData = [
-      { num:'60%', label: lang==='it' ? 'delle ricerche AI termina senza un click (Bain, 2025)' : 'of AI searches end without a click (Bain, 2025)' },
-      { num:'62%', label: lang==='it' ? 'dei brand tecnicamente invisibili agli LLM (Semrush)' : 'of brands are technically invisible to LLMs (Semrush)' },
-      { num:'16×', label: lang==='it' ? 'più citation di recensioni a purchase intent vs awareness (Seer)' : 'more review citations at purchase intent vs awareness (Seer)' },
-      { num:'14%', label: lang==='it' ? 'delle citation AI va ai siti di recensioni — fonte #2 (Seer)' : 'of AI citations go to review sites — #2 source (Seer)' },
+      { num:'60%', label: lang==='it' ? 'ricerche AI terminano senza un click (Bain, 2025)' : 'of searches end without a click (Bain, 2025)' },
+      { num:'62%', label: lang==='it' ? 'brand invisibili agli LLM (Semrush)' : 'of brands invisible to LLMs (Semrush)' },
+      { num:'75%', label: lang==='it' ? 'citation rate con profilo Trustpilot' : 'citation rate with Trustpilot profile' },
+      { num:'16×', label: lang==='it' ? 'più citation a purchase intent vs awareness (Seer)' : 'more citations at purchase intent (Seer)' },
     ];
-    const mkStatCell = (st) => new D.TableCell({
-      shading: { type: D.ShadingType.CLEAR, fill: 'F4F4F6', color: 'auto' },
-      children: [
-        new D.Paragraph({ children: [new D.TextRun({ text: st.num, color: '00B67A', bold: true, size: 52, font: 'Calibri' })], spacing: { after: 0 } }),
-        new D.Paragraph({ children: [new D.TextRun({ text: st.label, color: '555555', size: 22, font: 'Calibri' })], spacing: { before: cit(0.02), after: cit(0.06) } })
-      ],
-      margins: { top: cit(0.08), bottom: cit(0.08), left: cit(0.1), right: cit(0.1) }
-    });
-    children.push(sectionLbl(lang==='it' ? 'DATI CHIAVE' : 'KEY STATISTICS'));
+    const cw = Math.floor(W / 4);
     children.push(new D.Table({
-      width: { size: 100, type: D.WidthType.PERCENTAGE },
-      rows: [
-        new D.TableRow({ children: [mkStatCell(statsData[0]), mkStatCell(statsData[1])] }),
-        new D.TableRow({ children: [mkStatCell(statsData[2]), mkStatCell(statsData[3])] }),
-      ]
+      width: { size: W, type: D.WidthType.DXA },
+      columnWidths: [cw, cw, cw, W - cw*3],
+      borders: noBorder,
+      rows: [new D.TableRow({ children: statsData.map((st, idx) => new D.TableCell({
+        width: { size: idx===3 ? W-cw*3 : cw, type: D.WidthType.DXA },
+        shading: { type: D.ShadingType.CLEAR, fill: idx%2===0 ? 'F0FDF8' : 'FFFFFF', color:'auto' },
+        children: [
+          para(run(st.num, { color:'00B67A', bold:true, size:52 }), { after:0 }),
+          para(run(st.label, { color:'444444', size:19 }), { before:cm(0.05), after:cm(0.12) }),
+        ],
+        margins: { top:cm(0.1), bottom:cm(0.1), left:cm(0.15), right:cm(0.1) },
+      })) })],
     }));
 
-    // ── Score section ────────────────────────────────────────────
-    children.push(sectionLbl('AI RELEVANCE SCORE'));
+    // ── SCORE ──
+    children.push(sectionLbl('AI RELEVANCE SCORE', '00B67A'));
     const tierLabelTxt = {
-      red:    { it:'🔴 Invisibile per l\'AI', en:'🔴 Invisible to AI' },
-      yellow: { it:'🟡 Parzialmente Visibile', en:'🟡 Partially Visible' },
-      green:  { it:'🟢 AI-Ready', en:'🟢 AI-Ready' }
+      red:   { it:'Invisibile per l\'AI', en:'Invisible to AI' },
+      yellow:{ it:'Parzialmente Visibile', en:'Partially Visible' },
+      green: { it:'AI-Ready', en:'AI-Ready' }
     }[scoreTier][lang];
 
+    const scoreW1 = Math.floor(W * 0.22);
+    const scoreW2 = W - scoreW1;
     children.push(new D.Table({
-      width: { size: 100, type: D.WidthType.PERCENTAGE },
+      width: { size: W, type: D.WidthType.DXA },
+      columnWidths: [scoreW1, scoreW2],
       borders: noBorder,
       rows: [new D.TableRow({ children: [
         new D.TableCell({
-          width: { size: 22, type: D.WidthType.PERCENTAGE },
-          children: [new D.Paragraph({
-            children: [
-              new D.TextRun({ text: `${total}`, color: tierColor, bold: true, size: 104, font: 'Calibri' }),
-              new D.TextRun({ text: '/30', color: '999999', size: 36, font: 'Calibri' }),
-            ],
-            alignment: D.AlignmentType.CENTER, spacing: { after: 0 }
-          })],
+          width: { size: scoreW1, type: D.WidthType.DXA },
+          shading: { type: D.ShadingType.CLEAR, fill: 'F8F8F8', color:'auto' },
+          children: [para([
+            run(String(total), { color: tierColor, bold:true, size:96 }),
+            run('/30', { color:'AAAAAA', size:32 }),
+          ], { after:0, align: D.AlignmentType.CENTER })],
           borders: noBorder,
-          verticalAlign: D.VerticalAlign ? D.VerticalAlign.CENTER : undefined
+          margins: { top:cm(0.1), bottom:cm(0.1), left:cm(0.1), right:cm(0.1) },
         }),
         new D.TableCell({
-          width: { size: 78, type: D.WidthType.PERCENTAGE },
+          width: { size: scoreW2, type: D.WidthType.DXA },
           children: [
-            new D.Paragraph({ children: [new D.TextRun({ text: tierLabelTxt, color: tierColor, bold: true, size: 26, font: 'Calibri' })], spacing: { before: cit(0.06), after: cit(0.1) } }),
+            para(run(tierLabelTxt, { color: tierColor, bold:true, size:28 }), { before:cm(0.08), after:cm(0.15) }),
             ...[
-              { label: lang==='it' ? 'D1 — Volume & Recency' : 'D1 — Volume & Recency', score: state.scores.d1 },
-              { label: lang==='it' ? 'D2 — Response & Engagement' : 'D2 — Response & Engagement', score: state.scores.d2 },
-              { label: lang==='it' ? 'D3 — TrustScore & Trend' : 'D3 — TrustScore & Trend', score: state.scores.d3 },
-            ].map(d => new D.Paragraph({
-              children: [
-                new D.TextRun({ text: `${d.label}`, color: '555555', size: 22, font: 'Calibri' }),
-                new D.TextRun({ text: `   ${d.score}/10`, color: tierColor, bold: true, size: 22, font: 'Calibri' }),
-              ],
-              spacing: { after: cit(0.04) }
-            }))
+              { label:'D1 — '+(lang==='it'?'Volume & Recency':'Volume & Recency'), score: state.scores.d1 },
+              { label:'D2 — '+(lang==='it'?'Response & Engagement':'Response & Engagement'), score: state.scores.d2 },
+              { label:'D3 — '+(lang==='it'?'TrustScore & Trend':'TrustScore & Trend'), score: state.scores.d3 },
+            ].map(d => para([
+              run(d.label, { color:'555555', size:22 }),
+              run('   '+d.score+'/10', { color: tierColor, bold:true, size:22 }),
+            ], { after:cm(0.06) }))
           ],
           borders: noBorder,
-          margins: { left: cit(0.18) }
-        })
+          margins: { top:cm(0.1), bottom:cm(0.1), left:cm(0.25), right:cm(0.1) },
+        }),
       ]})]
     }));
 
-    // ── Checklist ─────────────────────────────────────────────────
-    children.push(sectionLbl('LLM BRAND VISIBILITY CHECKLIST'));
+    // ── CHECKLIST ──
+    children.push(sectionLbl(lang==='it'?'LLM BRAND VISIBILITY CHECKLIST':'LLM BRAND VISIBILITY CHECKLIST', '00B67A'));
     const stIcons  = { yes:'✓', partial:'~', no:'✗' };
     const stColors = { yes:'059669', partial:'D97706', no:'DC2626' };
+    const iW = Math.floor(W * 0.08);
+    const tW = W - iW;
     const clRows = CHECKLIST[lang].map((item, i) => {
       const status = state.checklist[i];
       const icon   = stIcons[status] || '—';
       const icolor = stColors[status] || '999999';
-      const bgFill = i % 2 === 0 ? 'FFFFFF' : 'F9F9F9';
+      const bgFill = i%2===0 ? 'FFFFFF' : 'F9FAFB';
       return new D.TableRow({ children: [
         new D.TableCell({
-          width: { size: 7, type: D.WidthType.PERCENTAGE },
-          shading: { type: D.ShadingType.CLEAR, fill: bgFill, color: 'auto' },
-          children: [new D.Paragraph({ children: [new D.TextRun({ text: icon, color: icolor, bold: true, size: 22, font: 'Calibri' })], alignment: D.AlignmentType.CENTER, spacing: { after: 0 } })],
-          margins: { top: cit(0.04), bottom: cit(0.04) }
+          width: { size: iW, type: D.WidthType.DXA },
+          shading: { type: D.ShadingType.CLEAR, fill: bgFill, color:'auto' },
+          children: [para(run(icon, { color: icolor, bold:true, size:22 }), { after:0, align: D.AlignmentType.CENTER })],
+          margins: { top:cm(0.05), bottom:cm(0.05), left:cm(0.05), right:cm(0.05) },
         }),
         new D.TableCell({
-          width: { size: 93, type: D.WidthType.PERCENTAGE },
-          shading: { type: D.ShadingType.CLEAR, fill: bgFill, color: 'auto' },
-          children: [new D.Paragraph({ children: [new D.TextRun({ text: item.signal, color: '191919', size: 22, font: 'Calibri' })], spacing: { after: 0 } })],
-          margins: { top: cit(0.04), bottom: cit(0.04), left: cit(0.08) }
+          width: { size: tW, type: D.WidthType.DXA },
+          shading: { type: D.ShadingType.CLEAR, fill: bgFill, color:'auto' },
+          children: [para(run(item.signal, { color:'222222', size:22 }), { after:0 })],
+          margins: { top:cm(0.05), bottom:cm(0.05), left:cm(0.15), right:cm(0.1) },
         }),
       ]});
     });
-    children.push(new D.Table({ width: { size: 100, type: D.WidthType.PERCENTAGE }, rows: clRows }));
+    children.push(new D.Table({
+      width: { size: W, type: D.WidthType.DXA },
+      columnWidths: [iW, tW],
+      borders: { top:{style:D.BorderStyle.SINGLE,size:4,color:'E5E7EB'}, bottom:{style:D.BorderStyle.SINGLE,size:4,color:'E5E7EB'}, left:{style:D.BorderStyle.NONE,size:0,color:'auto'}, right:{style:D.BorderStyle.NONE,size:0,color:'auto'}, insideH:{style:D.BorderStyle.SINGLE,size:4,color:'E5E7EB'}, insideV:{style:D.BorderStyle.NONE,size:0,color:'auto'} },
+      rows: clRows,
+    }));
 
     // PAGE BREAK 1→2
-    children.push(new D.Paragraph({ children: [new D.PageBreak()] }));
+    children.push(new D.Paragraph({ children:[new D.PageBreak()] }));
 
-    // ══════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════
     // PAGE 2: Scenario · Roadmap
-    // ══════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════
 
-    children.push(hdrBar(
-      lang==='it' ? 'Scenario Selezionato' : 'Selected Scenario',
-      '191919', 'FFFFFF', 28
-    ));
+    children.push(hdrBar(lang==='it'?'Scenario Selezionato':'Selected Scenario', '191919', 'FFFFFF', 26));
 
     if (scenario) {
-      children.push(new D.Paragraph({
-        children: [new D.TextRun({ text: scenario.title, color: '191919', bold: true, size: 28, font: 'Calibri' })],
-        spacing: { before: cit(0.12), after: cit(0.08) }
+      children.push(para(run(scenario.title, { bold:true, size:28, color:'191919' }), { before:cm(0.2), after:cm(0.1) }));
+      const bodyText = typeof scenario.body==='function' ? scenario.body(state.companyName) : (scenario.body||'');
+      children.push(para(run(bodyText, { color:'333333', size:22 }), { after:cm(0.2) }));
+
+      // Quick win
+      children.push(new D.Table({
+        width: { size: W, type: D.WidthType.DXA },
+        columnWidths: [W],
+        borders: { top:{style:D.BorderStyle.SINGLE,size:8,color:'F59E0B'}, bottom:{style:D.BorderStyle.SINGLE,size:8,color:'F59E0B'}, left:{style:D.BorderStyle.SINGLE,size:8,color:'F59E0B'}, right:{style:D.BorderStyle.SINGLE,size:8,color:'F59E0B'}, insideH:{style:D.BorderStyle.NONE,size:0,color:'auto'}, insideV:{style:D.BorderStyle.NONE,size:0,color:'auto'} },
+        rows: [new D.TableRow({ children: [new D.TableCell({
+          width: { size: W, type: D.WidthType.DXA },
+          shading: { type: D.ShadingType.CLEAR, fill:'FFFBEB', color:'auto' },
+          children: [
+            para([run('⚡ ', {size:22}), run(lang==='it'?'Quick Win questa settimana:':'Quick Win this week:', { color:'D97706', bold:true, size:22 })], { after:cm(0.08) }),
+            para(run(scenario.qw, { color:'444444', size:22 }), { after:0 }),
+          ],
+          margins: { top:cm(0.12), bottom:cm(0.12), left:cm(0.2), right:cm(0.2) },
+        })]})],
       }));
-      const bodyText = typeof scenario.body === 'function' ? scenario.body(state.companyName) : (scenario.body || '');
-      children.push(new D.Paragraph({
-        children: [new D.TextRun({ text: bodyText, color: '333333', size: 22, font: 'Calibri' })],
-        spacing: { after: cit(0.12) }
-      }));
-      // Quick win amber box
-      children.push(colorBox([
-        new D.Paragraph({ children: [new D.TextRun({ text: '⚡ Quick Win', color: 'D97706', bold: true, size: 22, font: 'Calibri' })], spacing: { after: cit(0.06) } }),
-        new D.Paragraph({ children: [new D.TextRun({ text: scenario.qw, color: '444444', size: 22, font: 'Calibri' })], spacing: { after: 0 } }),
-      ], 'FFFBEB', 'F5A623'));
     }
 
-    // Roadmap section
-    children.push(sectionLbl(`ROADMAP 90 ${lang==='it'?'GIORNI':'DAYS'}`, tierColor));
+    // Roadmap
+    children.push(sectionLbl('ROADMAP 90 '+(lang==='it'?'GIORNI':'DAYS'), tierColor));
     roadmap.steps.forEach((step, i) => {
-      children.push(new D.Paragraph({
-        children: [new D.TextRun({ text: `${i+1}.  ${step.period} — ${step.action}`, color: tierColor, bold: true, size: 22, font: 'Calibri' })],
-        spacing: { before: cit(0.12), after: cit(0.04) }
-      }));
-      children.push(new D.Paragraph({
-        children: [new D.TextRun({ text: step.detail, color: '444444', size: 22, font: 'Calibri' })],
-        spacing: { after: cit(0.03) }
-      }));
-      children.push(new D.Paragraph({
-        children: [new D.TextRun({ text: `→ ${step.kpi}`, color: tierColor, bold: true, size: 22, font: 'Calibri' })],
-        spacing: { after: cit(0.06) }
-      }));
+      children.push(para(run(`${i+1}.  ${step.period} — ${step.action}`, { color: tierColor, bold:true, size:24 }), { before:cm(0.2), after:cm(0.06) }));
+      children.push(para(run(step.detail, { color:'444444', size:22 }), { after:cm(0.06) }));
+      children.push(para([run('→ ', { color: tierColor, bold:true, size:22 }), run(step.kpi, { color: tierColor, size:22 })], { after:cm(0.1) }));
     });
 
     // PAGE BREAK 2→3
-    children.push(new D.Paragraph({ children: [new D.PageBreak()] }));
+    children.push(new D.Paragraph({ children:[new D.PageBreak()] }));
 
-    // ══════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════
     // PAGE 3: Recommended Plan
-    // ══════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════
 
     if (recPlan) {
       const pc = recPlan.color.replace('#','');
       const pbg = recPlan.bg.replace('#','');
 
-      children.push(hdrBar(
-        `${lang==='it'?'Piano Consigliato':'Recommended Plan'} — ${recPlan.name}`,
-        pc, 'FFFFFF', 32
-      ));
-      children.push(new D.Paragraph({
-        children: [new D.TextRun({ text: recPlan.tier[lang], color: pc, size: 22, font: 'Calibri' })],
-        spacing: { before: cit(0.08), after: cit(0.04) }
+      children.push(hdrBar(`${lang==='it'?'Piano Consigliato':'Recommended Plan'} — ${recPlan.name}`, pc, 'FFFFFF', 28));
+      children.push(para(run(recPlan.tier[lang], { color: pc, size:22 }), { before:cm(0.1), after:cm(0.1) }));
+
+      children.push(sectionLbl(lang==='it'?'PERCHÉ QUESTO PIANO':'WHY THIS PLAN', pc));
+      children.push(new D.Table({
+        width: { size: W, type: D.WidthType.DXA },
+        columnWidths: [W],
+        borders: { top:{style:D.BorderStyle.SINGLE,size:6,color:pc}, bottom:{style:D.BorderStyle.SINGLE,size:6,color:pc}, left:{style:D.BorderStyle.SINGLE,size:6,color:pc}, right:{style:D.BorderStyle.SINGLE,size:6,color:pc}, insideH:{style:D.BorderStyle.NONE,size:0,color:'auto'}, insideV:{style:D.BorderStyle.NONE,size:0,color:'auto'} },
+        rows: [new D.TableRow({ children: [new D.TableCell({
+          width: { size: W, type: D.WidthType.DXA },
+          shading: { type: D.ShadingType.CLEAR, fill: pbg, color:'auto' },
+          children: [para(run(WHY[lang][scoreTier][recPlanKey], { color:'333333', size:22 }), { after:0 })],
+          margins: { top:cm(0.12), bottom:cm(0.12), left:cm(0.2), right:cm(0.2) },
+        })]})],
       }));
 
-      // WHY
-      children.push(sectionLbl(lang==='it' ? 'PERCHÉ QUESTO PIANO — E PERCHÉ ORA' : 'WHY THIS PLAN — AND WHY NOW', pc));
-      children.push(colorBox([
-        new D.Paragraph({ children: [new D.TextRun({ text: WHY[lang][scoreTier][recPlanKey], color: '333333', size: 22, font: 'Calibri' })], spacing: { after: 0 } })
-      ], pbg, pc));
-
-      // Features (3-column table)
-      children.push(sectionLbl(lang==='it' ? 'COSA INCLUDE' : "WHAT'S INCLUDED"));
-      const featCells = recPlan.features[lang].map(feat => new D.TableCell({
-        children: [
-          new D.Paragraph({ children: [new D.TextRun({ text: feat.icon + '  ' + feat.title, color: pc, bold: true, size: 22, font: 'Calibri' })], spacing: { after: cit(0.06) } }),
-          ...feat.items.map(item => new D.Paragraph({ children: [new D.TextRun({ text: '·  ' + item, color: '555555', size: 22, font: 'Calibri' })], spacing: { after: cit(0.03) } }))
-        ],
-        borders: thinBorder,
-        margins: { top: cit(0.08), bottom: cit(0.08), left: cit(0.1), right: cit(0.1) }
+      // Features — 2 columns instead of 3 for readability
+      children.push(sectionLbl(lang==='it'?'COSA INCLUDE':"WHAT'S INCLUDED", pc));
+      const feats = recPlan.features[lang];
+      const fw = Math.floor(W / 2);
+      const featRows = [];
+      for (let i = 0; i < feats.length; i += 2) {
+        const makeFeatCell = (feat, width) => new D.TableCell({
+          width: { size: width, type: D.WidthType.DXA },
+          children: feat ? [
+            para(run(feat.icon+'  '+feat.title, { color: pc, bold:true, size:22 }), { after:cm(0.1) }),
+            ...feat.items.map(item => para([run('·  ', {color:'AAAAAA',size:22}), run(item, {color:'444444',size:22})], { after:cm(0.05) })),
+          ] : [para(run(''))],
+          borders: { top:{style:D.BorderStyle.SINGLE,size:4,color:'E5E7EB'}, bottom:{style:D.BorderStyle.SINGLE,size:4,color:'E5E7EB'}, left:{style:D.BorderStyle.NONE,size:0,color:'auto'}, right:{style:D.BorderStyle.NONE,size:0,color:'auto'}, insideH:{style:D.BorderStyle.NONE,size:0,color:'auto'}, insideV:{style:D.BorderStyle.NONE,size:0,color:'auto'} },
+          margins: { top:cm(0.1), bottom:cm(0.1), left:cm(0.05), right:cm(0.15) },
+        });
+        featRows.push(new D.TableRow({ children: [makeFeatCell(feats[i], fw), makeFeatCell(feats[i+1], W-fw)] }));
+      }
+      children.push(new D.Table({
+        width: { size: W, type: D.WidthType.DXA },
+        columnWidths: [fw, W-fw],
+        borders: noBorder,
+        rows: featRows,
       }));
-      children.push(new D.Table({ width: { size: 100, type: D.WidthType.PERCENTAGE }, rows: [new D.TableRow({ children: featCells })] }));
 
       // Plan roadmap
-      children.push(sectionLbl(`ROADMAP 90 ${lang==='it'?'GIORNI':'DAYS'} — ${recPlan.name.toUpperCase()}`, pc));
+      children.push(sectionLbl('ROADMAP 90 '+(lang==='it'?'GIORNI':'DAYS')+' — '+recPlan.name.toUpperCase(), pc));
       recPlan.roadmap[lang].forEach((step, i) => {
-        children.push(new D.Paragraph({
-          children: [new D.TextRun({ text: `${i+1}.  ${step.period} — ${step.action}`, color: pc, bold: true, size: 22, font: 'Calibri' })],
-          spacing: { before: cit(0.1), after: cit(0.04) }
-        }));
-        children.push(new D.Paragraph({
-          children: [new D.TextRun({ text: step.detail, color: '444444', size: 22, font: 'Calibri' })],
-          spacing: { after: cit(0.03) }
-        }));
-        children.push(new D.Paragraph({
-          children: [new D.TextRun({ text: `→ ${step.kpi}`, color: pc, bold: true, size: 22, font: 'Calibri' })],
-          spacing: { after: cit(0.06) }
-        }));
+        children.push(para(run(`${i+1}.  ${step.period} — ${step.action}`, { color: pc, bold:true, size:24 }), { before:cm(0.15), after:cm(0.06) }));
+        children.push(para(run(step.detail, { color:'444444', size:22 }), { after:cm(0.06) }));
+        children.push(para([run('→ ', {color:pc,bold:true,size:22}), run(step.kpi, {color:pc,size:22})], { after:cm(0.1) }));
       });
     }
 
-    // Build & download document
+    // Build & download
     const doc = new docx.Document({
       creator: 'Trustpilot AI Check',
       title: `AI Check — ${company}`,
-      description: 'AI Relevance Score & LLM Visibility Audit',
       sections: [{
-        properties: {
-          page: {
-            margin: { top: cit(0.9), right: cit(0.85), bottom: cit(0.9), left: cit(0.85) }
-          }
-        },
+        properties: { page: { margin:{ top:cm(1.6), right:cm(2.16), bottom:cm(1.6), left:cm(2.16) } } },
         children
       }]
     });
@@ -2767,16 +2744,14 @@ async function generateDOCS() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    const safeCompany = (state.companyName || 'Company').replace(/[^a-zA-Z0-9À-ÿ\s_-]/g,'').replace(/\s+/g,'_');
+    const safeCompany = (state.companyName||'Company').replace(/[^a-zA-Z0-9À-ÿ\s_-]/g,'').replace(/\s+/g,'_');
     a.download = `AI_Check_${safeCompany}_${new Date().toISOString().split('T')[0]}.docx`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
   } finally {
     const btn = document.getElementById('btn-docs');
-    if (btn) { btn.disabled = false; btn.innerHTML = STRINGS[lang].btn_docs; }
+    if (btn) { btn.disabled=false; btn.innerHTML=STRINGS[lang].btn_docs; }
   }
 }
 
