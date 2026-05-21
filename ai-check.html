@@ -169,12 +169,15 @@
   .hero-stats {
     display: flex;
     justify-content: center;
-    gap: 40px;
+    align-items: flex-start;
+    gap: 0;
     flex-wrap: wrap;
     margin-bottom: 48px;
   }
+  .hero-row-break { display: none; }
   .hero-stat {
     text-align: center;
+    padding: 0 20px;
   }
   .hero-stat .num {
     font-size: 36px;
@@ -184,10 +187,12 @@
     line-height: 1;
   }
   .hero-stat .label {
-    font-size: 12px;
+    font-size: 11px;
     color: rgba(255,255,255,0.55);
     margin-top: 4px;
-    max-width: 120px;
+    max-width: 160px;
+    margin-left: auto;
+    margin-right: auto;
     line-height: 1.4;
   }
   .hero-divider {
@@ -1037,11 +1042,6 @@
 
   <div class="hero-stats">
     <div class="hero-stat">
-      <span class="num">7B</span>
-      <span class="label" data-i18n="stat1_lbl">AI platform visits per month, up 76% YoY</span>
-    </div>
-    <div class="hero-divider"></div>
-    <div class="hero-stat">
       <span class="num">60%</span>
       <span class="label" data-i18n="stat2_lbl">of searches end without a click (Bain, 2025)</span>
     </div>
@@ -1440,7 +1440,6 @@ const STRINGS = {
     header_badge: 'AI Check Tool',
     hero_eyebrow: '★ Powered by dati Trustpilot',
     hero_p: "Quando i buyer chiedono all'AI della tua azienda — prima ancora di chiamarti — cosa risponde?",
-    stat1_lbl: 'visite alle piattaforme AI al mese, +76% YoY',
     stat2_lbl: 'delle ricerche terminano senza un click (Bain, 2025)',
     stat3_lbl: 'dei brand sono tecnicamente invisibili agli LLM (Semrush)',
     stat4_lbl: 'delle citation AI va ai siti di recensioni — fonte #2 (Seer)',
@@ -1543,7 +1542,6 @@ const STRINGS = {
     header_badge:'AI Check Tool',
     hero_eyebrow:'★ Powered by Trustpilot data',
     hero_p:"When buyers ask AI about your company — before they ever call you — what does it say?",
-    stat1_lbl:'AI platform visits per month, up 76% YoY',
     stat2_lbl:'of searches end without a click (Bain, 2025)',
     stat3_lbl:'of brands are technically invisible to LLMs (Semrush)',
     stat4_lbl:'of AI citations go to review sites — #2 source (Seer)',

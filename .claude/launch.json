@@ -4,7 +4,7 @@
     {
       "name": "AI Check (static)",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "3000", "--directory", "/Users/ladl/Desktop"],
+      "runtimeArgs": ["/Users/ladl/Desktop/server.py"],
       "port": 3000
     }
   ]
