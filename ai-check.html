@@ -967,6 +967,37 @@
   }
   .btn-print:hover { border-color: var(--dark); }
 
+  /* SCAN OVERLAY */
+  #scan-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(255,255,255,0.96); z-index: 2000;
+    flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+  }
+  #scan-overlay.active { display: flex; }
+  .scan-spinner {
+    width: 48px; height: 48px; border: 4px solid #e5e7eb;
+    border-top-color: var(--green); border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .scan-status-text { font-size: 15px; font-weight: 600; color: var(--mid); }
+  .scan-domain-label { font-size: 13px; color: #aaa; font-family: monospace; }
+
+  /* SCAN DATA PANEL (inside step-3) */
+  .scan-data-panel {
+    background: #f0fdf8; border: 1px solid #bbf7d0; border-radius: 12px;
+    padding: 16px 20px; margin-bottom: 20px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .scan-data-panel.not-found { background: #fef2f2; border-color: #fca5a5; }
+  .scan-panel-header { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; color: #065f46; }
+  .scan-panel-header.not-found { color: #991b1b; }
+  .scan-metrics { display: flex; gap: 24px; flex-wrap: wrap; }
+  .scan-metric { display: flex; flex-direction: column; gap: 2px; }
+  .scan-metric-val { font-size: 22px; font-weight: 800; color: var(--green); }
+  .scan-metric-lbl { font-size: 11px; color: var(--mid); text-transform: uppercase; letter-spacing: 0.4px; }
+  .scan-source { font-size: 11px; color: #aaa; margin-top: 2px; }
+
   /* TOAST */
   #toast {
     position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
@@ -1312,6 +1343,7 @@
 
       <!-- STEP 3: RESULTS + SCENARIO -->
       <div class="step" id="step-3">
+        <div id="scan-data-panel"></div>
         <div class="score-result-big">
           <div class="score-circle" id="score-circle-vis">
             <span class="big-num" id="score-big">15</span>
@@ -1523,6 +1555,16 @@ const STRINGS = {
     cta_body:'Il tuo Trustpilot rep può aiutarti ad attivare il piano e lanciare i primi passi della roadmap entro questa settimana.',
     btn_print:'🖨 Salva come PDF',
     btn_docs:'📄 Crea Google Doc',
+    s1_lbl_domain:'Dominio aziendale',
+    s1_ph_domain:'es. acme.com',
+    scan_loading:'Scansione Trustpilot in corso…',
+    scan_found:'Profilo Trustpilot trovato',
+    scan_not_found:'Nessun profilo Trustpilot trovato',
+    scan_no_profile:'Punteggio calcolato senza profilo Trustpilot attivo.',
+    scan_error:'Impossibile contattare Trustpilot. Punteggio calcolato su 0 recensioni.',
+    scan_reviews:'Recensioni',
+    scan_score:'TrustScore',
+    scan_response:'Response rate',
     val2:"Rispondi a tutte le domande per calcolare il punteggio.",
     val5:"Seleziona sia il Piano Consigliato che il Piano Light per continuare (devono essere piani diversi).",
     footer:"© 2025 Trustpilot A/S · trustpilot.com · Dati: Bain & Company, Semrush, Seer Interactive (2025–2026)"
@@ -1605,6 +1647,16 @@ const STRINGS = {
     cta_body:"Your Trustpilot rep can help you activate the plan and launch the first roadmap steps this week.",
     btn_print:'🖨 Print or save as PDF',
     btn_docs:'📄 Create Google Doc',
+    s1_lbl_domain:'Company domain',
+    s1_ph_domain:'e.g. acme.com',
+    scan_loading:'Scanning Trustpilot…',
+    scan_found:'Trustpilot profile found',
+    scan_not_found:'No Trustpilot profile found',
+    scan_no_profile:'Score calculated without an active Trustpilot profile.',
+    scan_error:'Could not reach Trustpilot. Score calculated on 0 reviews.',
+    scan_reviews:'Reviews',
+    scan_score:'TrustScore',
+    scan_response:'Response rate',
     val2:"Please answer all questions to calculate your score.",
     val5:"Please select both a Recommended Plan and a Light Plan before continuing (they must be different plans).",
     footer:"© 2025 Trustpilot A/S · trustpilot.com · Data: Bain & Company, Semrush, Seer Interactive (2025–2026)"
@@ -1616,6 +1668,9 @@ const state = {
   currentStep: 1,
   totalSteps: 7,
   companyName: '',
+  companyDomain: '',
+  scanMode: 'manual',   // 'manual' | 'auto'
+  scanData: null,
   answers: {},
   scores: { d1: 0, d2: 0, d3: 0 },
   total: 0,
@@ -1874,15 +1929,26 @@ function applyLang() {
 function renderStep1() {
   const S = STRINGS[lang];
   const el = document.getElementById('step-1');
-  const cName = state.companyName;
-  const cContact = document.getElementById('contact-name') ? document.getElementById('contact-name').value : '';
-  const cIndustry = document.getElementById('industry-field') ? document.getElementById('industry-field').value : '';
+  const cName    = state.companyName;
+  const cDomain  = state.companyDomain;
+  const cContact = document.getElementById('contact-name')  ? document.getElementById('contact-name').value  : '';
+  const cIndustry= document.getElementById('industry-field') ? document.getElementById('industry-field').value : '';
   el.innerHTML = `
     <div class="step-title">${S.s1_title}</div>
     <div class="step-subtitle">${S.s1_sub}</div>
-    <div class="form-group">
-      <label>${S.s1_lbl_company}</label>
-      <input type="text" id="company-name" placeholder="${S.s1_ph_company}" value="${cName}" oninput="syncCompanyName()">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div class="form-group" style="margin-bottom:0">
+        <label>${S.s1_lbl_company}</label>
+        <input type="text" id="company-name" placeholder="${S.s1_ph_company}" value="${cName}" oninput="syncCompanyName()">
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label>${S.s1_lbl_domain}
+          <span style="font-weight:400;color:#aaa;font-size:12px;margin-left:4px">(${lang==='it'?'usato per lo scan automatico':'used for auto-scan'})</span>
+        </label>
+        <input type="text" id="domain-field" placeholder="${S.s1_ph_domain}" value="${cDomain}"
+               oninput="state.companyDomain=this.value.trim()"
+               style="font-family:monospace;font-size:14px">
+      </div>
     </div>
     <div class="form-group">
       <label>${S.s1_lbl_name}</label>
@@ -1899,6 +1965,85 @@ function renderStep1() {
 // ─── STEP 2 RENDER ─────────────────────────────────────────────────
 function renderStep2() {
   const S = STRINGS[lang];
+
+  // Auto-scan mode: show compact Trustpilot metrics form instead of quiz
+  if (state.scanMode === 'auto') {
+    const domain = state.companyDomain;
+    const clean  = domain.replace(/^https?:\/\//,'').replace(/^www\./,'').replace(/\/$/,'');
+    const tpUrl  = `https://www.trustpilot.com/review/${clean}`;
+    const it     = lang === 'it';
+
+    document.getElementById('step-2').innerHTML = `
+      <div class="step-title">${it ? 'Dati Trustpilot' : 'Trustpilot Data'} — <span style="font-family:monospace;font-size:80%">${clean}</span></div>
+      <div class="step-subtitle">
+        ${it ? 'Apri il profilo Trustpilot e inserisci i dati qui sotto — il punteggio viene calcolato automaticamente.'
+             : 'Open the Trustpilot profile and enter the data below — the score is calculated automatically.'}
+      </div>
+
+      <a href="${tpUrl}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf8;border:1px solid #bbf7d0;color:#065f46;padding:8px 16px;border-radius:8px;font-weight:600;font-size:13px;text-decoration:none;margin-bottom:20px;">
+        🔗 ${it ? 'Apri profilo Trustpilot' : 'Open Trustpilot profile'}
+      </a>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
+        <div class="form-group" style="margin:0">
+          <label>${it ? 'Recensioni totali' : 'Total reviews'}</label>
+          <select id="m-reviews" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
+            <option value="">—</option>
+            <option value="0">${it ? 'Nessun profilo / 0' : 'No profile / 0'}</option>
+            <option value="6">1–12</option>
+            <option value="30">13–50</option>
+            <option value="125">51–200</option>
+            <option value="500">200+</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0">
+          <label>TrustScore</label>
+          <select id="m-score" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
+            <option value="">—</option>
+            <option value="0">${it ? 'Nessuno / meno di 2.0' : 'None / below 2.0'}</option>
+            <option value="2.5">2.0 – 3.5 ★</option>
+            <option value="3.7">3.5 – 4.0 ★</option>
+            <option value="4.2">4.0 – 4.5 ★</option>
+            <option value="4.7">4.5 – 5.0 ★</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0">
+          <label>${it ? 'Response rate' : 'Response rate'}</label>
+          <select id="m-rr" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
+            <option value="">—</option>
+            <option value="5">0–10%</option>
+            <option value="30">10–50%</option>
+            <option value="65">50–80%</option>
+            <option value="90">80%+</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0">
+          <label>${it ? 'Ultima recensione' : 'Most recent review'}</label>
+          <select id="m-recency" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
+            <option value="">—</option>
+            <option value="250">${it ? 'Più di 6 mesi fa' : 'More than 6 months ago'}</option>
+            <option value="120">${it ? '2–6 mesi fa' : '2–6 months ago'}</option>
+            <option value="45">${it ? '1–2 mesi fa' : '1–2 months ago'}</option>
+            <option value="15">${it ? 'Ultimi 30 giorni' : 'Within last 30 days'}</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="metrics-score-preview" style="display:none;text-align:center;padding:20px;background:var(--light);border-radius:12px;border:2px solid var(--border);">
+        <div style="font-size:12px;color:var(--mid);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">AI Relevance Score</div>
+        <div id="msp-total" style="font-size:52px;font-weight:800;line-height:1"></div>
+        <div style="font-size:13px;color:#aaa;margin-bottom:6px;">${it ? 'su 30' : 'out of 30'}</div>
+        <div id="msp-tier" style="font-size:13px;font-weight:600;"></div>
+        <div style="display:flex;justify-content:center;gap:20px;margin-top:12px;font-size:12px;color:var(--mid);">
+          <span>D1: <strong id="msp-d1" style="color:var(--dark)">—</strong>/10</span>
+          <span>D2: <strong id="msp-d2" style="color:var(--dark)">—</strong>/10</span>
+          <span>D3: <strong id="msp-d3" style="color:var(--dark)">—</strong>/10</span>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
   const a = state.answers;
   const sel = (q,v) => a[q]===v ? ' selected' : '';
   const opt = (q,v,title,sub) => `
@@ -2026,9 +2171,56 @@ function calculateScores() {
 }
 
 function step2Valid() {
+  if (state.scanMode === 'auto') {
+    // Metrics form: all 4 dropdowns must be filled
+    const ids = ['m-reviews','m-score','m-rr','m-recency'];
+    const missing = ids.some(id => { const el = document.getElementById(id); return !el || !el.value; });
+    if (missing) { alert(lang==='it' ? 'Compila tutti e 4 i campi per continuare.' : 'Please fill all 4 fields to continue.'); return false; }
+    return true;
+  }
   const missing = ['q1','q2','q3','q4','q5','q6'].filter(q => state.answers[q]===undefined);
   if (missing.length) { alert(STRINGS[lang].val2); return false; }
   return true;
+}
+
+function calcMetricsScore() {
+  const reviews = parseFloat(document.getElementById('m-reviews')?.value || '');
+  const score   = parseFloat(document.getElementById('m-score')?.value   || '');
+  const rr      = parseFloat(document.getElementById('m-rr')?.value      || '');
+  const recency = parseFloat(document.getElementById('m-recency')?.value || '');
+
+  const allFilled = !isNaN(reviews) && !isNaN(score) && !isNaN(rr) && !isNaN(recency);
+  const preview = document.getElementById('metrics-score-preview');
+  if (!preview) return;
+
+  if (!allFilled) { preview.style.display = 'none'; return; }
+
+  // Build a scanData-like object and run autoScore
+  const sd = {
+    found: reviews > 0,
+    totalReviews: reviews,
+    trustScore:   score,
+    responseRate: rr,
+    lastDaysAgo:  recency,
+  };
+  autoScore(sd);
+
+  // Also store as scanData so renderResults() can display it
+  state.scanData = { ...sd, domain: state.companyDomain, displayName: state.companyName };
+
+  // Show live preview
+  const t = state.total;
+  const S = STRINGS[lang];
+  const tier = t<=10 ? { l:S.tier_red, c:'#e74c3c' } : t<=20 ? { l:S.tier_yellow, c:'#f5a623' } : { l:S.tier_green, c:'#00b67a' };
+  preview.style.display = 'block';
+  preview.style.borderColor = tier.c;
+  document.getElementById('msp-total').style.color = tier.c;
+  document.getElementById('msp-total').textContent = t;
+  document.getElementById('msp-tier').style.color  = tier.c;
+  document.getElementById('msp-tier').textContent  = tier.l;
+  document.getElementById('msp-d1').textContent = state.scores.d1;
+  document.getElementById('msp-d2').textContent = state.scores.d2;
+  document.getElementById('msp-d3').textContent = state.scores.d3;
 }
 
 // ─── NAVIGATION ────────────────────────────────────────────────────
@@ -2040,13 +2232,15 @@ function updateProgress() {
     const dot = document.getElementById(`dot-${i}`);
     const lbl = document.getElementById(`lbl-${i}`);
     if (!dot||!lbl) continue;
-    dot.className = 'step-dot'+(i<s?' done':i===s?' active':'');
-    dot.textContent = i<s ? '✓' : i;
+    // In auto-scan mode, step 2 is treated as "done" (skipped) once past step 1
+    const isDone = i < s || (state.scanMode === 'auto' && i === 2 && s >= 3);
+    dot.className = 'step-dot'+(isDone?' done':i===s?' active':'');
+    dot.textContent = isDone ? '✓' : i;
     lbl.className = 'step-label'+(i===s?' active':'');
     lbl.textContent = S[lblKeys[i]] || '';
     if (i < state.totalSteps) {
       const line = document.getElementById(`line-${i}`);
-      if (line) line.className = 'step-line'+(i<s?' done':'');
+      if (line) line.className = 'step-line'+(isDone?' done':'');
     }
   }
   const back = document.getElementById('btn-back');
@@ -2061,7 +2255,17 @@ function updateProgress() {
 
 function nextStep() {
   const S = STRINGS[lang];
-  if (state.currentStep===1) syncCompanyName();
+  if (state.currentStep===1) {
+    syncCompanyName();
+    const domain = state.companyDomain.trim();
+    if (domain) {
+      // Auto-scan mode: skip step 2 entirely
+      triggerScan(domain);
+      return;
+    }
+    // No domain → manual quiz (step 2)
+    state.scanMode = 'manual';
+  }
   if (state.currentStep===2) { if (!step2Valid()) return; renderResults(); }
   if (state.currentStep===3) renderChecklist();
   if (state.currentStep===4) renderRoadmap();
@@ -2080,9 +2284,14 @@ function nextStep() {
 }
 
 function prevStep() {
-  if (state.currentStep>1) {
+  if (state.currentStep > 1) {
     document.getElementById(`step-${state.currentStep}`).classList.remove('active');
-    state.currentStep--;
+    // In auto-scan mode, step 2 is skipped — go back to step 1 directly from step 3
+    if (state.scanMode === 'auto' && state.currentStep === 3) {
+      state.currentStep = 1;
+    } else {
+      state.currentStep--;
+    }
     document.getElementById(`step-${state.currentStep}`).classList.add('active');
     updateProgress();
     window.scrollTo({top:0,behavior:'smooth'});
@@ -2108,6 +2317,37 @@ function renderResults() {
   const {d1,d2,d3} = state.scores;
   const total = state.total;
   const scoreTier = total<=10?'red':total<=20?'yellow':'green';
+
+  // ── Scan data panel ──
+  const panelEl = document.getElementById('scan-data-panel');
+  if (panelEl) {
+    if (state.scanMode === 'auto' && state.scanData) {
+      const sd = state.scanData;
+      if (sd.found) {
+        const rr = sd.responseRate !== null ? sd.responseRate+'%' : '—';
+        const ts = sd.trustScore ? sd.trustScore.toFixed(1) : '—';
+        panelEl.innerHTML = `
+          <div class="scan-data-panel">
+            <div class="scan-panel-header">🔍 ${S.scan_found}: <span style="font-weight:400;margin-left:4px">${sd.displayName}</span></div>
+            <div class="scan-metrics">
+              <div class="scan-metric"><div class="scan-metric-val">${sd.totalReviews.toLocaleString()}</div><div class="scan-metric-lbl">${S.scan_reviews}</div></div>
+              <div class="scan-metric"><div class="scan-metric-val">${ts} ⭐</div><div class="scan-metric-lbl">${S.scan_score}</div></div>
+              <div class="scan-metric"><div class="scan-metric-val">${rr}</div><div class="scan-metric-lbl">${S.scan_response}</div></div>
+            </div>
+            <div class="scan-source">trustpilot.com/review/${sd.domain}</div>
+          </div>`;
+      } else {
+        const msg = sd.error ? S.scan_error : S.scan_no_profile;
+        panelEl.innerHTML = `
+          <div class="scan-data-panel not-found">
+            <div class="scan-panel-header not-found">⚠️ ${S.scan_not_found}</div>
+            <div style="font-size:13px;color:#7f1d1d;margin-top:2px">${msg}</div>
+          </div>`;
+      }
+    } else {
+      panelEl.innerHTML = '';
+    }
+  }
 
   document.getElementById('score-big').textContent = total;
   document.getElementById('res-d1').textContent = d1;
@@ -2451,6 +2691,166 @@ function renderPlanDetail(planName) {
           </div>
         </div>`).join('')}
     </div>`;
+}
+
+// ─── DOMAIN SCAN ─────────────────────────────────────────────────────
+async function triggerScan(domain) {
+  const S = STRINGS[lang];
+  const overlay = document.getElementById('scan-overlay');
+  const statusEl = document.getElementById('scan-status-text');
+  const domainEl = document.getElementById('scan-domain-label');
+
+  if (statusEl) statusEl.textContent = S.scan_loading;
+  if (domainEl) domainEl.textContent = 'trustpilot.com/review/' + domain.replace(/^https?:\/\//,'').replace(/^www\./,'').replace(/\/$/,'');
+  overlay.classList.add('active');
+
+  try {
+    const data = await runDomainScan(domain);
+    state.scanData = data;
+    state.scanMode = 'auto';
+    if (data.found) {
+      // ✅ Scan succeeded → auto-calculate and jump to step 3
+      autoScore(data);
+      document.getElementById(`step-${state.currentStep}`).classList.remove('active');
+      state.currentStep = 3;
+      renderResults();
+      document.getElementById('step-3').classList.add('active');
+    } else {
+      // ❌ Not on Trustpilot or blocked → show metrics form in step 2
+      document.getElementById(`step-${state.currentStep}`).classList.remove('active');
+      state.currentStep = 2;
+      renderStep2();
+      document.getElementById('step-2').classList.add('active');
+    }
+  } catch (e) {
+    state.scanData = { found: false, error: true, domain };
+    state.scanMode = 'auto';
+    document.getElementById(`step-${state.currentStep}`).classList.remove('active');
+    state.currentStep = 2;
+    renderStep2();
+    document.getElementById('step-2').classList.add('active');
+  } finally {
+    overlay.classList.remove('active');
+  }
+
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function runDomainScan(domain) {
+  const clean = domain.replace(/^https?:\/\//,'').replace(/^www\./,'').replace(/\/$/,'').toLowerCase();
+
+  const PROXIES = [
+    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  ];
+  const tpUrl = `https://www.trustpilot.com/review/${clean}`;
+
+  for (const makeProxy of PROXIES) {
+    try {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 12000);
+      const resp = await fetch(makeProxy(tpUrl), { signal: ctrl.signal });
+      clearTimeout(t);
+      if (!resp.ok) continue;
+      const html = await resp.text();
+      const parsed = parseTrustpilotHTML(html, clean);
+      if (parsed) return parsed;
+    } catch (_) { /* try next proxy */ }
+  }
+  return { found: false, error: true, domain: clean };
+}
+
+function parseTrustpilotHTML(html, domain) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+
+  // Primary: __NEXT_DATA__ (Next.js page props — most complete)
+  const nd = doc.getElementById('__NEXT_DATA__');
+  if (nd) {
+    try {
+      const json = JSON.parse(nd.textContent);
+      const bu = json?.props?.pageProps?.businessUnit;
+      if (bu?.numberOfReviews) {
+        const totalReviews  = bu.numberOfReviews.total ?? 0;
+        const trustScore    = bu.score?.trustScore ?? 0;
+        const responseRate  = bu.responseRate ?? bu.replyStats?.responseRatePercent ?? null;
+        const displayName   = bu.displayName || domain;
+
+        // Days since last review (from first review in list)
+        const reviews = json?.props?.pageProps?.reviews ?? [];
+        let lastDaysAgo = null;
+        if (reviews.length > 0) {
+          const d = reviews[0]?.dates?.publishedDate;
+          if (d) lastDaysAgo = Math.floor((Date.now() - new Date(d).getTime()) / 86400000);
+        }
+        return { found: true, domain, displayName, totalReviews, trustScore, responseRate, lastDaysAgo };
+      }
+    } catch (_) {}
+  }
+
+  // Fallback: JSON-LD structured data
+  for (const el of doc.querySelectorAll('script[type="application/ld+json"]')) {
+    try {
+      const ld = JSON.parse(el.textContent);
+      const ar = ld?.aggregateRating;
+      if (ar) {
+        return {
+          found: true, domain,
+          displayName: ld.name || domain,
+          totalReviews: parseInt(ar.reviewCount) || 0,
+          trustScore:   parseFloat(ar.ratingValue) || 0,
+          responseRate: null,
+          lastDaysAgo:  null,
+        };
+      }
+    } catch (_) {}
+  }
+
+  // Not found on Trustpilot
+  return { found: false, error: false, domain };
+}
+
+function autoScore(sd) {
+  if (!sd?.found) {
+    state.scores = { d1: 1, d2: 1, d3: 1 };
+    state.total  = 3;
+    return;
+  }
+  const { totalReviews, trustScore, responseRate, lastDaysAgo } = sd;
+
+  // D1 — Volume & Recency  (mirrors quiz scoring bands)
+  let d1;
+  if (totalReviews === 0) {
+    d1 = 1;
+  } else {
+    const base = totalReviews <= 12 ? 3 : totalReviews <= 50 ? 6 : 8;
+    const rec  = lastDaysAgo !== null
+      ? (lastDaysAgo <= 30 ? 3 : lastDaysAgo <= 60 ? 2 : lastDaysAgo <= 180 ? 1 : 0)
+      : 1; // unknown → assume modest recency
+    d1 = Math.min(10, base + rec);
+  }
+
+  // D2 — Response & Engagement
+  let d2;
+  if (responseRate === null) {
+    d2 = totalReviews > 50 ? 4 : 2; // can't determine → educated guess
+  } else {
+    const base  = responseRate < 10 ? 1 : responseRate < 50 ? 4 : responseRate < 80 ? 6 : 8;
+    const bonus = responseRate >= 80 ? 2 : responseRate >= 50 ? 1 : 0;
+    d2 = responseRate < 10 ? 1 : Math.min(10, base + bonus);
+  }
+
+  // D3 — TrustScore & Trend  (no trend data from page → assume flat)
+  let d3;
+  if (!trustScore || totalReviews === 0) {
+    d3 = 1;
+  } else {
+    const base = trustScore < 3.5 ? 2 : trustScore < 4.0 ? 5 : 7;
+    d3 = Math.max(1, Math.min(10, base)); // flat trend = +0
+  }
+
+  state.scores = { d1, d2, d3 };
+  state.total  = d1 + d2 + d3;
 }
 
 // ─── TOAST ──────────────────────────────────────────────────────────
@@ -2845,6 +3245,12 @@ updateProgress();
 </script>
 
 <div id="toast"></div>
+
+<div id="scan-overlay">
+  <div class="scan-spinner"></div>
+  <div class="scan-status-text" id="scan-status-text">Scansione in corso…</div>
+  <div class="scan-domain-label" id="scan-domain-label"></div>
+</div>
 
 </body>
 </html>
