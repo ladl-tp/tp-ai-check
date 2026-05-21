@@ -2545,7 +2545,7 @@ async function generateDOCS() {
 
     // Section label (small caps style)
     const sectionLbl = (text, color='666666') => new D.Paragraph({
-      children: [new D.TextRun({ text, color, bold: true, size: 16, font: 'Calibri' })],
+      children: [new D.TextRun({ text, color, bold: true, size: 22, font: 'Calibri' })],
       spacing: { before: cit(0.16), after: cit(0.05) }
     });
 
@@ -2588,9 +2588,9 @@ async function generateDOCS() {
     const prepLabel = lang==='it' ? 'Preparato per' : 'Prepared for';
     children.push(new D.Paragraph({
       children: [
-        new D.TextRun({ text: `${prepLabel}: `, color: '777777', size: 18, font: 'Calibri' }),
-        new D.TextRun({ text: company, color: '191919', bold: true, size: 18, font: 'Calibri' }),
-        new D.TextRun({ text: `  ·  ${today}`, color: '777777', size: 18, font: 'Calibri' }),
+        new D.TextRun({ text: `${prepLabel}: `, color: '777777', size: 22, font: 'Calibri' }),
+        new D.TextRun({ text: company, color: '191919', bold: true, size: 22, font: 'Calibri' }),
+        new D.TextRun({ text: `  ·  ${today}`, color: '777777', size: 22, font: 'Calibri' }),
       ],
       spacing: { before: cit(0.1), after: cit(0.08) }
     }));
@@ -2599,14 +2599,14 @@ async function generateDOCS() {
     const statsData = [
       { num:'60%', label: lang==='it' ? 'delle ricerche AI termina senza un click (Bain, 2025)' : 'of AI searches end without a click (Bain, 2025)' },
       { num:'62%', label: lang==='it' ? 'dei brand tecnicamente invisibili agli LLM (Semrush)' : 'of brands are technically invisible to LLMs (Semrush)' },
-      { num:'75%', label: lang==='it' ? 'citation rate con profilo Trustpilot attivo (vs 1%)' : 'citation rate with active Trustpilot profile (vs 1%)' },
+      { num:'16×', label: lang==='it' ? 'più citation di recensioni a purchase intent vs awareness (Seer)' : 'more review citations at purchase intent vs awareness (Seer)' },
       { num:'14%', label: lang==='it' ? 'delle citation AI va ai siti di recensioni — fonte #2 (Seer)' : 'of AI citations go to review sites — #2 source (Seer)' },
     ];
     const mkStatCell = (st) => new D.TableCell({
       shading: { type: D.ShadingType.CLEAR, fill: 'F4F4F6', color: 'auto' },
       children: [
         new D.Paragraph({ children: [new D.TextRun({ text: st.num, color: '00B67A', bold: true, size: 52, font: 'Calibri' })], spacing: { after: 0 } }),
-        new D.Paragraph({ children: [new D.TextRun({ text: st.label, color: '555555', size: 17, font: 'Calibri' })], spacing: { before: cit(0.02), after: cit(0.06) } })
+        new D.Paragraph({ children: [new D.TextRun({ text: st.label, color: '555555', size: 22, font: 'Calibri' })], spacing: { before: cit(0.02), after: cit(0.06) } })
       ],
       margins: { top: cit(0.08), bottom: cit(0.08), left: cit(0.1), right: cit(0.1) }
     });
@@ -2653,8 +2653,8 @@ async function generateDOCS() {
               { label: lang==='it' ? 'D3 — TrustScore & Trend' : 'D3 — TrustScore & Trend', score: state.scores.d3 },
             ].map(d => new D.Paragraph({
               children: [
-                new D.TextRun({ text: `${d.label}`, color: '555555', size: 19, font: 'Calibri' }),
-                new D.TextRun({ text: `   ${d.score}/10`, color: tierColor, bold: true, size: 19, font: 'Calibri' }),
+                new D.TextRun({ text: `${d.label}`, color: '555555', size: 22, font: 'Calibri' }),
+                new D.TextRun({ text: `   ${d.score}/10`, color: tierColor, bold: true, size: 22, font: 'Calibri' }),
               ],
               spacing: { after: cit(0.04) }
             }))
@@ -2684,7 +2684,7 @@ async function generateDOCS() {
         new D.TableCell({
           width: { size: 93, type: D.WidthType.PERCENTAGE },
           shading: { type: D.ShadingType.CLEAR, fill: bgFill, color: 'auto' },
-          children: [new D.Paragraph({ children: [new D.TextRun({ text: item.signal, color: '191919', size: 19, font: 'Calibri' })], spacing: { after: 0 } })],
+          children: [new D.Paragraph({ children: [new D.TextRun({ text: item.signal, color: '191919', size: 22, font: 'Calibri' })], spacing: { after: 0 } })],
           margins: { top: cit(0.04), bottom: cit(0.04), left: cit(0.08) }
         }),
       ]});
@@ -2710,13 +2710,13 @@ async function generateDOCS() {
       }));
       const bodyText = typeof scenario.body === 'function' ? scenario.body(state.companyName) : (scenario.body || '');
       children.push(new D.Paragraph({
-        children: [new D.TextRun({ text: bodyText, color: '333333', size: 20, font: 'Calibri' })],
+        children: [new D.TextRun({ text: bodyText, color: '333333', size: 22, font: 'Calibri' })],
         spacing: { after: cit(0.12) }
       }));
       // Quick win amber box
       children.push(colorBox([
         new D.Paragraph({ children: [new D.TextRun({ text: '⚡ Quick Win', color: 'D97706', bold: true, size: 22, font: 'Calibri' })], spacing: { after: cit(0.06) } }),
-        new D.Paragraph({ children: [new D.TextRun({ text: scenario.qw, color: '444444', size: 19, font: 'Calibri' })], spacing: { after: 0 } }),
+        new D.Paragraph({ children: [new D.TextRun({ text: scenario.qw, color: '444444', size: 22, font: 'Calibri' })], spacing: { after: 0 } }),
       ], 'FFFBEB', 'F5A623'));
     }
 
@@ -2728,11 +2728,11 @@ async function generateDOCS() {
         spacing: { before: cit(0.12), after: cit(0.04) }
       }));
       children.push(new D.Paragraph({
-        children: [new D.TextRun({ text: step.detail, color: '444444', size: 19, font: 'Calibri' })],
+        children: [new D.TextRun({ text: step.detail, color: '444444', size: 22, font: 'Calibri' })],
         spacing: { after: cit(0.03) }
       }));
       children.push(new D.Paragraph({
-        children: [new D.TextRun({ text: `→ ${step.kpi}`, color: tierColor, bold: true, size: 17, font: 'Calibri' })],
+        children: [new D.TextRun({ text: `→ ${step.kpi}`, color: tierColor, bold: true, size: 22, font: 'Calibri' })],
         spacing: { after: cit(0.06) }
       }));
     });
@@ -2753,22 +2753,22 @@ async function generateDOCS() {
         pc, 'FFFFFF', 32
       ));
       children.push(new D.Paragraph({
-        children: [new D.TextRun({ text: recPlan.tier[lang], color: pc, size: 21, font: 'Calibri' })],
+        children: [new D.TextRun({ text: recPlan.tier[lang], color: pc, size: 22, font: 'Calibri' })],
         spacing: { before: cit(0.08), after: cit(0.04) }
       }));
 
       // WHY
       children.push(sectionLbl(lang==='it' ? 'PERCHÉ QUESTO PIANO — E PERCHÉ ORA' : 'WHY THIS PLAN — AND WHY NOW', pc));
       children.push(colorBox([
-        new D.Paragraph({ children: [new D.TextRun({ text: WHY[lang][scoreTier][recPlanKey], color: '333333', size: 19, font: 'Calibri' })], spacing: { after: 0 } })
+        new D.Paragraph({ children: [new D.TextRun({ text: WHY[lang][scoreTier][recPlanKey], color: '333333', size: 22, font: 'Calibri' })], spacing: { after: 0 } })
       ], pbg, pc));
 
       // Features (3-column table)
       children.push(sectionLbl(lang==='it' ? 'COSA INCLUDE' : "WHAT'S INCLUDED"));
       const featCells = recPlan.features[lang].map(feat => new D.TableCell({
         children: [
-          new D.Paragraph({ children: [new D.TextRun({ text: feat.icon + '  ' + feat.title, color: pc, bold: true, size: 20, font: 'Calibri' })], spacing: { after: cit(0.06) } }),
-          ...feat.items.map(item => new D.Paragraph({ children: [new D.TextRun({ text: '·  ' + item, color: '555555', size: 17, font: 'Calibri' })], spacing: { after: cit(0.03) } }))
+          new D.Paragraph({ children: [new D.TextRun({ text: feat.icon + '  ' + feat.title, color: pc, bold: true, size: 22, font: 'Calibri' })], spacing: { after: cit(0.06) } }),
+          ...feat.items.map(item => new D.Paragraph({ children: [new D.TextRun({ text: '·  ' + item, color: '555555', size: 22, font: 'Calibri' })], spacing: { after: cit(0.03) } }))
         ],
         borders: thinBorder,
         margins: { top: cit(0.08), bottom: cit(0.08), left: cit(0.1), right: cit(0.1) }
@@ -2783,11 +2783,11 @@ async function generateDOCS() {
           spacing: { before: cit(0.1), after: cit(0.04) }
         }));
         children.push(new D.Paragraph({
-          children: [new D.TextRun({ text: step.detail, color: '444444', size: 19, font: 'Calibri' })],
+          children: [new D.TextRun({ text: step.detail, color: '444444', size: 22, font: 'Calibri' })],
           spacing: { after: cit(0.03) }
         }));
         children.push(new D.Paragraph({
-          children: [new D.TextRun({ text: `→ ${step.kpi}`, color: pc, bold: true, size: 17, font: 'Calibri' })],
+          children: [new D.TextRun({ text: `→ ${step.kpi}`, color: pc, bold: true, size: 22, font: 'Calibri' })],
           spacing: { after: cit(0.06) }
         }));
       });
