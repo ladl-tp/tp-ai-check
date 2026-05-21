@@ -1,0 +1,2781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Check — Trustpilot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/docx@7.8.2/build/index.js"></script>
+<style>
+  :root {
+    --green: #00b67a;
+    --green-dark: #007a52;
+    --green-light: #e6f7f1;
+    --yellow: #f5a623;
+    --red: #e74c3c;
+    --dark: #191919;
+    --mid: #555;
+    --light: #f7f7f7;
+    --border: #e0e0e0;
+    --white: #ffffff;
+    --star: #00b67a;
+  }
+
+  /* ── Trustpilot brand font: Gellix (falls back to Inter if CDN blocked) ── */
+  @font-face {
+    font-family: 'Gellix';
+    src: url('https://cdn.trustpilot.net/brand-assets/4.1.0/fonts/Gellix-Regular.woff2') format('woff2');
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Gellix';
+    src: url('https://cdn.trustpilot.net/brand-assets/4.1.0/fonts/Gellix-Medium.woff2') format('woff2');
+    font-weight: 500; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Gellix';
+    src: url('https://cdn.trustpilot.net/brand-assets/4.1.0/fonts/Gellix-SemiBold.woff2') format('woff2');
+    font-weight: 600; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Gellix';
+    src: url('https://cdn.trustpilot.net/brand-assets/4.1.0/fonts/Gellix-Bold.woff2') format('woff2');
+    font-weight: 700; font-style: normal; font-display: swap;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Gellix', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f4f4f6;
+    color: var(--dark);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--dark);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .tp-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+  .tp-star-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border-radius: 4px;
+  }
+  .tp-wordmark {
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .header-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header-badge {
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+  .lang-switch {
+    display: flex;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .lang-btn {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+  }
+  .lang-btn.active {
+    background: var(--green);
+    color: white;
+  }
+  .lang-btn:not(.active):hover { color: white; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, var(--dark) 0%, #0a3d2e 100%);
+    padding: 60px 24px 80px;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(0,182,122,0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,182,122,0.15);
+    border: 1px solid rgba(0,182,122,0.4);
+    color: var(--green);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+  }
+  .hero h1 span { color: var(--green); }
+  .hero p {
+    font-size: 18px;
+    color: rgba(255,255,255,0.75);
+    max-width: 560px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+  }
+  .hero-stat {
+    text-align: center;
+  }
+  .hero-stat .num {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--green);
+    display: block;
+    line-height: 1;
+  }
+  .hero-stat .label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 4px;
+    max-width: 120px;
+    line-height: 1.4;
+  }
+  .hero-divider {
+    width: 1px;
+    height: 50px;
+    background: rgba(255,255,255,0.15);
+    align-self: center;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--green);
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 16px 36px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    text-decoration: none;
+  }
+  .cta-btn:hover { background: var(--green-dark); transform: translateY(-1px); }
+  .cta-btn:active { transform: translateY(0); }
+  .cta-arrow { font-size: 18px; }
+
+  /* MAIN CONTAINER */
+  .container {
+    max-width: 860px;
+    margin: -40px auto 60px;
+    padding: 0 16px;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* WIZARD CARD */
+  .wizard-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 40px rgba(0,0,0,0.12);
+    overflow: hidden;
+  }
+
+  /* PROGRESS BAR */
+  .wizard-progress {
+    padding: 24px 32px 0;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+  }
+  .progress-steps {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  .step-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #999;
+    background: white;
+    flex-shrink: 0;
+    transition: all 0.3s;
+    position: relative;
+    z-index: 2;
+  }
+  .step-dot.active {
+    border-color: var(--green);
+    color: var(--green);
+    background: var(--green-light);
+  }
+  .step-dot.done {
+    border-color: var(--green);
+    background: var(--green);
+    color: white;
+  }
+  .step-line {
+    flex: 1;
+    height: 2px;
+    background: var(--border);
+    transition: background 0.3s;
+  }
+  .step-line.done { background: var(--green); }
+  .progress-labels {
+    display: flex;
+    margin-top: 8px;
+    gap: 0;
+  }
+  .step-label {
+    font-size: 11px;
+    color: #aaa;
+    text-align: center;
+    flex: 1;
+    transition: color 0.3s;
+  }
+  .step-label:first-child { text-align: left; }
+  .step-label:last-child { text-align: right; }
+  .step-label.active { color: var(--green); font-weight: 600; }
+
+  /* STEP CONTENT */
+  .wizard-body {
+    padding: 40px 40px;
+  }
+  @media (max-width: 600px) {
+    .wizard-body { padding: 24px 20px; }
+    .wizard-progress { padding: 16px 20px 16px; }
+  }
+  @media (max-width: 640px) {
+    #plan-selector { grid-template-columns: 1fr !important; }
+    .plan-features-grid { grid-template-columns: 1fr !important; }
+    .plan-picker-grid { grid-template-columns: 1fr !important; }
+  }
+
+  /* PLAN PICKER (step 5) */
+  .plan-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .picker-card {
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    background: white;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .picker-card.has-recommended { border-color: var(--green); }
+  .picker-card.has-light { border-color: #6366f1; }
+  .picker-card.has-both { border-color: var(--green); }
+  .picker-card-name {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 2px;
+  }
+  .picker-card-tier {
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .picker-card-meta {
+    font-size: 12px;
+    color: var(--mid);
+    margin-bottom: 14px;
+    line-height: 1.8;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+  }
+  .picker-card-score-hint {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    padding: 3px 8px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    display: inline-block;
+  }
+  .picker-btns { display: flex; flex-direction: column; gap: 8px; }
+  .picker-btn {
+    width: 100%;
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    background: white;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+    text-align: left;
+  }
+  .picker-btn:hover { border-color: #aaa; }
+  .picker-btn.active-recommended {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+  .picker-btn.active-light {
+    background: #6366f1;
+    border-color: #6366f1;
+    color: white;
+  }
+  .picker-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+  .plan-picker-summary {
+    background: var(--light);
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 500px) { .plan-picker-summary { grid-template-columns: 1fr; } }
+  .summary-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .summary-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .summary-label { font-size: 12px; color: var(--mid); margin-bottom: 2px; }
+  .summary-value { font-size: 16px; font-weight: 800; }
+
+  /* PLAN COMPARISON (step 6) */
+  .plan-comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 640px) { .plan-comparison { grid-template-columns: 1fr; } }
+  .plan-comp-card {
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .plan-comp-card.is-recommended { border-color: var(--green); }
+  .plan-comp-card.is-light { border-color: #6366f1; }
+  .plan-comp-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .plan-comp-card.is-recommended .plan-comp-header { background: #f0fdf8; }
+  .plan-comp-card.is-light .plan-comp-header { background: #eef2ff; }
+  .plan-comp-role {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 2px;
+  }
+  .plan-comp-card.is-recommended .plan-comp-role { color: var(--green-dark); }
+  .plan-comp-card.is-light .plan-comp-role { color: #4338ca; }
+  .plan-comp-name { font-size: 20px; font-weight: 800; }
+  .plan-comp-body { padding: 20px; }
+  .plan-comp-why {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--mid);
+    margin-bottom: 16px;
+  }
+  .plan-comp-features {
+    margin-bottom: 16px;
+  }
+  .plan-comp-feature-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #aaa;
+    margin-bottom: 8px;
+  }
+  .plan-comp-item {
+    font-size: 13px;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--dark);
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .plan-comp-item::before { content: '→'; color: #aaa; flex-shrink: 0; font-size: 11px; margin-top: 2px; }
+
+  .step { display: none; }
+  .step.active { display: block; }
+
+  .step-title {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+  }
+  .step-subtitle {
+    color: var(--mid);
+    margin-bottom: 32px;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  /* FORM FIELDS */
+  .form-group {
+    margin-bottom: 24px;
+  }
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 8px;
+    letter-spacing: 0.2px;
+  }
+  input[type="text"], input[type="email"] {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 15px;
+    color: var(--dark);
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  input[type="text"]:focus, input[type="email"]:focus {
+    border-color: var(--green);
+  }
+
+  /* QUESTION GROUPS */
+  .question-group {
+    margin-bottom: 28px;
+  }
+  .question-label {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--dark);
+  }
+  .question-hint {
+    font-size: 12px;
+    color: var(--mid);
+    margin-bottom: 12px;
+  }
+  .option-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 540px) { .option-grid { grid-template-columns: 1fr; } }
+  .option-card {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: white;
+    text-align: left;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .option-card:hover { border-color: #aaa; background: var(--light); }
+  .option-card.selected { border-color: var(--green); background: var(--green-light); }
+  .option-radio {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .option-card.selected .option-radio {
+    border-color: var(--green);
+    background: var(--green);
+  }
+  .option-card.selected .option-radio::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: white;
+    display: block;
+  }
+  .option-text { flex: 1; }
+  .option-title { font-size: 14px; font-weight: 600; color: var(--dark); line-height: 1.3; }
+  .option-sub { font-size: 12px; color: var(--mid); margin-top: 2px; line-height: 1.4; }
+
+  /* DIMENSION SECTION HEADER */
+  .dimension-section {
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .dimension-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .dimension-name { font-size: 16px; font-weight: 800; }
+  .dimension-desc { font-size: 13px; color: var(--mid); margin-top: 3px; }
+  .dimension-score-badge {
+    font-size: 22px;
+    font-weight: 800;
+    min-width: 52px;
+    text-align: right;
+    line-height: 1;
+  }
+  .dimension-score-badge .out { font-size: 13px; color: #aaa; font-weight: 400; }
+
+  /* SCORE RESULT */
+  .score-result-big {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .score-circle {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    margin: 0 auto 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 6px solid;
+    position: relative;
+  }
+  .score-circle .big-num {
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .score-circle .out-of { font-size: 14px; color: #999; }
+  .score-tier-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .score-message {
+    font-size: 16px;
+    color: var(--mid);
+    max-width: 500px;
+    margin: 0 auto 32px;
+    line-height: 1.6;
+  }
+
+  /* SUB SCORES */
+  .sub-scores {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 600px) { .sub-scores { grid-template-columns: 1fr; } }
+  .sub-score-card {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .sub-score-card .sub-num {
+    font-size: 28px;
+    font-weight: 800;
+  }
+  .sub-score-card .sub-label {
+    font-size: 12px;
+    color: var(--mid);
+    margin-top: 4px;
+    line-height: 1.3;
+  }
+
+  /* SCENARIO */
+  .scenario-card {
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+    border: 2px solid;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .scenario-card.recommended {
+    border-color: var(--green);
+    background: var(--green-light);
+  }
+  .scenario-card.other {
+    border-color: var(--border);
+    background: white;
+  }
+  .scenario-card.other:hover { border-color: #aaa; }
+  .scenario-card.selected {
+    border-color: var(--green);
+    background: var(--green-light);
+  }
+  .scenario-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+  .badge-recommended { background: var(--green); color: white; }
+  .badge-other { background: var(--border); color: #666; }
+  .scenario-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .scenario-body {
+    font-size: 14px;
+    color: var(--mid);
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+  .scenario-quickwin {
+    background: rgba(0,182,122,0.1);
+    border-left: 3px solid var(--green);
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .scenario-quickwin strong { color: var(--green-dark); }
+  .scenario-select-indicator {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all 0.2s;
+  }
+  .scenario-card.selected .scenario-select-indicator,
+  .scenario-card.recommended .scenario-select-indicator {
+    border-color: var(--green);
+    background: var(--green);
+    color: white;
+  }
+
+  /* CHECKLIST */
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+  .checklist-item.status-yes { border-color: var(--green); background: #f0fdf8; }
+  .checklist-item.status-partial { border-color: var(--yellow); background: #fffbeb; }
+  .checklist-item.status-no { border-color: var(--red); background: #fef2f2; }
+
+  .checklist-num {
+    font-size: 12px;
+    font-weight: 700;
+    color: #999;
+    min-width: 20px;
+    margin-top: 2px;
+  }
+  .checklist-content { flex: 1; }
+  .checklist-signal {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+  .checklist-hint {
+    font-size: 12px;
+    color: var(--mid);
+    line-height: 1.5;
+  }
+  .checklist-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .status-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    background: white;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .status-btn:hover { transform: scale(1.1); }
+  .status-btn.active-yes { background: var(--green); border-color: var(--green); }
+  .status-btn.active-partial { background: var(--yellow); border-color: var(--yellow); }
+  .status-btn.active-no { background: var(--red); border-color: var(--red); }
+
+  /* CHECKLIST SUMMARY */
+  .checklist-summary {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: var(--light);
+    border-radius: 10px;
+  }
+  .cl-stat { text-align: center; }
+  .cl-stat .cl-num { font-size: 24px; font-weight: 800; }
+  .cl-stat .cl-lbl { font-size: 11px; color: var(--mid); margin-top: 2px; }
+  .cl-stat.green .cl-num { color: var(--green); }
+  .cl-stat.yellow .cl-num { color: var(--yellow); }
+  .cl-stat.red .cl-num { color: var(--red); }
+
+  /* ROADMAP */
+  .roadmap-section {
+    margin-bottom: 32px;
+  }
+  .roadmap-tier-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .roadmap-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .roadmap-step {
+    display: flex;
+    gap: 20px;
+    padding: 0 0 28px 0;
+    position: relative;
+  }
+  .roadmap-step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 19px;
+    top: 40px;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+  .step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--green);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .step-content { flex: 1; padding-top: 8px; }
+  .step-period {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--green);
+    margin-bottom: 4px;
+  }
+  .step-action {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .step-detail {
+    font-size: 14px;
+    color: var(--mid);
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+  .step-kpi {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green-light);
+    color: var(--green-dark);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  /* RESULTS DOWNLOAD */
+  .results-panel {
+    background: var(--dark);
+    border-radius: 12px;
+    padding: 28px;
+    color: white;
+    margin-bottom: 24px;
+  }
+  .results-panel h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  .results-panel p { color: rgba(255,255,255,0.65); font-size: 14px; margin-bottom: 20px; }
+
+  /* NAVIGATION */
+  .wizard-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 40px;
+    border-top: 1px solid var(--border);
+    background: var(--light);
+  }
+  @media (max-width: 600px) { .wizard-nav { padding: 16px 20px; } }
+  .btn-back {
+    background: none;
+    border: 2px solid var(--border);
+    color: var(--mid);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-back:hover { border-color: #aaa; color: var(--dark); }
+  .btn-next {
+    background: var(--green);
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 12px 28px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+  }
+  .btn-next:hover { background: var(--green-dark); transform: translateY(-1px); }
+  .btn-print {
+    background: white;
+    color: var(--dark);
+    border: 2px solid var(--border);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .btn-print:hover { border-color: var(--dark); }
+
+  /* INFO BOX */
+  .info-box {
+    background: #eef6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #1e40af;
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+  .info-box strong { font-weight: 700; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 40px 24px;
+    color: #aaa;
+    font-size: 13px;
+  }
+  footer a { color: var(--green); text-decoration: none; }
+
+  /* PRINT */
+  @media print {
+    header, .hero, .wizard-nav, footer { display: none; }
+    .wizard-card { box-shadow: none; border-radius: 0; }
+    .step { display: block !important; }
+    .wizard-progress { display: none; }
+    body { background: white; }
+    .container { margin-top: 0; }
+  }
+
+  /* UTILITY */
+  .company-name-display {
+    color: var(--green);
+    font-style: normal;
+  }
+  .hidden { display: none; }
+  .text-center { text-align: center; }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  .mt-24 { margin-top: 24px; }
+  .divider { height: 1px; background: var(--border); margin: 24px 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="tp-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1132.8 278.2" height="26" aria-label="Trustpilot" role="img">
+      <title>Trustpilot</title>
+      <!-- Wordmark — white on dark header -->
+      <path d="M297.7 98.6h114.7V120h-45.1v120.3h-24.8V120h-44.9V98.6zm109.8 39.1h21.2v19.8h.4c.7-2.8 2-5.5 3.9-8.1 1.9-2.6 4.2-5.1 6.9-7.2 2.7-2.2 5.7-3.9 9-5.3 3.3-1.3 6.7-2 10.1-2 2.6 0 4.5.1 5.5.2s2 .3 3.1.4v21.8c-1.6-.3-3.2-.5-4.9-.7-1.7-.2-3.3-.3-4.9-.3-3.8 0-7.4.8-10.8 2.3-3.4 1.5-6.3 3.8-8.8 6.7-2.5 3-4.5 6.6-6 11s-2.2 9.4-2.2 15.1v48.8h-22.6V137.7zm164 102.6h-22.2V226h-.4c-2.8 5.2-6.9 9.3-12.4 12.4-5.5 3.1-11.1 4.7-16.8 4.7-13.5 0-23.3-3.3-29.3-10s-9-16.8-9-30.3v-65.1H504v62.9c0 9 1.7 15.4 5.2 19.1 3.4 3.7 8.3 5.6 14.5 5.6 4.8 0 8.7-.7 11.9-2.2 3.2-1.5 5.8-3.4 7.7-5.9 2-2.4 3.4-5.4 4.3-8.8.9-3.4 1.3-7.1 1.3-11.1v-59.5h22.6v102.5zm38.5-32.9c.7 6.6 3.2 11.2 7.5 13.9 4.4 2.6 9.6 4 15.7 4 2.1 0 4.5-.2 7.2-.5s5.3-1 7.6-1.9c2.4-.9 4.3-2.3 5.9-4.1 1.5-1.8 2.2-4.1 2.1-7-.1-2.9-1.2-5.3-3.2-7.1-2-1.9-4.5-3.3-7.6-4.5-3.1-1.1-6.6-2.1-10.6-2.9-4-.8-8-1.7-12.1-2.6-4.2-.9-8.3-2.1-12.2-3.4-3.9-1.3-7.4-3.1-10.5-5.4-3.1-2.2-5.6-5.1-7.4-8.6-1.9-3.5-2.8-7.8-2.8-13 0-5.6 1.4-10.2 4.1-14 2.7-3.8 6.2-6.8 10.3-9.1 4.2-2.3 8.8-3.9 13.9-4.9 5.1-.9 10-1.4 14.6-1.4 5.3 0 10.4.6 15.2 1.7 4.8 1.1 9.2 2.9 13.1 5.5 3.9 2.5 7.1 5.8 9.7 9.8 2.6 4 4.2 8.9 4.9 14.6h-23.6c-1.1-5.4-3.5-9.1-7.4-10.9-3.9-1.9-8.4-2.8-13.4-2.8-1.6 0-3.5.1-5.7.4-2.2.3-4.2.8-6.2 1.5-1.9.7-3.5 1.8-4.9 3.2-1.3 1.4-2 3.2-2 5.5 0 2.8 1 5 2.9 6.7 1.9 1.7 4.4 3.1 7.5 4.3 3.1 1.1 6.6 2.1 10.6 2.9 4 .8 8.1 1.7 12.3 2.6 4.1.9 8.1 2.1 12.1 3.4 4 1.3 7.5 3.1 10.6 5.4 3.1 2.3 5.6 5.1 7.5 8.5 1.9 3.4 2.9 7.7 2.9 12.7 0 6.1-1.4 11.2-4.2 15.5-2.8 4.2-6.4 7.7-10.8 10.3-4.4 2.6-9.4 4.6-14.8 5.8-5.4 1.2-10.8 1.8-16.1 1.8-6.5 0-12.5-.7-18-2.2-5.5-1.5-10.3-3.7-14.3-6.6-4-3-7.2-6.7-9.5-11.1-2.3-4.4-3.5-9.7-3.7-15.8H610zm74.6-69.7h17.1v-30.8h22.6v30.8h20.4v16.9h-20.4v54.8c0 2.4.1 4.4.3 6.2.2 1.7.7 3.2 1.4 4.4.7 1.2 1.8 2.1 3.3 2.7 1.5.6 3.4.9 6 .9 1.6 0 3.2 0 4.8-.1 1.6-.1 3.2-.3 4.8-.7v17.5c-2.5.3-5 .5-7.3.8-2.4.3-4.8.4-7.3.4-6 0-10.8-.6-14.4-1.7-3.6-1.1-6.5-2.8-8.5-5-2.1-2.2-3.4-4.9-4.2-8.2-.7-3.3-1.2-7.1-1.3-11.3v-60.5h-17.1v-17.1zm76.1 0h21.4v13.9h.4c3.2-6 7.6-10.2 13.3-12.8 5.7-2.6 11.8-3.9 18.5-3.9 8.1 0 15.1 1.4 21.1 4.3 6 2.8 11 6.7 15 11.7 4 5 6.9 10.8 8.9 17.4 2 6.6 3 13.7 3 21.2 0 6.9-.9 13.6-2.7 20-1.8 6.5-4.5 12.2-8.1 17.2-3.6 5-8.2 8.9-13.8 11.9-5.6 3-12.1 4.5-19.7 4.5-3.3 0-6.6-.3-9.9-.9-3.3-.6-6.5-1.6-9.5-2.9-3-1.3-5.9-3-8.4-5.1-2.6-2.1-4.7-4.5-6.5-7.2h-.4v51.2h-22.6V137.7zm79 51.4c0-4.6-.6-9.1-1.8-13.5-1.2-4.4-3-8.2-5.4-11.6-2.4-3.4-5.4-6.1-8.9-8.1-3.6-2-7.7-3.1-12.3-3.1-9.5 0-16.7 3.3-21.5 9.9-4.8 6.6-7.2 15.4-7.2 26.4 0 5.2.6 10 1.9 14.4 1.3 4.4 3.1 8.2 5.7 11.4 2.5 3.2 5.5 5.7 9 7.5 3.5 1.9 7.6 2.8 12.2 2.8 5.2 0 9.5-1.1 13.1-3.2 3.6-2.1 6.5-4.9 8.8-8.2 2.3-3.4 4-7.2 5-11.5.9-4.3 1.4-8.7 1.4-13.2zm39.9-90.5h22.6V120h-22.6V98.6zm0 39.1h22.6v102.6h-22.6V137.7zm42.8-39.1H945v141.7h-22.6V98.6zm91.9 144.5c-8.2 0-15.5-1.4-21.9-4.1-6.4-2.7-11.8-6.5-16.3-11.2-4.4-4.8-7.8-10.5-10.1-17.1-2.3-6.6-3.5-13.9-3.5-21.8 0-7.8 1.2-15 3.5-21.6 2.3-6.6 5.7-12.3 10.1-17.1 4.4-4.8 9.9-8.5 16.3-11.2 6.4-2.7 13.7-4.1 21.9-4.1s15.5 1.4 21.9 4.1c6.4 2.7 11.8 6.5 16.3 11.2 4.4 4.8 7.8 10.5 10.1 17.1 2.3 6.6 3.5 13.8 3.5 21.6 0 7.9-1.2 15.2-3.5 21.8-2.3 6.6-5.7 12.3-10.1 17.1-4.4 4.8-9.9 8.5-16.3 11.2-6.4 2.7-13.7 4.1-21.9 4.1zm0-17.9c5 0 9.4-1.1 13.1-3.2 3.7-2.1 6.7-4.9 9.1-8.3 2.4-3.4 4.1-7.3 5.3-11.6 1.1-4.3 1.7-8.7 1.7-13.2 0-4.4-.6-8.7-1.7-13.1s-2.9-8.2-5.3-11.6c-2.4-3.4-5.4-6.1-9.1-8.2-3.7-2.1-8.1-3.2-13.1-3.2s-9.4 1.1-13.1 3.2c-3.7 2.1-6.7 4.9-9.1 8.2-2.4 3.4-4.1 7.2-5.3 11.6-1.1 4.4-1.7 8.7-1.7 13.1 0 4.5.6 8.9 1.7 13.2 1.1 4.3 2.9 8.2 5.3 11.6 2.4 3.4 5.4 6.2 9.1 8.3 3.7 2.2 8.1 3.2 13.1 3.2zm58.4-87.5h17.1v-30.8h22.6v30.8h20.4v16.9h-20.4v54.8c0 2.4.1 4.4.3 6.2.2 1.7.7 3.2 1.4 4.4.7 1.2 1.8 2.1 3.3 2.7 1.5.6 3.4.9 6 .9 1.6 0 3.2 0 4.8-.1 1.6-.1 3.2-.3 4.8-.7v17.5c-2.5.3-5 .5-7.3.8-2.4.3-4.8.4-7.3.4-6 0-10.8-.6-14.4-1.7-3.6-1.1-6.5-2.8-8.5-5-2.1-2.2-3.4-4.9-4.2-8.2-.7-3.3-1.2-7.1-1.3-11.3v-60.5h-17.1v-17.1z" fill="#FFFFFF"/>
+      <!-- Star icon — official Trustpilot green -->
+      <path fill="#00b67a" d="M271.3 98.6H167.7L135.7 0l-32.1 98.6L0 98.5l83.9 61L51.8 258l83.9-60.9 83.8 60.9-32-98.5 83.8-60.9z"/>
+      <!-- Star shadow -->
+      <path fill="#005128" d="M194.7 181.8l-7.2-22.3-51.8 37.6z"/>
+    </svg>
+  </div>
+  <div class="header-right">
+    <span class="header-badge" data-i18n="header_badge">AI Check Tool</span>
+    <div class="lang-switch">
+      <button class="lang-btn active" id="lb-it" onclick="setLang('it')">IT</button>
+      <button class="lang-btn" id="lb-en" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow" data-i18n="hero_eyebrow">★ Powered by dati Trustpilot</div>
+  <h1>Il tuo <span>AI Relevance</span> Score<br>& LLM Visibility Audit</h1>
+  <p data-i18n="hero_p">Quando i buyer chiedono all'AI della tua azienda — prima ancora di chiamarti — cosa risponde?</p>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <span class="num">7B</span>
+      <span class="label" data-i18n="stat1_lbl">visite mensili alle piattaforme AI, +76% YoY</span>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <span class="num">60%</span>
+      <span class="label" data-i18n="stat2_lbl">delle ricerche AI terminano senza un click (Bain)</span>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <span class="num">75%</span>
+      <span class="label" data-i18n="stat3_lbl">citation rate per brand con profilo Trustpilot attivo</span>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <span class="num">1%</span>
+      <span class="label" data-i18n="stat4_lbl">citation rate per brand senza presenza Trustpilot</span>
+    </div>
+  </div>
+
+  <button class="cta-btn" onclick="document.querySelector('.wizard-card').scrollIntoView({behavior:'smooth'})">
+    <span data-i18n="cta_start">Inizia il tuo AI Check</span> <span class="cta-arrow">↓</span>
+  </button>
+</div>
+
+<div class="container">
+  <div class="wizard-card">
+
+    <!-- PROGRESS -->
+    <div class="wizard-progress">
+      <div class="progress-steps">
+        <div class="step-dot active" id="dot-1">1</div>
+        <div class="step-line" id="line-1"></div>
+        <div class="step-dot" id="dot-2">2</div>
+        <div class="step-line" id="line-2"></div>
+        <div class="step-dot" id="dot-3">3</div>
+        <div class="step-line" id="line-3"></div>
+        <div class="step-dot" id="dot-4">4</div>
+        <div class="step-line" id="line-4"></div>
+        <div class="step-dot" id="dot-5">5</div>
+        <div class="step-line" id="line-5"></div>
+        <div class="step-dot" id="dot-6">6</div>
+        <div class="step-line" id="line-6"></div>
+        <div class="step-dot" id="dot-7">7</div>
+      </div>
+      <div class="progress-labels">
+        <span class="step-label active" id="lbl-1" data-i18n="lbl_company">Azienda</span>
+        <span class="step-label" id="lbl-2" data-i18n="lbl_score">Score</span>
+        <span class="step-label" id="lbl-3" data-i18n="lbl_results">Risultati</span>
+        <span class="step-label" id="lbl-4" data-i18n="lbl_checklist">Checklist</span>
+        <span class="step-label" id="lbl-5" data-i18n="lbl_roadmap">Roadmap</span>
+        <span class="step-label" id="lbl-6" data-i18n="lbl_piano_pick">Scelta Piano</span>
+        <span class="step-label" id="lbl-7" data-i18n="lbl_piano">Il tuo Piano</span>
+      </div>
+    </div>
+
+    <!-- WIZARD BODY -->
+    <div class="wizard-body">
+
+      <!-- STEP 1: COMPANY INFO -->
+      <div class="step active" id="step-1">
+        <div class="step-title">Let's set up your AI Check</div>
+        <div class="step-subtitle">Enter your company details to personalise your audit. This takes about 5 minutes.</div>
+
+        <div class="form-group">
+          <label>Company name</label>
+          <input type="text" id="company-name" placeholder="e.g. Acme Corp" oninput="syncCompanyName()">
+        </div>
+        <div class="form-group">
+          <label>Your name <span style="color:#aaa;font-weight:400">(optional)</span></label>
+          <input type="text" id="contact-name" placeholder="e.g. Sarah Johnson">
+        </div>
+        <div class="form-group">
+          <label>Industry / category <span style="color:#aaa;font-weight:400">(optional)</span></label>
+          <input type="text" id="industry" placeholder="e.g. SaaS, E-commerce, Financial services">
+        </div>
+
+        <div class="info-box">
+          <strong>How this works:</strong> You'll score your current AI visibility across 3 dimensions, identify your biggest opportunity, complete a 10-point LLM checklist, and get a personalised 90-day roadmap.
+        </div>
+      </div>
+
+      <!-- STEP 2: SCORING -->
+      <div class="step" id="step-2">
+        <div class="step-title">AI Relevance Score</div>
+        <div class="step-subtitle">Rispondi alle domande su <em class="company-name-display" id="score-company-label">your company</em> — calcoliamo il punteggio automaticamente.</div>
+
+        <!-- DIMENSION 1 -->
+        <div class="dimension-section">
+          <div class="dimension-section-header">
+            <div>
+              <div class="dimension-name">1 — Review Volume & Recency</div>
+              <div class="dimension-desc">Quante recensioni hai? Quanto sono recenti?</div>
+            </div>
+            <div class="dimension-score-badge" id="d1-badge">— <span class="out">/10</span></div>
+          </div>
+
+          <div class="question-group">
+            <div class="question-label">Quante recensioni Trustpilot ha la tua azienda?</div>
+            <div class="option-grid">
+              <button class="option-card" onclick="pick('q1','none',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">Nessun profilo / 0 recensioni</div><div class="option-sub">Citata dall'AI meno dell'1% delle volte</div></div>
+              </button>
+              <button class="option-card" onclick="pick('q1','1-12',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">1–12 recensioni</div><div class="option-sub">Sotto la soglia minima di visibilità AI</div></div>
+              </button>
+              <button class="option-card" onclick="pick('q1','13-50',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">13–50 recensioni</div><div class="option-sub">Oltre la soglia: citation rate ~54%</div></div>
+              </button>
+              <button class="option-card" onclick="pick('q1','51+',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">50+ recensioni</div><div class="option-sub">Profilo attivo: citation rate fino al 75%</div></div>
+              </button>
+            </div>
+          </div>
+
+          <div class="question-group">
+            <div class="question-label">Quando è arrivata l'ultima recensione?</div>
+            <div class="option-grid">
+              <button class="option-card" onclick="pick('q2','6mo+',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">Più di 6 mesi fa</div><div class="option-sub">Segnale stale per gli LLM</div></div>
+              </button>
+              <button class="option-card" onclick="pick('q2','2-6mo',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">2–6 mesi fa</div><div class="option-sub">Recency gap, citazione inconsistente</div></div>
+              </button>
+              <button class="option-card" onclick="pick('q2','1-2mo',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">Nell'ultimo mese</div><div class="option-sub">Segnale recente, buona cadenza</div></div>
+              </button>
+              <button class="option-card" onclick="pick('q2','30d',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">Negli ultimi 30 giorni</div><div class="option-sub">Cadenza costante — benchmark AI-Ready</div></div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DIMENSION 2 -->
+        <div class="dimension-section">
+          <div class="dimension-section-header">
+            <div>
+              <div class="dimension-name">2 — Response Rate & Engagement</div>
+              <div class="dimension-desc">Il brand risponde visibilmente alle recensioni?</div>
+            </div>
+            <div class="dimension-score-badge" id="d2-badge">— <span class="out">/10</span></div>
+          </div>
+
+          <div class="question-group">
+            <div class="question-label">A che percentuale di recensioni rispondete?</div>
+            <div class="option-grid">
+              <button class="option-card" onclick="pick('q3','0-10',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">0–10% (o nessuna)</div><div class="option-sub">L'AI legge il brand come assente</div></div>
+              </button>
+              <button class="option-card" onclick="pick('q3','10-50',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">10–50% (solo negativi)</div><div class="option-sub">Engagement parziale, tono inconsistente</div></div>
+              </button>
+              <button class="option-card" onclick="pick('q3','50-80',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">50–80%</div><div class="option-sub">Buon engagement, ma non sistematico</div></div>
+              </button>
+              <button class="option-card" onclick="pick('q3','80+',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">80%+ (positivi e negativi)</div><div class="option-sub">Segnale forte: brand ascolta e risponde</div></div>
+              </button>
+            </div>
+          </div>
+
+          <div class="question-group">
+            <div class="question-label">In quanto tempo rispondete mediamente?</div>
+            <div class="option-grid">
+              <button class="option-card" onclick="pick('q4','never',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">Non rispondiamo</div></div>
+              </button>
+              <button class="option-card" onclick="pick('q4','irregular',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">Occasionalmente, senza cadenza</div></div>
+              </button>
+              <button class="option-card" onclick="pick('q4','2weeks',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">Entro 1–2 settimane</div></div>
+              </button>
+              <button class="option-card" onclick="pick('q4','7days',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">Entro 7 giorni, sempre</div><div class="option-sub">Benchmark AI-Ready</div></div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DIMENSION 3 -->
+        <div class="dimension-section">
+          <div class="dimension-section-header">
+            <div>
+              <div class="dimension-name">3 — TrustScore & Star Trend</div>
+              <div class="dimension-desc">Che segnale porta in superficie l'AI?</div>
+            </div>
+            <div class="dimension-score-badge" id="d3-badge">— <span class="out">/10</span></div>
+          </div>
+
+          <div class="question-group">
+            <div class="question-label">Qual è il vostro TrustScore attuale su Trustpilot?</div>
+            <div class="option-grid">
+              <button class="option-card" onclick="pick('q5','none',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">Nessun profilo / non verificato</div><div class="option-sub">Nessun segnale per l'AI</div></div>
+              </button>
+              <button class="option-card" onclick="pick('q5','sub35',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">Sotto 3.5 ★</div><div class="option-sub">Segnale negativo per gli LLM</div></div>
+              </button>
+              <button class="option-card" onclick="pick('q5','35-40',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">3.5 – 4.0 ★</div><div class="option-sub">Visibile ma non un segnale forte</div></div>
+              </button>
+              <button class="option-card" onclick="pick('q5','above40',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">Sopra 4.0 ★</div><div class="option-sub">L'AI cita il punteggio nel 59% dei casi</div></div>
+              </button>
+            </div>
+          </div>
+
+          <div class="question-group">
+            <div class="question-label">Come sta andando il vostro TrustScore di recente?</div>
+            <div class="option-grid">
+              <button class="option-card" onclick="pick('q6','declining',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">In calo</div><div class="option-sub">Segnale negativo per l'AI</div></div>
+              </button>
+              <button class="option-card" onclick="pick('q6','flat',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">Stabile / inconsistente</div></div>
+              </button>
+              <button class="option-card" onclick="pick('q6','improving',this)">
+                <div class="option-radio"></div>
+                <div class="option-text"><div class="option-title">In miglioramento organico</div><div class="option-sub">Segnale positivo forte per gli LLM</div></div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- LIVE SCORE PREVIEW -->
+        <div id="score-preview-bar" style="display:none; text-align:center; padding:20px; background:var(--light); border-radius:12px; border:2px solid var(--border);">
+          <div style="font-size:13px; color:var(--mid); margin-bottom:4px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">AI Relevance Score</div>
+          <div style="font-size:52px; font-weight:800; color:var(--green); line-height:1" id="total-score-preview">—</div>
+          <div style="font-size:14px; color:#aaa; margin-bottom:12px;">su 30</div>
+          <div id="preview-tier-label" style="font-size:14px; font-weight:600;"></div>
+        </div>
+      </div>
+
+      <!-- STEP 3: RESULTS + SCENARIO -->
+      <div class="step" id="step-3">
+        <div class="score-result-big">
+          <div class="score-circle" id="score-circle-vis">
+            <span class="big-num" id="score-big">15</span>
+            <span class="out-of">/ 30</span>
+          </div>
+          <div id="tier-badge-wrap"></div>
+          <p class="score-message" id="score-message"></p>
+        </div>
+
+        <div class="sub-scores">
+          <div class="sub-score-card">
+            <div class="sub-num" id="res-d1">5</div>
+            <div class="sub-label">Review Volume & Recency</div>
+          </div>
+          <div class="sub-score-card">
+            <div class="sub-num" id="res-d2">5</div>
+            <div class="sub-label">Response Rate & Engagement</div>
+          </div>
+          <div class="sub-score-card">
+            <div class="sub-num" id="res-d3">5</div>
+            <div class="sub-label">TrustScore & Star Trend</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="step-title" style="margin-bottom:6px">What We Found — Pick Your Scenario</div>
+        <div class="step-subtitle">We've highlighted the scenario that best matches your score. Select the one that fits best, then read it aloud or share it directly.</div>
+
+        <div id="scenarios-container"></div>
+      </div>
+
+      <!-- STEP 4: CHECKLIST -->
+      <div class="step" id="step-4">
+        <div class="step-title">LLM Brand Visibility Checklist</div>
+        <div class="step-subtitle">Go through each signal for <em class="company-name-display" id="check-company-label">your company</em>. Mark each row: ✓ in place, ~ partial, ✗ missing.</div>
+
+        <div class="checklist-summary">
+          <div class="cl-stat green">
+            <div class="cl-num" id="cl-yes">0</div>
+            <div class="cl-lbl">✓ In place</div>
+          </div>
+          <div class="cl-stat yellow">
+            <div class="cl-num" id="cl-partial">0</div>
+            <div class="cl-lbl">~ Partial</div>
+          </div>
+          <div class="cl-stat red">
+            <div class="cl-num" id="cl-no">0</div>
+            <div class="cl-lbl">✗ Missing</div>
+          </div>
+        </div>
+
+        <div id="checklist-container"></div>
+      </div>
+
+      <!-- STEP 5: ROADMAP -->
+      <div class="step" id="step-5">
+        <div class="step-title" data-i18n="s5_title">La tua Roadmap 90 Giorni</div>
+        <div class="step-subtitle">Basata sul tuo AI Relevance Score — tre passi concreti per diventare il brand che l'AI raccomanda.</div>
+        <div id="roadmap-container"></div>
+      </div>
+
+      <!-- STEP 6: SCELTA PIANO -->
+      <div class="step" id="step-6">
+        <div class="step-title" data-i18n="s6_title">Scegli il Piano</div>
+        <div class="step-subtitle" data-i18n="s6_sub">Il punteggio AI è un punto di partenza — il Rep può adattare la raccomandazione in base alle dimensioni e al contesto del cliente. Seleziona il <strong>Piano Consigliato</strong> e il <strong>Piano Light</strong>.</div>
+
+        <div id="score-hint-banner" class="info-box" style="margin-bottom:20px;"></div>
+
+        <div class="plan-picker-grid" id="plan-picker-grid"></div>
+
+        <div class="plan-picker-summary" id="plan-picker-summary" style="display:none;">
+          <div class="summary-item">
+            <div class="summary-dot" style="background:var(--green);"></div>
+            <div>
+              <div class="summary-label" data-i18n="sum_rec">Piano Consigliato</div>
+              <div class="summary-value" id="summary-recommended-name">—</div>
+            </div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-dot" style="background:#6366f1;"></div>
+            <div>
+              <div class="summary-label" data-i18n="sum_light">Piano Light</div>
+              <div class="summary-value" id="summary-light-name">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 7: IL TUO PIANO -->
+      <div class="step" id="step-7">
+        <div class="step-title" data-i18n="s7_title">Il tuo Piano</div>
+        <div class="step-subtitle">Il piano su misura per <em class="company-name-display" id="roadmap-company-label">your company</em> — con la roadmap integrata.</div>
+
+        <div id="plan-selector" style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:28px;"></div>
+        <div id="plan-detail"></div>
+
+        <div class="results-panel" style="margin-top:28px;">
+          <h3 data-i18n="cta_ready">Pronto a partire?</h3>
+          <p data-i18n="cta_body">Il tuo Trustpilot rep può aiutarti ad attivare il piano e lanciare i primi passi della roadmap entro questa settimana.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
+            <button class="btn-print" onclick="window.print()" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.2); color:white;" data-i18n="btn_print">
+              🖨 Salva come PDF
+            </button>
+            <button class="btn-print" id="btn-docs" onclick="generateDOCS()" style="background:var(--green); border-color:var(--green); color:white;" data-i18n="btn_docs">
+              📄 Scarica 3-pager DOCX
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /wizard-body -->
+
+    <!-- NAVIGATION -->
+    <div class="wizard-nav">
+      <button class="btn-back" id="btn-back" onclick="prevStep()" style="visibility:hidden">← Indietro</button>
+      <button class="btn-next" id="btn-next" onclick="nextStep()">
+        <span id="btn-next-label">Inizia la valutazione</span> →
+      </button>
+    </div>
+
+  </div><!-- /wizard-card -->
+</div><!-- /container -->
+
+<footer>
+  <p data-i18n="footer">© 2025 Trustpilot A/S · <a href="#">trustpilot.com</a> · Dati: Bain & Company, Semrush, Seer Interactive (2025–2026)</p>
+</footer>
+
+<script>
+// ─── LANGUAGE ──────────────────────────────────────────────────────
+let lang = 'it';
+
+const STRINGS = {
+  it: {
+    header_badge: 'AI Check Tool',
+    hero_eyebrow: '★ Powered by dati Trustpilot',
+    hero_p: "Quando i buyer chiedono all'AI della tua azienda — prima ancora di chiamarti — cosa risponde?",
+    stat1_lbl: 'visite mensili alle piattaforme AI, +76% YoY',
+    stat2_lbl: 'delle ricerche AI terminano senza un click (Bain)',
+    stat3_lbl: 'citation rate per brand con profilo Trustpilot attivo',
+    stat4_lbl: 'citation rate per brand senza presenza Trustpilot',
+    cta_start: 'Inizia il tuo AI Check ↓',
+    lbl_company:'Azienda', lbl_score:'Score', lbl_results:'Risultati',
+    lbl_checklist:'Checklist', lbl_roadmap:'Roadmap', lbl_piano_pick:'Scelta Piano', lbl_piano:'Il tuo Piano',
+    btn_back:'← Indietro',
+    btn_1:'Inizia la valutazione', btn_2:'Calcola il punteggio',
+    btn_3:'Vai alla Checklist', btn_4:'Vedi la Roadmap', btn_5:'Scegli il Piano', btn_6:'Scopri il tuo Piano',
+    s1_title:"Iniziamo il tuo AI Check",
+    s1_sub:"Inserisci i dati della tua azienda per personalizzare l'audit. Circa 5 minuti.",
+    s1_lbl_company:'Nome azienda', s1_ph_company:'es. Acme Srl',
+    s1_lbl_name:'Il tuo nome <span style="color:#aaa;font-weight:400">(opzionale)</span>', s1_ph_name:'es. Mario Rossi',
+    s1_lbl_industry:'Settore <span style="color:#aaa;font-weight:400">(opzionale)</span>', s1_ph_industry:'es. SaaS, E-commerce, Financial Services',
+    s1_info:"<strong>Come funziona:</strong> Valuti la tua visibilità AI su 3 dimensioni, identifichi la tua opportunità più grande, completi una checklist LLM e ricevi una roadmap 90 giorni — con il piano giusto per metterla a terra.",
+    s2_title:'AI Relevance Score', s2_sub_pre:'Rispondi alle domande su', s2_sub_suf:'— calcoliamo il punteggio automaticamente.',
+    s5_title:'La tua Roadmap 90 Giorni',
+    s6_title:'Scegli il Piano', s6_sub:'Il punteggio AI è un punto di partenza — il Rep può adattare la raccomandazione in base alle dimensioni e al contesto del cliente. Seleziona il <strong>Piano Consigliato</strong> e il <strong>Piano Light</strong>.',
+    s7_title:'Il tuo Piano',
+    d1_name:'1 — Review Volume & Recency', d1_desc:'Quante recensioni hai? Quanto sono recenti?',
+    q1_lbl:'Quante recensioni Trustpilot ha la tua azienda?',
+    q1_a:'Nessun profilo / 0 recensioni', q1_as:"Citata dall'AI meno dell'1% delle volte",
+    q1_b:'1–12 recensioni', q1_bs:'Sotto la soglia minima di visibilità AI',
+    q1_c:'13–50 recensioni', q1_cs:'Oltre la soglia: citation rate ~54%',
+    q1_d:'50+ recensioni', q1_ds:'Profilo attivo: citation rate fino al 75%',
+    q2_lbl:"Quando è arrivata l'ultima recensione?",
+    q2_a:'Più di 6 mesi fa', q2_as:'Segnale stale per gli LLM',
+    q2_b:'2–6 mesi fa', q2_bs:'Recency gap, citazione inconsistente',
+    q2_c:"Nell'ultimo mese", q2_cs:'Segnale recente, buona cadenza',
+    q2_d:'Negli ultimi 30 giorni', q2_ds:'Cadenza costante — benchmark AI-Ready',
+    d2_name:'2 — Response Rate & Engagement', d2_desc:'Il brand risponde visibilmente alle recensioni?',
+    q3_lbl:'A che percentuale di recensioni rispondete?',
+    q3_a:'0–10% (o nessuna)', q3_as:"L'AI legge il brand come assente",
+    q3_b:'10–50% (solo negativi)', q3_bs:'Engagement parziale, tono inconsistente',
+    q3_c:'50–80%', q3_cs:'Buon engagement, ma non sistematico',
+    q3_d:'80%+ (positivi e negativi)', q3_ds:'Segnale forte: brand ascolta e risponde',
+    q4_lbl:'In quanto tempo rispondete mediamente?',
+    q4_a:'Non rispondiamo', q4_b:'Occasionalmente, senza cadenza',
+    q4_c:'Entro 1–2 settimane', q4_d:'Entro 7 giorni, sempre', q4_ds:'Benchmark AI-Ready',
+    d3_name:'3 — TrustScore & Star Trend', d3_desc:"Che segnale porta in superficie l'AI?",
+    q5_lbl:'Qual è il vostro TrustScore attuale su Trustpilot?',
+    q5_a:'Nessun profilo / non verificato', q5_as:"Nessun segnale per l'AI",
+    q5_b:'Sotto 3.5 ★', q5_bs:'Segnale negativo per gli LLM',
+    q5_c:'3.5 – 4.0 ★', q5_cs:'Visibile ma non un segnale forte',
+    q5_d:'Sopra 4.0 ★', q5_ds:"L'AI cita il punteggio nel 59% dei casi",
+    q6_lbl:'Come sta andando il vostro TrustScore di recente?',
+    q6_a:'In calo', q6_as:"Segnale negativo per l'AI",
+    q6_b:'Stabile / inconsistente',
+    q6_c:'In miglioramento organico', q6_cs:'Segnale positivo forte per gli LLM',
+    score_of:'su 30',
+    s3_title:'Cosa Abbiamo Trovato — Scegli lo Scenario',
+    s3_sub:"Abbiamo evidenziato lo scenario più vicino al tuo punteggio. Seleziona quello più adatto e leggilo al prospect.",
+    badge_best:'★ Più rilevante', badge_sc:'Scenario', qw_pre:'⚡ Quick Win questa settimana:',
+    tier_red:"🔴 Invisibile per l'AI", tier_yellow:'🟡 Parzialmente visibile — a rischio', tier_green:'🟢 AI-Ready — vantaggio competitivo',
+    msg_red:"La tua azienda è attualmente invisibile alle piattaforme AI. Il 60% degli acquirenti termina la ricerca senza cliccare. Poche azioni mirate spostano l'ago rapidamente.",
+    msg_yellow:"Hai una presenza, ma i gap di volume, recency o engagement limitano la visibilità AI. I competitor che li colmano per primi cattureranno il traffico che stai perdendo.",
+    msg_green:"Posizione solida per la visibilità AI. Concentrati sull'effetto co-mention e sull'approfondimento della narrativa per dominare le ricerche competitive.",
+    s4_title:'LLM Brand Visibility Checklist', s4_sub_pre:'Esamina ogni segnale per', s4_sub_suf:'— segna: ✓ presente, ~ parziale, ✗ mancante.',
+    cl_yes:'✓ In ordine', cl_partial:'~ Parziale', cl_no:'✗ Mancante',
+    s5_title:'Scegli il Piano',
+    s5_sub:'Il punteggio AI è un punto di partenza — il Rep può adattare la raccomandazione in base alle dimensioni e al contesto del cliente. Seleziona il <strong>Piano Consigliato</strong> e il <strong>Piano Light</strong>.',
+    score_hint_pre:'Il punteggio suggerisce', score_hint_suf:'come punto di partenza — scegli liberamente in base al contesto.',
+    btn_rec:'★ Piano Consigliato', btn_light:'◇ Piano Light',
+    sum_rec:'Piano Consigliato', sum_light:'Piano Light',
+    s6_title:'Il tuo Piano',
+    role_rec:'Piano Consigliato', role_light:'Piano Light',
+    why_title:'Perché questo piano — e perché ora',
+    feat_title:'Cosa include',
+    roadmap_title:'Roadmap 90 giorni',
+    cta_ready:'Pronto a partire?',
+    cta_body:'Il tuo Trustpilot rep può aiutarti ad attivare il piano e lanciare i primi passi della roadmap entro questa settimana.',
+    btn_print:'🖨 Salva come PDF',
+    btn_docs:'📄 Scarica 3-pager DOCX',
+    val2:"Rispondi a tutte le domande per calcolare il punteggio.",
+    val5:"Seleziona sia il Piano Consigliato che il Piano Light per continuare (devono essere piani diversi).",
+    footer:"© 2025 Trustpilot A/S · trustpilot.com · Dati: Bain & Company, Semrush, Seer Interactive (2025–2026)"
+  },
+  en: {
+    header_badge:'AI Check Tool',
+    hero_eyebrow:'★ Powered by Trustpilot data',
+    hero_p:"When buyers ask AI about your company — before they ever call you — what does it say?",
+    stat1_lbl:'AI platform visits per month, up 76% YoY',
+    stat2_lbl:'of AI searches end without a click (Bain)',
+    stat3_lbl:'citation rate for brands with an active Trustpilot profile',
+    stat4_lbl:'citation rate for brands without Trustpilot presence',
+    cta_start:'Start your AI Check ↓',
+    lbl_company:'Company', lbl_score:'Score', lbl_results:'Results',
+    lbl_checklist:'Checklist', lbl_roadmap:'Roadmap', lbl_piano_pick:'Plan Choice', lbl_piano:'Your Plan',
+    btn_back:'← Back',
+    btn_1:'Start Scoring', btn_2:'Calculate Score',
+    btn_3:'View Checklist', btn_4:'See Roadmap', btn_5:'Choose Plan', btn_6:'See Your Plan',
+    s1_title:"Let's set up your AI Check",
+    s1_sub:"Enter your company details to personalise your audit. Takes about 5 minutes.",
+    s1_lbl_company:'Company name', s1_ph_company:'e.g. Acme Corp',
+    s1_lbl_name:'Your name <span style="color:#aaa;font-weight:400">(optional)</span>', s1_ph_name:'e.g. Sarah Johnson',
+    s1_lbl_industry:'Industry <span style="color:#aaa;font-weight:400">(optional)</span>', s1_ph_industry:'e.g. SaaS, E-commerce, Financial Services',
+    s1_info:"<strong>How this works:</strong> You'll score your current AI visibility across 3 dimensions, identify your biggest opportunity, complete a 10-point LLM checklist, and get a personalised 90-day roadmap — with the right plan to execute it.",
+    s2_title:'AI Relevance Score', s2_sub_pre:'Answer the questions for', s2_sub_suf:'— we calculate the score automatically.',
+    s5_title:'Your 90-Day Roadmap',
+    s6_title:'Choose Your Plan', s6_sub:'The AI score is a starting point — the Rep can adapt the recommendation based on company size and context. Select the <strong>Recommended Plan</strong> and the <strong>Light Plan</strong>.',
+    s7_title:'Your Plan',
+    d1_name:'1 — Review Volume & Recency', d1_desc:'How many reviews do you have? How recent?',
+    q1_lbl:'How many Trustpilot reviews does your company have?',
+    q1_a:'No profile / 0 reviews', q1_as:'AI cites brand less than 1% of the time',
+    q1_b:'1–12 reviews', q1_bs:'Below the minimum AI visibility threshold',
+    q1_c:'13–50 reviews', q1_cs:'Above threshold: ~54% citation rate',
+    q1_d:'50+ reviews', q1_ds:'Active profile: up to 75% citation rate',
+    q2_lbl:'When did the last review arrive?',
+    q2_a:'More than 6 months ago', q2_as:'Stale signal for LLMs',
+    q2_b:'2–6 months ago', q2_bs:'Recency gap, inconsistent citation',
+    q2_c:'Within the last month', q2_cs:'Recent signal, good cadence',
+    q2_d:'Within the last 30 days', q2_ds:'Consistent cadence — AI-Ready benchmark',
+    d2_name:'2 — Response Rate & Engagement', d2_desc:'Is the brand visibly listening?',
+    q3_lbl:'What percentage of reviews do you respond to?',
+    q3_a:'0–10% (or none)', q3_as:'AI reads the brand as absent',
+    q3_b:'10–50% (negatives only)', q3_bs:'Patchy engagement, inconsistent tone',
+    q3_c:'50–80%', q3_cs:'Good engagement, but not systematic',
+    q3_d:'80%+ (positive and negative)', q3_ds:'Strong signal: brand listens and responds',
+    q4_lbl:'How quickly do you respond on average?',
+    q4_a:"We don't respond", q4_b:'Occasionally, no cadence',
+    q4_c:'Within 1–2 weeks', q4_d:'Within 7 days, consistently', q4_ds:'AI-Ready benchmark',
+    d3_name:'3 — TrustScore & Star Trend', d3_desc:'What signal does AI surface?',
+    q5_lbl:'What is your current TrustScore on Trustpilot?',
+    q5_a:'No profile / unclaimed', q5_as:'No signal for AI',
+    q5_b:'Below 3.5 ★', q5_bs:'Negative signal for LLMs',
+    q5_c:'3.5 – 4.0 ★', q5_cs:'Visible but not a strong positive signal',
+    q5_d:'Above 4.0 ★', q5_ds:'AI surfaces the score in 59% of citations',
+    q6_lbl:'How has your TrustScore been trending?',
+    q6_a:'Declining', q6_as:'Negative signal for AI',
+    q6_b:'Flat / inconsistent',
+    q6_c:'Improving organically', q6_cs:'Strong positive signal for LLMs',
+    score_of:'out of 30',
+    s3_title:"What We Found — Pick Your Scenario",
+    s3_sub:"We've highlighted the scenario that best matches your score. Select the one that fits best, then read it aloud or share it directly.",
+    badge_best:'★ Best match', badge_sc:'Scenario', qw_pre:'⚡ Quick Win this week:',
+    tier_red:'🔴 Invisible to AI', tier_yellow:'🟡 Partially Visible — At Risk', tier_green:'🟢 AI-Ready — Competitive Edge',
+    msg_red:"Your company is currently invisible to AI platforms. 60% of buyers end their search without clicking. A few targeted actions can move the needle fast.",
+    msg_yellow:"You have some presence, but gaps in volume, recency or engagement are limiting your AI visibility. Competitors who fix these first will capture the traffic you're missing.",
+    msg_green:"You're in a strong position for AI visibility. Focus on the co-mention effect and narrative depth to dominate competitive searches.",
+    s4_title:'LLM Brand Visibility Checklist', s4_sub_pre:'Go through each signal for', s4_sub_suf:'— mark each row: ✓ in place, ~ partial, ✗ missing.',
+    cl_yes:'✓ In place', cl_partial:'~ Partial', cl_no:'✗ Missing',
+    s5_title:'Choose Your Plan',
+    s5_sub:'The AI score is a starting point — the Rep can adapt the recommendation based on company size and context. Select the <strong>Recommended Plan</strong> and the <strong>Light Plan</strong>.',
+    score_hint_pre:'Score suggests', score_hint_suf:'as the starting point — choose freely based on context.',
+    btn_rec:'★ Recommended Plan', btn_light:'◇ Light Plan',
+    sum_rec:'Recommended Plan', sum_light:'Light Plan',
+    s6_title:'Your Plan',
+    role_rec:'Recommended Plan', role_light:'Light Plan',
+    why_title:'Why this plan — and why now',
+    feat_title:"What's included",
+    roadmap_title:'90-Day Roadmap',
+    cta_ready:'Ready to act on this?',
+    cta_body:"Your Trustpilot rep can help you activate the plan and launch the first roadmap steps this week.",
+    btn_print:'🖨 Print or save as PDF',
+    btn_docs:'📄 Download 3-page DOCX',
+    val2:"Please answer all questions to calculate your score.",
+    val5:"Please select both a Recommended Plan and a Light Plan before continuing (they must be different plans).",
+    footer:"© 2025 Trustpilot A/S · trustpilot.com · Data: Bain & Company, Semrush, Seer Interactive (2025–2026)"
+  }
+};
+
+// ─── STATE ─────────────────────────────────────────────────────────
+const state = {
+  currentStep: 1,
+  totalSteps: 7,
+  companyName: '',
+  answers: {},
+  scores: { d1: 0, d2: 0, d3: 0 },
+  total: 0,
+  selectedScenario: null,
+  checklist: {},
+  planChoice: { recommended: null, light: null }
+};
+
+// ─── SCENARIOS ─────────────────────────────────────────────────────
+const SCENARIOS = {
+  it: [
+    { id:'A', title:'Nessun profilo / Invisibile per l\'AI',
+      trigger: s => s.d1 <= 3,
+      body: n => `Abbiamo cercato ${n||'la vostra azienda'} su ChatGPT e Perplexity: non appare. Senza un profilo Trustpilot rivendicato, gli LLM non hanno segnali indipendenti su di voi. Tecnicamente esistete — ma per l'AI siete trasparenti. Bain trova che il 60% delle ricerche termina senza un click: se l'AI non vi cita, i buyer non arrivano.`,
+      qw:`Rivendicate il profilo oggi — è gratuito e richiede 10 minuti. Con sole 13 recensioni genuine, il citation rate AI passa dall'1% al 54%.` },
+    { id:'B', title:'Profilo attivo ma recensioni stale o poche',
+      trigger: s => s.d1 >= 4 && s.d1 <= 6,
+      body: n => `Avete un profilo e alcune recensioni — ma stanno invecchiando. Gli LLM pesano molto la recency: un profilo dormiente è un segnale stale. Semrush conferma che meno di 1 brand su 5 è sia frequentemente citato che considerato autorevole. Staite perdendo terreno rispetto ai competitor con attività recente.`,
+      qw:`Attivate gli inviti automatizzati post-servizio — anche solo via email. 2–3 nuove recensioni al mese bastano per ristabilire i segnali di recency e spingere il citation rate verso il benchmark del 75%.` },
+    { id:'C', title:'Buon volume ma zero risposte alle recensioni',
+      trigger: s => s.d1 >= 7 && s.d2 <= 4,
+      body: n => `${n||'La vostra azienda'} ha un buon volume di recensioni, ma non ha risposto a nessuna. Gli LLM sintetizzano la qualità del customer service nel 63% delle risposte che citano Trustpilot (Seer, marzo 2026). Nessuna risposta segnala disimpegno: il brand esiste, ma non ascolta.`,
+      qw:`Rispondete alle 5 recensioni negative più recenti questa settimana. Non serve essere difensivi — basta mostrare che c'è un essere umano dall'altra parte.` },
+    { id:'D', title:'Presente ma assente nelle ricerche sui competitor',
+      trigger: s => s.d1 >= 5 && s.total >= 11 && s.total <= 20,
+      body: n => `Abbiamo testato live: "Quali sono le migliori alternative a [Competitor]?" — il vostro nome non appare. I brand con profili Trustpilot ottimizzati ricevono 9.5× più co-mention competitive. Siete invisibili esattamente quando un buyer sta cercando attivamente di cambiare fornitore.`,
+      qw:`Portate le recensioni da dove siete ora a 80+ nei prossimi 60 giorni. Quella soglia di volume è dove si attiva l'effetto co-mention.` },
+    { id:'E', title:'Recensioni poco profonde — narrativa AI debole',
+      trigger: s => s.d1 >= 7 && s.d2 >= 7 && s.d3 <= 6,
+      body: n => `Le recensioni di ${n||'questa azienda'} coprono pochi temi. L'AI sintetizza le ricorrenze per costruire la narrativa del brand. Quando un buyer chiede "È affidabile ${n||'questa azienda'}?" l'AI non ha abbastanza materiale per rispondere favorevolmente.`,
+      qw:`Inviate template di invito più neutri a una fascia più ampia di clienti. Il volume è la leva: più risposte genuine producono naturalmente la varietà tematica di cui l'AI ha bisogno.` }
+  ],
+  en: [
+    { id:'A', title:'No profile / Invisible to AI',
+      trigger: s => s.d1 <= 3,
+      body: n => `We searched ${n||'your company'} on ChatGPT and Perplexity: you don't appear. Without a claimed Trustpilot profile, LLMs have no independent signal about you. Technically you exist — but for AI, you're transparent. Bain finds 60% of searches end without a click: if AI doesn't surface you, buyers never arrive.`,
+      qw:`Claim the profile today — it's free and takes 10 minutes. With just 13 genuine reviews, your AI citation rate jumps from 1% to 54%.` },
+    { id:'B', title:'Profile active but reviews stale or thin',
+      trigger: s => s.d1 >= 4 && s.d1 <= 6,
+      body: n => `You have a profile and some reviews — but they're ageing. LLMs weight recency heavily: a dormant profile reads as a stale signal. Semrush confirms fewer than 1 in 5 brands are both frequently mentioned AND cited as authoritative. You're being outpaced by competitors with more recent activity.`,
+      qw:`Activate automated review invitations post-service — even just via email. Two or three new reviews per month is enough to re-establish recency signals and push your AI citation rate toward the 75% active-profile benchmark.` },
+    { id:'C', title:'Good volume but zero response to reviews',
+      trigger: s => s.d1 >= 7 && s.d2 <= 4,
+      body: n => `${n||'Your company'} has solid review volume, but hasn't responded to reviews. LLMs synthesise customer service quality in 63% of answers citing Trustpilot (Seer, March 2026). No response signals disengagement: the brand exists, but doesn't listen.`,
+      qw:`Respond to the 5 most recent negative reviews this week. No need to be defensive — just show there's a human on the other side.` },
+    { id:'D', title:'Present but absent in competitor searches',
+      trigger: s => s.d1 >= 5 && s.total >= 11 && s.total <= 20,
+      body: n => `We tested live: "What are the best alternatives to [Competitor]?" — your name didn't appear. Brands with optimised Trustpilot profiles receive 9.5× more competitive co-mentions. You're invisible exactly when a buyer is actively looking to switch.`,
+      qw:`Get reviews from your current level to 80+ over the next 60 days. That volume threshold is where the co-mention effect activates.` },
+    { id:'E', title:'Reviews lack depth — weak AI narrative',
+      trigger: s => s.d1 >= 7 && s.d2 >= 7 && s.d3 <= 6,
+      body: n => `${n||'Your'} reviews cover too few themes. AI synthesises recurring topics to build your brand narrative. When a buyer asks "Is ${n||'your company'} reliable?" AI doesn't have enough material to answer favourably.`,
+      qw:`Send more neutral invitations to a broader set of customers. Volume is the lever: more genuine responses naturally produce the thematic breadth AI needs.` }
+  ]
+};
+
+// ─── CHECKLIST ─────────────────────────────────────────────────────
+const CHECKLIST = {
+  it: [
+    { signal:'Profilo Trustpilot rivendicato e attivo', hint:"Test live: cerca '[brand] trustpilot' — appare un profilo rivendicato?" },
+    { signal:'50+ recensioni recenti (ultimi 12 mesi)', hint:'81+ recensioni → 75% AI citation rate. Sotto 13 recensioni → effettivamente invisibile (1%).' },
+    { signal:'TrustScore visibile e stabile (non in calo)', hint:"L'AI cita il TrustScore nel 59% delle risposte che menzionano Trustpilot." },
+    { signal:'Risposta alle recensioni — positive e negative', hint:"Le risposte attive segnalano legittimità agli LLM e costruiscono la narrativa del customer service." },
+    { signal:'Temi delle recensioni: servizio, consegna, qualità, fiducia & resi', hint:'Questi 5 temi appaiono nel 63–21% delle risposte AI che citano Trustpilot (Seer, marzo 2026).' },
+    { signal:'Brand visibile su ChatGPT / Gemini / Perplexity', hint:"Test: 'Chi sono i migliori vendor per [categoria]?' e 'Alternative a [competitor]?'" },
+    { signal:'Inviti alle recensioni automatizzati — non manuali', hint:'Il volume costante guida i segnali di recency. Il 62% dei brand è tecnicamente invisibile agli LLM (Semrush, 2025).' },
+    { signal:'Tutte le tipologie di recensioni ricevono risposta', hint:'Nessuna risposta = segnale di fiducia più debole per gli LLM.' },
+    { signal:'Brand citato nelle ricerche sui competitor (effetto co-mention)', hint:"Test: 'Quali sono le alternative a [competitor]?' I profili ottimizzati ottengono 9.5× più co-mention." },
+    { signal:'Nessun rischio reputazionale segnalato dall\'AI', hint:"L'AI menziona l'assenza di Trustpilot nel 34% delle ricerche dove non esiste profilo — segnale di gap di fiducia." }
+  ],
+  en: [
+    { signal:'Trustpilot profile claimed & active', hint:"Test live: search '[brand] trustpilot' — does a claimed profile appear?" },
+    { signal:'50+ recent reviews (last 12 months)', hint:'81+ reviews → 75% AI citation rate. Under 13 reviews → effectively invisible (1%).' },
+    { signal:'TrustScore visible and stable (not declining)', hint:'AI surfaces the TrustScore in 59% of responses citing Trustpilot.' },
+    { signal:'Responding to reviews — positive and negative', hint:'Active responses signal legitimacy to LLMs and build the customer-service narrative.' },
+    { signal:'Review themes cover service, delivery, quality, trust & returns', hint:'These 5 themes appear in 63–21% of Trustpilot-citing AI answers (Seer, March 2026).' },
+    { signal:'Brand appears in ChatGPT / Gemini / Perplexity unprompted', hint:"Test: 'Who are the best vendors for [category]?' and 'Alternatives to [competitor]?'" },
+    { signal:'Review invitations automated — not manual or ad hoc', hint:'Consistent volume drives recency signals. 62% of brands are technically invisible to LLMs (Semrush, 2025).' },
+    { signal:'All review types receive a response (positive & negative)', hint:'No response = weaker trust signal for LLMs.' },
+    { signal:'Brand cited when competitors are searched (co-mention effect)', hint:"Test: 'What are alternatives to [competitor]?' Optimised profiles get 9.5× more co-mentions." },
+    { signal:'No open reputation risks flagged by AI', hint:'AI mentions Trustpilot absence in 34% of searches where no profile is found.' }
+  ]
+};
+
+// ─── PLANS ─────────────────────────────────────────────────────────
+const PLAN_DATA = {
+  Plus: {
+    name: 'Plus',
+    color: '#e74c3c', bg: '#fef2f2',
+    tier: { it:'🔴 Score 0–10 · Piano base', en:'🔴 Score 0–10 · Foundation plan' },
+    meta: {
+      it:['👥 3 utenti','📧 300 inviti/mese','💬 Chat & telefono'],
+      en:['👥 3 users','📧 300 invitations/month','💬 Chat & phone']
+    },
+    features: {
+      it:[
+        { icon:'📥', title:'Collect', items:['300 inviti automatizzati/mese','Widget in-app collector','Integrazioni HubSpot, Mailchimp, Zendesk'] },
+        { icon:'📡', title:'Get Visible', items:['LLM & search visibility tracking','Google Store Ratings qualificato','Profilo con branding e FAQ personalizzati'] },
+        { icon:'📣', title:'Amplify', items:['8 widget essenziali (TrustScore, stelle)','Asset social & video dalle recensioni','Analytics profilo e widget'] }
+      ],
+      en:[
+        { icon:'📥', title:'Collect', items:['300 automated invitations/month','In-app collector widget','HubSpot, Mailchimp, Zendesk integrations'] },
+        { icon:'📡', title:'Get Visible', items:['LLM & search visibility tracking','Google Store Ratings qualified','Profile with custom branding & FAQs'] },
+        { icon:'📣', title:'Amplify', items:['8 essential widgets (TrustScore, stars)','Social & video assets from reviews','Profile & widget analytics'] }
+      ]
+    },
+    roadmap: {
+      it:[
+        { period:'Settimana 1–2', action:'Claim & Activate', detail:'Reclama e personalizza il profilo Trustpilot. Lancia gli inviti automatizzati dalla prima integrazione.', kpi:'LLM tracking attivo dal giorno 1' },
+        { period:'Settimana 3–6', action:'Raggiungi la Soglia', detail:'Raggiungi 13+ recensioni genuine — il citation rate AI passa dall\'1% al 54%. Rispondi a ogni recensione.', kpi:'1% → 54% citation rate a 13 recensioni' },
+        { period:'Settimana 7–12', action:'Costruisci la Cadenza', detail:'Mantieni 5+ recensioni/mese. Deploy widget TrustScore sulle pagine ad alto traffico.', kpi:'300 inviti verificati al mese' }
+      ],
+      en:[
+        { period:'Week 1–2', action:'Claim & Activate', detail:'Claim and customise your Trustpilot profile. Launch automated invitations from your first integration.', kpi:'LLM tracking live from day 1' },
+        { period:'Week 3–6', action:'Hit the Threshold', detail:'Reach 13+ genuine reviews — your AI citation rate jumps from 1% to 54%. Respond to every review.', kpi:'1% → 54% citation rate at 13 reviews' },
+        { period:'Week 7–12', action:'Build Consistency', detail:'Maintain 5+ reviews/month. Deploy TrustScore widgets on your highest-traffic pages.', kpi:'300 verified invitations per month' }
+      ]
+    }
+  },
+  Premium: {
+    name: 'Premium',
+    color: '#f5a623', bg: '#fffbeb',
+    tier: { it:'🟡 Score 11–20 · Piano scalabile', en:'🟡 Score 11–20 · Scale plan' },
+    meta: {
+      it:['👥 10 utenti','📧 1.000 inviti/mese','🧑‍💼 Dedicated rep'],
+      en:['👥 10 users','📧 1,000 invitations/month','🧑‍💼 Dedicated rep']
+    },
+    features: {
+      it:[
+        { icon:'📥', title:'Collect at Scale', items:['1.000 inviti automatizzati/mese','In-app collector + integrazioni avanzate (HubSpot, Slack, Webhooks)','A/B test template inviti','Dedicated Trustpilot representative'] },
+        { icon:'🔭', title:'Intelligence', items:['LLM visibility tracking — misura il citation rate','Competitor benchmarking & market trend analysis','Sentiment & topic analysis per segmento','Dashboard personalizzabili'] },
+        { icon:'📣', title:'Amplify & Convert', items:['Widget library completa — web & newsletter','Widget targetizzati per tag','Asset ad-ready & social-ready','Widget TrustScore customizzabile'] }
+      ],
+      en:[
+        { icon:'📥', title:'Collect at Scale', items:['1,000 automated invitations/month','In-app collector + advanced integrations (HubSpot, Slack, Webhooks)','A/B test invitation templates','Dedicated Trustpilot representative'] },
+        { icon:'🔭', title:'Intelligence', items:['LLM visibility tracking — measure your citation rate','Competitor benchmarking & market trend analysis','Sentiment & topic analysis by segment','Customisable dashboards'] },
+        { icon:'📣', title:'Amplify & Convert', items:['Full widget library — web & newsletter','Targeted widgets by tag','Ad-ready & social-ready marketing assets','Customisable TrustScore widget'] }
+      ]
+    },
+    roadmap: {
+      it:[
+        { period:'Settimana 1–2', action:'Diagnose & Relaunch', detail:'Identifica la causa del gap: volume, recency o response rate. Riavvia gli inviti. Benchmark i top 3 competitor nel dashboard LLM visibility.', kpi:'1.000 inviti verificati al mese' },
+        { period:'Settimana 3–6', action:'Riavvia il Motore', detail:'Target 5–8 nuove recensioni al mese. Rispondi a tutte — inizia dai negativi più visibili. Usa il sentiment analysis per i 3 temi principali.', kpi:'75% citation rate con profilo attivo (81+ recensioni)' },
+        { period:'Settimana 7–12', action:'Supera i Competitor', detail:'Test co-mention live: "Alternative a [competitor]?" Usa i market insights per identificare dove i rivali sono deboli.', kpi:'9.5× più co-mention con profilo ottimizzato' }
+      ],
+      en:[
+        { period:'Week 1–2', action:'Diagnose & Relaunch', detail:'Identify the root cause: volume, recency or response rate. Restart invitations. Benchmark top 3 competitors in LLM visibility dashboard.', kpi:'1,000 verified invitations per month' },
+        { period:'Week 3–6', action:'Restart the Engine', detail:'Target 5–8 new reviews per month. Respond to all — start with the most visible negatives. Use sentiment analysis to spot the top 3 AI themes.', kpi:'75% citation rate at active-profile status (81+ reviews)' },
+        { period:'Week 7–12', action:'Outpace Competitors', detail:'Run co-mention test: "Alternatives to [competitor]?" Use market insights to find where rivals are losing ground.', kpi:'9.5× more co-mentions with optimised profile' }
+      ]
+    }
+  },
+  Enterprise: {
+    name: 'Enterprise',
+    color: '#00b67a', bg: '#f0fdf8',
+    tier: { it:'🟢 Score 21–30 · Piano enterprise', en:'🟢 Score 21–30 · Enterprise plan' },
+    meta: {
+      it:['👥 1.000 utenti','📧 Inviti illimitati','🎯 Strategic support'],
+      en:['👥 1,000 users','📧 Unlimited invitations','🎯 Strategic support']
+    },
+    features: {
+      it:[
+        { icon:'📥', title:'Collect at Massive Scale', items:['Inviti automatizzati illimitati/mese','Email, in-app, API & Salesforce','A/B test con industry benchmark','Expert implementation & dedicated strategic support'] },
+        { icon:'🔭', title:'Enterprise Intelligence', items:['LLM brand visibility tracking','Post-review surveys con smart targeting','Competitor, market & search insights approfonditi','Report settimanali + dashboard team regionali'] },
+        { icon:'⚙️', title:'API Control & Global Reach', items:['200k API calls/anno','Widget smart e targetizzati','Multi-mercato & multi-lingua','Privacy module incluso'] }
+      ],
+      en:[
+        { icon:'📥', title:'Collect at Massive Scale', items:['Unlimited automated invitations/month','Email, in-app, API & Salesforce','A/B test with industry benchmarks','Expert implementation & dedicated strategic support'] },
+        { icon:'🔭', title:'Enterprise Intelligence', items:['LLM brand visibility tracking','Post-review surveys with smart targeting','In-depth competitor, market & search insights','Weekly reports + regional team dashboards'] },
+        { icon:'⚙️', title:'API Control & Global Reach', items:['200k API calls/year','Smart & targeted widgets','Multi-market & multi-language','Privacy module included'] }
+      ]
+    },
+    roadmap: {
+      it:[
+        { period:'Settimana 1–2', action:'Mappa il Panorama Competitivo', detail:'AI visibility test sui top 3 competitor. Imposta il baseline LLM citation rate. Identifica i gap di co-mention con il team strategico.', kpi:'200k API calls/anno per controllo operativo completo' },
+        { period:'Settimana 3–6', action:'Attiva il Toolkit Completo', detail:'Lancia inviti illimitati su tutti i touchpoint. Attiva post-review surveys. Deploy smart widget per tag e regione. A/B test sui template.', kpi:'Inviti illimitati ogni mese' },
+        { period:'Settimana 7–12', action:'Vinci la Battaglia dei Co-Mention', detail:'Monitora la LLM visibility settimanalmente. Riporta il citation rate insieme ai KPI di ricerca tradizionale. Muoviti dove i rivali perdono terreno.', kpi:'9.5× più co-mention competitive con profilo ottimizzato' }
+      ],
+      en:[
+        { period:'Week 1–2', action:'Map the Competitive Landscape', detail:'AI visibility tests across top 3 competitors. Set baseline LLM citation rate. Identify co-mention gaps with the strategic support team.', kpi:'200k API calls/year for full operational control' },
+        { period:'Week 3–6', action:'Activate the Full Toolkit', detail:'Launch unlimited invitations across all touchpoints. Activate post-review surveys. Deploy smart widgets by tag and region. A/B test invitation templates.', kpi:'Unlimited automated invitations every month' },
+        { period:'Week 7–12', action:'Win the Co-Mention Battle at Scale', detail:'Track LLM visibility weekly. Report AI citation rate alongside traditional search KPIs. Move fast where rivals are losing ground.', kpi:'9.5× more competitive co-mentions with optimised profile' }
+      ]
+    }
+  }
+};
+
+// WHY text matrix: scoreTier × planName × lang
+const WHY = {
+  it: {
+    red: {
+      Plus:       "Il punteggio mostra che siete invisibili agli LLM. Plus è la fondazione giusta: profilo attivo, 300 inviti/mese e LLM tracking dal giorno 1. Con 13 recensioni genuine il citation rate passa dall'1% al 54% — il percorso più rapido verso la visibilità AI.",
+      Premium:    "Partite da zero, ma con la scala e le ambizioni giuste per accelerare. Premium vi dà 1.000 inviti/mese, competitive intelligence e un dedicated rep: recuperate il gap in metà del tempo rispetto a Plus e avete già gli strumenti per dominare il mercato.",
+      Enterprise: "Partite da zero in un contesto ad alta competizione o con scala rilevante. Enterprise comprime i tempi: inviti illimitati, 200k API calls e supporto strategico per raggiungere il 75% di citation rate molto più velocemente di qualsiasi altro piano."
+    },
+    yellow: {
+      Plus:       "Avete una presenza, ma non lavora abbastanza. Plus garantisce la base tecnica e gli inviti automatizzati per consolidare il profilo — la scelta giusta se l'obiettivo è stabilizzare la situazione con una struttura leggera.",
+      Premium:    "Presenza parziale con gap di volume, recency o engagement. Premium è la scelta naturale: 1.000 inviti/mese, sentiment analysis e competitor benchmarking per chiudere il gap e superare i rivali. Il piano progettato esattamente per questa situazione.",
+      Enterprise: "Presenza parziale in un contesto che richiede scala e intelligenza competitiva. Enterprise bypassa i limiti di volume con inviti illimitati e vi dà il full toolkit — insight, 200k API calls e supporto strategico — sin dal giorno 1."
+    },
+    green: {
+      Plus:       "Siete AI-ready. Plus è il giusto punto d'ingresso per mantenere la posizione con una struttura leggera e costi contenuti — ideale se l'obiettivo è consolidare prima di scalare.",
+      Premium:    "Posizione AI-ready con spazio per dominare il mercato. Premium amplifica la presenza con competitive intelligence, benchmark e widget avanzati. La combinazione vincente per chi ha già le basi e vuole distaccarsi.",
+      Enterprise: "Siete AI-ready — ora la domanda è se dominate o partecipate. Enterprise cementa la posizione: inviti illimitati, 200k API calls, LLM brand tracking e supporto strategico per fare della fiducia un asset board-level. I profili Enterprise ottimizzati ricevono 9.5× più co-mention competitive."
+    }
+  },
+  en: {
+    red: {
+      Plus:       "Your score shows you're invisible to AI. Plus is the right foundation: active profile, 300 invitations/month and LLM tracking from day 1. With 13 genuine reviews, your citation rate jumps from 1% to 54% — the fastest path to AI visibility.",
+      Premium:    "Starting from zero, but with the right scale and ambition to accelerate. Premium gives you 1,000 invitations/month, competitive intelligence and a dedicated rep: you close the gap in half the time vs Plus and already have the tools to dominate.",
+      Enterprise: "Starting from zero in a highly competitive or large-scale market. Enterprise compresses timelines: unlimited invitations, 200k API calls and strategic support to reach 75% citation rate much faster than any other plan."
+    },
+    yellow: {
+      Plus:       "You have presence, but it's not working hard enough. Plus provides the technical foundation and automated invitations to consolidate your profile — the right choice if the goal is to stabilise with a lighter structure.",
+      Premium:    "Partial presence with volume, recency or engagement gaps. Premium is the natural choice: 1,000 invitations/month, sentiment analysis and competitor benchmarking to close the gap and outpace rivals. The plan built exactly for this situation.",
+      Enterprise: "Partial presence in a context requiring scale and competitive intelligence. Enterprise bypasses volume limits with unlimited invitations and gives you the full toolkit — insights, 200k API calls and strategic support — from day 1."
+    },
+    green: {
+      Plus:       "You're AI-ready. Plus is the right entry point to maintain your position with a lighter structure and controlled costs — ideal if the goal is to consolidate before scaling.",
+      Premium:    "AI-ready position with room to dominate. Premium amplifies your presence with competitive intelligence, benchmarking and advanced widgets. The winning combination for brands that have the foundation and want to pull ahead.",
+      Enterprise: "You're AI-ready — now the question is whether you dominate or just participate. Enterprise cements the position: unlimited invitations, 200k API calls, LLM brand tracking and strategic support to make trust a board-level metric. Optimised Enterprise profiles get 9.5× more competitive co-mentions."
+    }
+  }
+};
+
+// ─── LANGUAGE FUNCTIONS ────────────────────────────────────────────
+function setLang(l) {
+  lang = l;
+  document.getElementById('lb-it').classList.toggle('active', l === 'it');
+  document.getElementById('lb-en').classList.toggle('active', l === 'en');
+  document.documentElement.lang = l;
+  applyLang();
+}
+
+function applyLang() {
+  const S = STRINGS[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (S[k] !== undefined) el.innerHTML = S[k];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const k = el.getAttribute('data-i18n-ph');
+    if (S[k] !== undefined) el.placeholder = S[k];
+  });
+  renderStep1();
+  renderStep2();
+  updateProgress();
+  if (state.currentStep >= 3) renderResults();
+  if (state.currentStep >= 4) renderChecklist();
+  if (state.currentStep >= 5) renderRoadmap();
+  if (state.currentStep >= 6) renderPlanPicker();
+  if (state.currentStep >= 7) renderPlan();
+}
+
+// ─── STEP 1 RENDER ─────────────────────────────────────────────────
+function renderStep1() {
+  const S = STRINGS[lang];
+  const el = document.getElementById('step-1');
+  const cName = state.companyName;
+  const cContact = document.getElementById('contact-name') ? document.getElementById('contact-name').value : '';
+  const cIndustry = document.getElementById('industry-field') ? document.getElementById('industry-field').value : '';
+  el.innerHTML = `
+    <div class="step-title">${S.s1_title}</div>
+    <div class="step-subtitle">${S.s1_sub}</div>
+    <div class="form-group">
+      <label>${S.s1_lbl_company}</label>
+      <input type="text" id="company-name" placeholder="${S.s1_ph_company}" value="${cName}" oninput="syncCompanyName()">
+    </div>
+    <div class="form-group">
+      <label>${S.s1_lbl_name}</label>
+      <input type="text" id="contact-name" placeholder="${S.s1_ph_name}" value="${cContact}">
+    </div>
+    <div class="form-group">
+      <label>${S.s1_lbl_industry}</label>
+      <input type="text" id="industry-field" placeholder="${S.s1_ph_industry}" value="${cIndustry}">
+    </div>
+    <div class="info-box">${S.s1_info}</div>
+  `;
+}
+
+// ─── STEP 2 RENDER ─────────────────────────────────────────────────
+function renderStep2() {
+  const S = STRINGS[lang];
+  const a = state.answers;
+  const sel = (q,v) => a[q]===v ? ' selected' : '';
+  const opt = (q,v,title,sub) => `
+    <button class="option-card${sel(q,v)}" onclick="pick('${q}','${v}',this)">
+      <div class="option-radio"></div>
+      <div class="option-text">
+        <div class="option-title">${title}</div>
+        ${sub ? `<div class="option-sub">${sub}</div>` : ''}
+      </div>
+    </button>`;
+
+  const scoreBar = ['q1','q2','q3','q4','q5','q6'].every(q => a[q] !== undefined)
+    ? (() => {
+        const t = state.total;
+        const tier = t<=10 ? {l:S.tier_red,c:'#e74c3c'} : t<=20 ? {l:S.tier_yellow,c:'#f5a623'} : {l:S.tier_green,c:'#00b67a'};
+        return `<div id="score-preview-bar" style="text-align:center;padding:20px;background:var(--light);border-radius:12px;border:2px solid ${tier.c};">
+          <div style="font-size:13px;color:var(--mid);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">AI Relevance Score</div>
+          <div style="font-size:52px;font-weight:800;color:${tier.c};line-height:1">${t}</div>
+          <div style="font-size:14px;color:#aaa;margin-bottom:8px;">${S.score_of}</div>
+          <div style="font-size:14px;font-weight:600;color:${tier.c};">${tier.l}</div>
+        </div>`;
+      })()
+    : `<div id="score-preview-bar" style="display:none;"></div>`;
+
+  document.getElementById('step-2').innerHTML = `
+    <div class="step-title">${S.s2_title}</div>
+    <div class="step-subtitle">${S.s2_sub_pre} <em class="company-name-display" id="score-company-label">${state.companyName||'your company'}</em> ${S.s2_sub_suf}</div>
+
+    <div class="dimension-section">
+      <div class="dimension-section-header">
+        <div><div class="dimension-name">${S.d1_name}</div><div class="dimension-desc">${S.d1_desc}</div></div>
+        <div class="dimension-score-badge" id="d1-badge">${a.q1!==undefined&&a.q2!==undefined ? `<span style="color:${scoreColor(state.scores.d1)}">${state.scores.d1}</span> <span class="out">/10</span>` : `— <span class="out">/10</span>`}</div>
+      </div>
+      <div class="question-group"><div class="question-label">${S.q1_lbl}</div>
+        <div class="option-grid">${opt('q1','none',S.q1_a,S.q1_as)}${opt('q1','1-12',S.q1_b,S.q1_bs)}${opt('q1','13-50',S.q1_c,S.q1_cs)}${opt('q1','51+',S.q1_d,S.q1_ds)}</div></div>
+      <div class="question-group"><div class="question-label">${S.q2_lbl}</div>
+        <div class="option-grid">${opt('q2','6mo+',S.q2_a,S.q2_as)}${opt('q2','2-6mo',S.q2_b,S.q2_bs)}${opt('q2','1-2mo',S.q2_c,S.q2_cs)}${opt('q2','30d',S.q2_d,S.q2_ds)}</div></div>
+    </div>
+
+    <div class="dimension-section">
+      <div class="dimension-section-header">
+        <div><div class="dimension-name">${S.d2_name}</div><div class="dimension-desc">${S.d2_desc}</div></div>
+        <div class="dimension-score-badge" id="d2-badge">${a.q3!==undefined&&a.q4!==undefined ? `<span style="color:${scoreColor(state.scores.d2)}">${state.scores.d2}</span> <span class="out">/10</span>` : `— <span class="out">/10</span>`}</div>
+      </div>
+      <div class="question-group"><div class="question-label">${S.q3_lbl}</div>
+        <div class="option-grid">${opt('q3','0-10',S.q3_a,S.q3_as)}${opt('q3','10-50',S.q3_b,S.q3_bs)}${opt('q3','50-80',S.q3_c,S.q3_cs)}${opt('q3','80+',S.q3_d,S.q3_ds)}</div></div>
+      <div class="question-group"><div class="question-label">${S.q4_lbl}</div>
+        <div class="option-grid">${opt('q4','never',S.q4_a,'')}${opt('q4','irregular',S.q4_b,'')}${opt('q4','2weeks',S.q4_c,'')}${opt('q4','7days',S.q4_d,S.q4_ds)}</div></div>
+    </div>
+
+    <div class="dimension-section">
+      <div class="dimension-section-header">
+        <div><div class="dimension-name">${S.d3_name}</div><div class="dimension-desc">${S.d3_desc}</div></div>
+        <div class="dimension-score-badge" id="d3-badge">${a.q5!==undefined&&a.q6!==undefined ? `<span style="color:${scoreColor(state.scores.d3)}">${state.scores.d3}</span> <span class="out">/10</span>` : `— <span class="out">/10</span>`}</div>
+      </div>
+      <div class="question-group"><div class="question-label">${S.q5_lbl}</div>
+        <div class="option-grid">${opt('q5','none',S.q5_a,S.q5_as)}${opt('q5','sub35',S.q5_b,S.q5_bs)}${opt('q5','35-40',S.q5_c,S.q5_cs)}${opt('q5','above40',S.q5_d,S.q5_ds)}</div></div>
+      <div class="question-group"><div class="question-label">${S.q6_lbl}</div>
+        <div class="option-grid">${opt('q6','declining',S.q6_a,S.q6_as)}${opt('q6','flat',S.q6_b,'')}${opt('q6','improving',S.q6_c,S.q6_cs)}</div></div>
+    </div>
+    ${scoreBar}
+  `;
+}
+
+function scoreColor(v) { return v<=3?'#e74c3c':v<=7?'#f5a623':'#00b67a'; }
+
+// ─── ANSWERS & SCORE ───────────────────────────────────────────────
+function pick(question, value, btn) {
+  btn.closest('.option-grid').querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.answers[question] = value;
+  calculateScores();
+  // update badges
+  const S = STRINGS[lang];
+  const a = state.answers;
+  if (a.q1!==undefined&&a.q2!==undefined) {
+    const el = document.getElementById('d1-badge');
+    if (el) el.innerHTML = `<span style="color:${scoreColor(state.scores.d1)}">${state.scores.d1}</span> <span class="out">/10</span>`;
+  }
+  if (a.q3!==undefined&&a.q4!==undefined) {
+    const el = document.getElementById('d2-badge');
+    if (el) el.innerHTML = `<span style="color:${scoreColor(state.scores.d2)}">${state.scores.d2}</span> <span class="out">/10</span>`;
+  }
+  if (a.q5!==undefined&&a.q6!==undefined) {
+    const el = document.getElementById('d3-badge');
+    if (el) el.innerHTML = `<span style="color:${scoreColor(state.scores.d3)}">${state.scores.d3}</span> <span class="out">/10</span>`;
+  }
+  // live preview
+  if (['q1','q2','q3','q4','q5','q6'].every(q => a[q] !== undefined)) {
+    const bar = document.getElementById('score-preview-bar');
+    if (bar) {
+      const t = state.total;
+      const tier = t<=10 ? {l:S.tier_red,c:'#e74c3c'} : t<=20 ? {l:S.tier_yellow,c:'#f5a623'} : {l:S.tier_green,c:'#00b67a'};
+      bar.style.display = 'block';
+      bar.style.borderColor = tier.c;
+      bar.innerHTML = `
+        <div style="font-size:13px;color:var(--mid);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">AI Relevance Score</div>
+        <div style="font-size:52px;font-weight:800;color:${tier.c};line-height:1">${t}</div>
+        <div style="font-size:14px;color:#aaa;margin-bottom:8px;">${S.score_of}</div>
+        <div style="font-size:14px;font-weight:600;color:${tier.c};">${tier.l}</div>`;
+    }
+  }
+}
+
+function calculateScores() {
+  const a = state.answers;
+  let d1=0,d2=0,d3=0;
+  if (a.q1!==undefined && a.q2!==undefined) {
+    const v = {none:1,'1-12':3,'13-50':6,'51+':8}[a.q1];
+    const r = {'6mo+':0,'2-6mo':1,'1-2mo':2,'30d':3}[a.q2];
+    d1 = a.q1==='none' ? 1 : Math.min(10, v+r);
+  }
+  if (a.q3!==undefined && a.q4!==undefined) {
+    const v = {'0-10':1,'10-50':4,'50-80':6,'80+':8}[a.q3];
+    const r = {never:0,irregular:0,'2weeks':1,'7days':2}[a.q4];
+    d2 = a.q3==='0-10' ? 1 : Math.min(10, v+r);
+  }
+  if (a.q5!==undefined && a.q6!==undefined) {
+    const v = {none:1,sub35:2,'35-40':5,above40:7}[a.q5];
+    const r = {declining:-1,flat:0,improving:2}[a.q6];
+    d3 = a.q5==='none' ? 1 : Math.max(1, Math.min(10, v+r));
+  }
+  state.scores = {d1,d2,d3};
+  state.total = d1+d2+d3;
+}
+
+function step2Valid() {
+  const missing = ['q1','q2','q3','q4','q5','q6'].filter(q => state.answers[q]===undefined);
+  if (missing.length) { alert(STRINGS[lang].val2); return false; }
+  return true;
+}
+
+// ─── NAVIGATION ────────────────────────────────────────────────────
+function updateProgress() {
+  const s = state.currentStep;
+  const S = STRINGS[lang];
+  const lblKeys = ['','lbl_company','lbl_score','lbl_results','lbl_checklist','lbl_roadmap','lbl_piano_pick','lbl_piano'];
+  for (let i=1; i<=state.totalSteps; i++) {
+    const dot = document.getElementById(`dot-${i}`);
+    const lbl = document.getElementById(`lbl-${i}`);
+    if (!dot||!lbl) continue;
+    dot.className = 'step-dot'+(i<s?' done':i===s?' active':'');
+    dot.textContent = i<s ? '✓' : i;
+    lbl.className = 'step-label'+(i===s?' active':'');
+    lbl.textContent = S[lblKeys[i]] || '';
+    if (i < state.totalSteps) {
+      const line = document.getElementById(`line-${i}`);
+      if (line) line.className = 'step-line'+(i<s?' done':'');
+    }
+  }
+  const back = document.getElementById('btn-back');
+  if (back) back.style.visibility = s>1 ? 'visible' : 'hidden';
+  if (back) back.innerHTML = S.btn_back;
+  const nextLbl = document.getElementById('btn-next-label');
+  const btnLabels = ['',S.btn_1,S.btn_2,S.btn_3,S.btn_4,S.btn_5,S.btn_6,''];
+  if (nextLbl) nextLbl.textContent = btnLabels[s] || '';
+  const nextBtn = document.getElementById('btn-next');
+  if (nextBtn) nextBtn.style.display = s>=state.totalSteps ? 'none' : 'flex';
+}
+
+function nextStep() {
+  const S = STRINGS[lang];
+  if (state.currentStep===1) syncCompanyName();
+  if (state.currentStep===2) { if (!step2Valid()) return; renderResults(); }
+  if (state.currentStep===3) renderChecklist();
+  if (state.currentStep===4) renderRoadmap();
+  if (state.currentStep===5) renderPlanPicker();
+  if (state.currentStep===6) {
+    if (!state.planChoice.recommended || !state.planChoice.light) { alert(S.val5); return; }
+    renderPlan();
+  }
+  if (state.currentStep < state.totalSteps) {
+    document.getElementById(`step-${state.currentStep}`).classList.remove('active');
+    state.currentStep++;
+    document.getElementById(`step-${state.currentStep}`).classList.add('active');
+    updateProgress();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+}
+
+function prevStep() {
+  if (state.currentStep>1) {
+    document.getElementById(`step-${state.currentStep}`).classList.remove('active');
+    state.currentStep--;
+    document.getElementById(`step-${state.currentStep}`).classList.add('active');
+    updateProgress();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+}
+
+// ─── SYNC COMPANY NAME ─────────────────────────────────────────────
+function syncCompanyName() {
+  const input = document.getElementById('company-name');
+  if (!input) return;
+  state.companyName = input.value.trim();
+  const display = state.companyName || 'your company';
+  document.querySelectorAll('.company-name-display').forEach(el => el.textContent = display);
+  ['score-company-label','check-company-label','roadmap-company-label'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = display;
+  });
+}
+
+// ─── STEP 3: RESULTS + SCENARIOS ───────────────────────────────────
+function renderResults() {
+  const S = STRINGS[lang];
+  const {d1,d2,d3} = state.scores;
+  const total = state.total;
+  const scoreTier = total<=10?'red':total<=20?'yellow':'green';
+
+  document.getElementById('score-big').textContent = total;
+  document.getElementById('res-d1').textContent = d1;
+  document.getElementById('res-d2').textContent = d2;
+  document.getElementById('res-d3').textContent = d3;
+
+  const colors = {red:'#e74c3c',yellow:'#f5a623',green:'#00b67a'};
+  const c = colors[scoreTier];
+  const circle = document.getElementById('score-circle-vis');
+  circle.style.borderColor = c;
+  circle.querySelector('.big-num').style.color = c;
+
+  const tierLabel = S[`tier_${scoreTier}`];
+  document.getElementById('tier-badge-wrap').innerHTML =
+    `<div class="score-tier-badge" style="background:${c}20;color:${c};border:1px solid ${c}50">${tierLabel}</div>`;
+  document.getElementById('score-message').textContent = S[`msg_${scoreTier}`];
+
+  document.getElementById('step-3').querySelector('.step-title').textContent = S.s3_title;
+  document.getElementById('step-3').querySelector('.step-subtitle').textContent = S.s3_sub;
+
+  const scenarios = SCENARIOS[lang];
+  const s = {d1,d2,d3,total};
+  const recommended = scenarios.find(sc => sc.trigger(s)) || scenarios[0];
+  if (!state.selectedScenario) state.selectedScenario = recommended.id;
+
+  document.getElementById('scenarios-container').innerHTML = scenarios.map(sc => {
+    const isRec = sc.id === recommended.id;
+    const isSel = sc.id === state.selectedScenario;
+    return `
+      <div class="scenario-card ${isSel?'recommended':'other'}" id="scenario-${sc.id}" onclick="selectScenario('${sc.id}')">
+        <div class="scenario-select-indicator">${isSel?'✓':''}</div>
+        <div class="scenario-badge ${isRec?'badge-recommended':'badge-other'}">${isRec?S.badge_best:`${S.badge_sc} ${sc.id}`}</div>
+        <div class="scenario-title">${sc.title}</div>
+        <div class="scenario-body">${sc.body(state.companyName)}</div>
+        <div class="scenario-quickwin"><strong>${S.qw_pre}</strong> ${sc.qw}</div>
+      </div>`;
+  }).join('');
+}
+
+function selectScenario(id) {
+  state.selectedScenario = id;
+  document.querySelectorAll('.scenario-card').forEach(card => {
+    const cid = card.id.replace('scenario-','');
+    card.className = 'scenario-card '+(cid===id?'recommended':'other');
+    card.querySelector('.scenario-select-indicator').textContent = cid===id?'✓':'';
+  });
+}
+
+// ─── STEP 4: CHECKLIST ─────────────────────────────────────────────
+function renderChecklist() {
+  const S = STRINGS[lang];
+  const items = CHECKLIST[lang];
+  document.getElementById('step-4').querySelector('.step-title').textContent = S.s4_title;
+  document.getElementById('step-4').querySelector('.step-subtitle').innerHTML =
+    `${S.s4_sub_pre} <em class="company-name-display" id="check-company-label">${state.companyName||'your company'}</em> ${S.s4_sub_suf}`;
+  document.getElementById('step-4').querySelector('.cl-lbl:nth-child(1)') && null;
+  // Update stat labels
+  const stats = document.querySelectorAll('#step-4 .cl-lbl');
+  if (stats[0]) stats[0].textContent = S.cl_yes;
+  if (stats[1]) stats[1].textContent = S.cl_partial;
+  if (stats[2]) stats[2].textContent = S.cl_no;
+
+  document.getElementById('checklist-container').innerHTML = items.map((item,i) => `
+    <div class="checklist-item${state.checklist[i]?' status-'+state.checklist[i]:''}" id="cl-item-${i}">
+      <div class="checklist-num">${i+1}</div>
+      <div class="checklist-content">
+        <div class="checklist-signal">${item.signal}</div>
+        <div class="checklist-hint">${item.hint}</div>
+      </div>
+      <div class="checklist-actions">
+        <button class="status-btn${state.checklist[i]==='yes'?' active-yes':''}" onclick="setStatus(${i},'yes')" title="✓">✓</button>
+        <button class="status-btn${state.checklist[i]==='partial'?' active-partial':''}" onclick="setStatus(${i},'partial')" title="~">~</button>
+        <button class="status-btn${state.checklist[i]==='no'?' active-no':''}" onclick="setStatus(${i},'no')" title="✗">✗</button>
+      </div>
+    </div>`).join('');
+  updateChecklistSummary();
+}
+
+function setStatus(index, status) {
+  if (state.checklist[index]===status) { delete state.checklist[index]; status=null; }
+  else state.checklist[index] = status;
+  const item = document.getElementById(`cl-item-${index}`);
+  item.className = 'checklist-item'+(status?` status-${status}`:'');
+  ['yes','partial','no'].forEach(s => {
+    const btn = item.querySelector(`.active-${s}`);
+    if (btn) btn.className = 'status-btn';
+  });
+  if (status) {
+    const btns = item.querySelectorAll('.status-btn');
+    const idx = ['yes','partial','no'].indexOf(status);
+    if (btns[idx]) btns[idx].className = `status-btn active-${status}`;
+  }
+  updateChecklistSummary();
+}
+
+function updateChecklistSummary() {
+  const vals = Object.values(state.checklist);
+  const el = id => document.getElementById(id);
+  if (el('cl-yes')) el('cl-yes').textContent = vals.filter(v=>v==='yes').length;
+  if (el('cl-partial')) el('cl-partial').textContent = vals.filter(v=>v==='partial').length;
+  if (el('cl-no')) el('cl-no').textContent = vals.filter(v=>v==='no').length;
+}
+
+
+// ─── STEP 5: ROADMAP ───────────────────────────────────────────────
+const ROADMAPS = {
+  it: {
+    red: { header:'🔴 Score 0–10 — Partire da Zero', color:'#e74c3c', bg:'#fef2f2',
+      steps:[
+        { period:'Settimana 1–2', action:'Claim & Activate', detail:"Reclama il profilo Trustpilot. Imposta gli inviti automatizzati da almeno un touchpoint — email o flusso post-acquisto.", kpi:'1% → 54% citation rate con 13+ recensioni' },
+        { period:'Settimana 3–6', action:'Raggiungi la Prima Soglia', detail:"Raggiungi 13+ recensioni genuine. Il citation rate AI salta dall'1% al 54%. Rispondi a ogni recensione che arriva.", kpi:'13 recensioni per attraversare la soglia di visibilità' },
+        { period:'Settimana 7–12', action:'Costruisci lo Status Attivo', detail:"Target 50+ recensioni con cadenza mensile. Mantieni il response rate sopra l'80%. Test AI mensile per tracciare i progressi.", kpi:'75% citation rate con profilo attivo' }
+      ]
+    },
+    yellow: { header:'🟡 Score 11–20 — Parzialmente Visibile', color:'#f5a623', bg:'#fffbeb',
+      steps:[
+        { period:'Settimana 1–2', action:'Diagnosi del Gap', detail:"Identifica se il gap è nel volume, nella recency o nel response rate. Esegui il test AI su 3 piattaforme e nota cosa manca dalla narrativa.", kpi:'3 piattaforme: ChatGPT, Gemini, Perplexity' },
+        { period:'Settimana 3–6', action:'Riavvia il Motore', detail:"Riattiva o automatizza il flusso degli inviti. Target 5–8 nuove recensioni genuine al mese. Rispondi a tutte le recensioni.", kpi:'5–8 nuove recensioni al mese per ripristinare il segnale di recency' },
+        { period:'Settimana 7–12', action:'Raggiungi lo Status Attivo', detail:"Arriva a 50+ recensioni con recency sotto 30 giorni. TrustScore sopra 4.0. Test mensile: chi appare quando i buyer ricercano la tua categoria?", kpi:'Target response rate 80%+' }
+      ]
+    },
+    green: { header:'🟢 Score 21–30 — AI-Ready', color:'#00b67a', bg:'#f0fdf8',
+      steps:[
+        { period:'Settimana 1–2', action:"Attiva l'Effetto Co-mention", detail:"Testa le ricerche sui competitor live. Se non appari in 'alternative a [competitor]', prioritizza la crescita del volume oltre 80+ recensioni.", kpi:'9.5× più co-mention con profilo ottimizzato' },
+        { period:'Settimana 3–6', action:'Approfondisci la Narrativa', detail:"Analizza quali temi coprono le tue recensioni vs i 5 temi AI chiave: servizio, consegna, qualità, fiducia & resi. Invia inviti più ampi.", kpi:'63% delle citazioni AI fa riferimento al customer service' },
+        { period:'Settimana 7–12', action:'Mantieni & Monitora', detail:"Monitoraggio AI mensile su ChatGPT, Gemini e Perplexity. Mantieni la cadenza e il response rate. Condividi i co-mention win con gli stakeholder.", kpi:'Cadenza mensile di revisione visibilità AI' }
+      ]
+    }
+  },
+  en: {
+    red: { header:'🔴 Score 0–10 — Starting from Zero', color:'#e74c3c', bg:'#fef2f2',
+      steps:[
+        { period:'Week 1–2', action:'Claim & Activate', detail:"Claim the Trustpilot profile. Set up automated review invitations from at least one touchpoint — email or post-purchase flow.", kpi:'1% → 54% citation rate with 13+ reviews' },
+        { period:'Week 3–6', action:'Hit the First Threshold', detail:"Reach 13+ genuine reviews. AI citation rate jumps from 1% to 54% at this point. Respond to every review as it arrives.", kpi:'13 reviews to cross the visibility threshold' },
+        { period:'Week 7–12', action:'Build Toward Active Status', detail:"Target 50+ reviews with a consistent monthly cadence. Keep response rate above 80%. Run a monthly AI search test to track progress.", kpi:'75% citation rate at active-profile status' }
+      ]
+    },
+    yellow: { header:'🟡 Score 11–20 — Partially Visible', color:'#f5a623', bg:'#fffbeb',
+      steps:[
+        { period:'Week 1–2', action:'Diagnose the Gap', detail:"Identify whether the weak score is volume, recency, or response rate. Run the 3-platform AI test and note what's missing from the brand narrative.", kpi:'3 platforms to test: ChatGPT, Gemini, Perplexity' },
+        { period:'Week 3–6', action:'Restart the Engine', detail:"Reactivate or automate invitation flow. Target 5–8 new genuine reviews per month. Start responding to all reviews.", kpi:'5–8 new reviews per month to restore recency signal' },
+        { period:'Week 7–12', action:'Reach Active Status', detail:"Hit 50+ reviews with recency under 30 days. TrustScore above 4.0. Test monthly: who appears when buyers research your category?", kpi:'80%+ response rate target' }
+      ]
+    },
+    green: { header:'🟢 Score 21–30 — AI-Ready', color:'#00b67a', bg:'#f0fdf8',
+      steps:[
+        { period:'Week 1–2', action:'Activate the Co-mention Effect', detail:"Test competitor searches live. If you're not appearing in 'alternatives to [competitor]' results, prioritise volume growth to 80+.", kpi:'9.5× more co-mentions at optimised profile status' },
+        { period:'Week 3–6', action:'Deepen the Narrative', detail:"Analyse which themes your reviews cover vs. the 5 key AI themes: service, delivery, quality, trust & returns. Send broader invitations to fill gaps.", kpi:'63% of AI citations reference customer service' },
+        { period:'Week 7–12', action:'Maintain & Monitor', detail:"Monthly AI search monitoring across ChatGPT, Gemini, and Perplexity. Maintain review cadence and response rate. Share co-mention wins with stakeholders.", kpi:'Monthly AI visibility review cadence' }
+      ]
+    }
+  }
+};
+
+function renderRoadmap() {
+  const S = STRINGS[lang];
+  const tier = state.total<=10 ? 'red' : state.total<=20 ? 'yellow' : 'green';
+  const rm = ROADMAPS[lang][tier];
+  const el5 = document.getElementById('step-5');
+  if (el5) el5.querySelector('.step-title').textContent = S.s5_title;
+  const container = document.getElementById('roadmap-container');
+  if (!container) return;
+  container.innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:10px;margin-bottom:24px;background:${rm.bg};font-size:15px;font-weight:700;color:${rm.color};">${rm.header}</div>
+    <div class="roadmap-steps">
+      ${rm.steps.map((step,i) => `
+        <div class="roadmap-step">
+          <div class="step-circle" style="background:${rm.color}">0${i+1}</div>
+          <div class="step-content">
+            <div class="step-period" style="color:${rm.color}">${step.period}</div>
+            <div class="step-action">${step.action}</div>
+            <div class="step-detail">${step.detail}</div>
+            <span class="step-kpi" style="background:${rm.bg};color:${rm.color}">&#8594; ${step.kpi}</span>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
+// ─── STEP 6: PLAN PICKER ───────────────────────────────────────────
+function renderPlanPicker() {
+  const S = STRINGS[lang];
+  const total = state.total;
+  const scoreTier = total<=10?'red':total<=20?'yellow':'green';
+  const suggestedMap = {red:'Plus',yellow:'Premium',green:'Enterprise'};
+  const suggested = suggestedMap[scoreTier];
+  const planColors = {Plus:'#e74c3c',Premium:'#f5a623',Enterprise:'#00b67a'};
+
+  // Update hint banner
+  const banner = document.getElementById('score-hint-banner');
+  if (banner) {
+    banner.innerHTML = `<strong>AI Relevance Score: ${total}/30 —</strong> ${S.score_hint_pre} <strong style="color:${planColors[suggested]}">${suggested}</strong> ${S.score_hint_suf}`;
+  }
+
+  // Update step 5 title/subtitle
+  const el6 = document.getElementById('step-6');
+  if (el6) {
+    el6.querySelector('.step-title').textContent = S.s6_title;
+    el6.querySelector('.step-subtitle').innerHTML = S.s6_sub;
+  }
+
+  const rec = state.planChoice.recommended;
+  const light = state.planChoice.light;
+
+  document.getElementById('plan-picker-grid').innerHTML = Object.values(PLAN_DATA).map(plan => {
+    const isRec = plan.name === rec;
+    const isLight = plan.name === light;
+    const isSugg = plan.name === suggested;
+    let borderColor = 'var(--border)';
+    if (isRec) borderColor = '#00b67a';
+    else if (isLight) borderColor = '#6366f1';
+
+    const recDisabled = light===plan.name ? 'disabled' : '';
+    const lightDisabled = rec===plan.name ? 'disabled' : '';
+    return `
+      <div class="picker-card${isRec?' has-recommended':''}${isLight?' has-light':''}" style="border-color:${borderColor}">
+        ${isSugg ? `<div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:${plan.color};color:white;font-size:10px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;z-index:1;">★ Score ${total}/30</div>` : ''}
+        <div class="picker-card-name" style="color:${plan.color}">${plan.name}</div>
+        <div class="picker-card-tier" style="color:${plan.color}">${plan.tier[lang]}</div>
+        <div class="picker-card-meta">${plan.meta[lang].join('<br>')}</div>
+        <div class="picker-btns">
+          <button class="picker-btn${isRec?' active-recommended':''}" onclick="pickPlanRole('${plan.name}','recommended')" ${recDisabled}>${S.btn_rec}</button>
+          <button class="picker-btn${isLight?' active-light':''}" onclick="pickPlanRole('${plan.name}','light')" ${lightDisabled}>${S.btn_light}</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Summary
+  const summary = document.getElementById('plan-picker-summary');
+  if (summary) {
+    if (rec || light) {
+      summary.style.display = 'grid';
+      document.getElementById('summary-recommended-name').textContent = rec || '—';
+      document.getElementById('summary-light-name').textContent = light || '—';
+      document.querySelector('.summary-label').textContent = S.sum_rec;
+      const labels = document.querySelectorAll('.summary-label');
+      if (labels[0]) labels[0].textContent = S.sum_rec;
+      if (labels[1]) labels[1].textContent = S.sum_light;
+    } else {
+      summary.style.display = 'none';
+    }
+  }
+}
+
+function pickPlanRole(planName, role) {
+  const other = role==='recommended' ? 'light' : 'recommended';
+  if (state.planChoice[other]===planName) return; // can't pick same for both
+  state.planChoice[role] = planName;
+  renderPlanPicker();
+}
+
+
+
+
+// ─── STEP 7: IL TUO PIANO (old format) ────────────────────────────
+let selectedPlanKey = null;
+
+function renderPlan() {
+  const S = STRINGS[lang];
+  const total = state.total;
+  const scoreTier = total<=10?'red':total<=20?'yellow':'green';
+  const suggestedMap = {red:'Plus',yellow:'Premium',green:'Enterprise'};
+
+  // Default to recommended from plan choice, then fallback to score suggestion
+  if (!selectedPlanKey) {
+    selectedPlanKey = state.planChoice.recommended || suggestedMap[scoreTier];
+  }
+
+  const el7 = document.getElementById('step-7');
+  if (el7) el7.querySelector('.step-title').textContent = S.s7_title;
+
+  // Plan selector cards (3 plans)
+  const recName = state.planChoice.recommended;
+  const lightName = state.planChoice.light;
+  const planColors = {Plus:'#e74c3c', Premium:'#f5a623', Enterprise:'#00b67a'};
+
+  document.getElementById('plan-selector').innerHTML = Object.values(PLAN_DATA).map(plan => {
+    const isSel = plan.name === selectedPlanKey;
+    const isRec = plan.name === recName;
+    const isLight = plan.name === lightName;
+    let borderColor = isSel ? plan.color : 'var(--border)';
+    let badge = '';
+    if (isRec) badge = `<div style="font-size:10px;font-weight:700;color:${plan.color};margin-bottom:4px;">★ ${S.sum_rec}</div>`;
+    else if (isLight) badge = `<div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:4px;">◇ ${S.sum_light}</div>`;
+    return `
+      <button onclick="selectPlanDetail('${plan.name}')" style="
+        border:2px solid ${borderColor};border-radius:12px;padding:16px;
+        background:${isSel?plan.bg:'white'};cursor:pointer;text-align:left;
+        transition:all 0.2s;position:relative;
+      ">
+        ${badge}
+        <div style="font-size:18px;font-weight:800;color:${plan.color};margin-bottom:4px;">${plan.name}</div>
+        <div style="font-size:11px;color:${plan.color};font-weight:600;margin-bottom:8px;">${plan.tier[lang]}</div>
+        ${plan.meta[lang].map(m=>`<div style="font-size:12px;color:var(--mid);margin-top:3px;">${m}</div>`).join('')}
+      </button>`;
+  }).join('');
+
+  renderPlanDetail(selectedPlanKey);
+}
+
+function selectPlanDetail(planName) {
+  selectedPlanKey = planName;
+  renderPlan();
+}
+
+function renderPlanDetail(planName) {
+  const S = STRINGS[lang];
+  const plan = PLAN_DATA[planName];
+  const scoreTier = state.total<=10?'red':state.total<=20?'yellow':'green';
+  const detailEl = document.getElementById('plan-detail');
+  if (!detailEl || !plan) return;
+
+  detailEl.innerHTML = `
+    <div style="border:2px solid ${plan.color};border-radius:12px;padding:24px;margin-bottom:24px;background:${plan.bg};">
+      <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:${plan.color};margin-bottom:8px;">${S.why_title}</div>
+      <div style="font-size:15px;line-height:1.7;color:var(--dark);">${WHY[lang][scoreTier][planName]}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;" class="plan-features-grid">
+      ${plan.features[lang].map(f => `
+        <div style="border:1px solid var(--border);border-radius:10px;padding:16px;background:white;">
+          <div style="font-size:18px;margin-bottom:6px;">${f.icon}</div>
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px;">${f.title}</div>
+          ${f.items.map(item=>`<div style="font-size:12px;color:var(--mid);padding:3px 0;border-top:1px solid var(--border);line-height:1.4;">${item}</div>`).join('')}
+        </div>`).join('')}
+    </div>
+    <div style="font-size:20px;font-weight:800;margin-bottom:4px;">${S.roadmap_title} — ${plan.name}</div>
+    <div style="font-size:14px;color:var(--mid);margin-bottom:24px;">${plan.tier[lang]}</div>
+    <div class="roadmap-steps">
+      ${plan.roadmap[lang].map((step,i) => `
+        <div class="roadmap-step">
+          <div class="step-circle" style="background:${plan.color};">0${i+1}</div>
+          <div class="step-content">
+            <div class="step-period" style="color:${plan.color};">${step.period}</div>
+            <div class="step-action">${step.action}</div>
+            <div class="step-detail">${step.detail}</div>
+            <span class="step-kpi" style="background:${plan.bg};color:${plan.color};">&#8594; ${step.kpi}</span>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
+// ─── DOCX GENERATION ────────────────────────────────────────────────
+async function generateDOCS() {
+  const btn = document.getElementById('btn-docs');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Generando...'; }
+
+  try {
+    const S = STRINGS[lang];
+    const total = state.total;
+    const scoreTier = total <= 10 ? 'red' : total <= 20 ? 'yellow' : 'green';
+    const company = state.companyName || (lang === 'it' ? 'la tua azienda' : 'your company');
+    const today = new Date().toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-GB', { day:'2-digit', month:'long', year:'numeric' });
+
+    // Scenario
+    const scenarios = SCENARIOS[lang];
+    let scenario = null;
+    if (state.selectedScenario !== null) scenario = scenarios.find(s => s.id === state.selectedScenario);
+    if (!scenario) scenario = scenarios.find(s => s.trigger(state.scores)) || scenarios[0];
+
+    // Roadmap & plan
+    const roadmap = ROADMAPS[lang][scoreTier];
+    const recPlanKey = state.planChoice.recommended;
+    const recPlan = recPlanKey ? PLAN_DATA[recPlanKey] : null;
+    const tierColor = { red:'E74C3C', yellow:'F5A623', green:'00B67A' }[scoreTier];
+
+    // ── docx helpers ──────────────────────────────────────────────
+    const D = docx;
+    const cit = n => D.convertInchesToTwip(n);
+    const noBorder = {
+      top:     { style: D.BorderStyle.NONE, size: 0, color: 'auto' },
+      bottom:  { style: D.BorderStyle.NONE, size: 0, color: 'auto' },
+      left:    { style: D.BorderStyle.NONE, size: 0, color: 'auto' },
+      right:   { style: D.BorderStyle.NONE, size: 0, color: 'auto' },
+      insideH: { style: D.BorderStyle.NONE, size: 0, color: 'auto' },
+      insideV: { style: D.BorderStyle.NONE, size: 0, color: 'auto' },
+    };
+    const thinBorder = {
+      top:     { style: D.BorderStyle.SINGLE, size: 4, color: 'E0E0E0' },
+      bottom:  { style: D.BorderStyle.SINGLE, size: 4, color: 'E0E0E0' },
+      left:    { style: D.BorderStyle.SINGLE, size: 4, color: 'E0E0E0' },
+      right:   { style: D.BorderStyle.SINGLE, size: 4, color: 'E0E0E0' },
+    };
+
+    // Colored full-width header bar
+    const hdrBar = (text, fill, textColor='FFFFFF', sz=28) => new D.Table({
+      width: { size: 100, type: D.WidthType.PERCENTAGE },
+      borders: noBorder,
+      rows: [new D.TableRow({ children: [new D.TableCell({
+        shading: { type: D.ShadingType.CLEAR, fill, color: 'auto' },
+        children: [new D.Paragraph({
+          children: [new D.TextRun({ text, color: textColor, bold: true, size: sz, font: 'Calibri' })],
+          spacing: { before: cit(0.05), after: cit(0.05) }
+        })],
+        margins: { top: cit(0.09), bottom: cit(0.09), left: cit(0.14), right: cit(0.14) }
+      })]})],
+    });
+
+    // Section label (small caps style)
+    const sectionLbl = (text, color='666666') => new D.Paragraph({
+      children: [new D.TextRun({ text, color, bold: true, size: 16, font: 'Calibri' })],
+      spacing: { before: cit(0.16), after: cit(0.05) }
+    });
+
+    // Simple paragraph
+    const para = (text, opts={}) => new D.Paragraph({
+      children: [new D.TextRun({ text, color: opts.color||'191919', bold: opts.bold||false, size: opts.size||20, italics: opts.italics||false, font: 'Calibri' })],
+      spacing: { before: opts.before||0, after: opts.after !== undefined ? opts.after : cit(0.05) }
+    });
+
+    // Colored box (single-cell table)
+    const colorBox = (children, fill, borderColor) => new D.Table({
+      width: { size: 100, type: D.WidthType.PERCENTAGE },
+      borders: borderColor ? {
+        top: { style: D.BorderStyle.SINGLE, size: 6, color: borderColor },
+        bottom: { style: D.BorderStyle.SINGLE, size: 6, color: borderColor },
+        left: { style: D.BorderStyle.SINGLE, size: 6, color: borderColor },
+        right: { style: D.BorderStyle.SINGLE, size: 6, color: borderColor },
+      } : noBorder,
+      rows: [new D.TableRow({ children: [new D.TableCell({
+        shading: { type: D.ShadingType.CLEAR, fill, color: 'auto' },
+        children,
+        margins: { top: cit(0.1), bottom: cit(0.1), left: cit(0.14), right: cit(0.14) }
+      })]})],
+    });
+
+    const children = [];
+
+    // ══════════════════════════════════════════════════════════════
+    // PAGE 1: Title · Stats · Score · Checklist
+    // ══════════════════════════════════════════════════════════════
+
+    // Title header (dark)
+    children.push(hdrBar(
+      lang==='it' ? 'AI Check — Il tuo AI Relevance Score & LLM Visibility Audit'
+                  : 'AI Check — Your AI Relevance Score & LLM Visibility Audit',
+      '191919', 'FFFFFF', 30
+    ));
+
+    // Prepared for
+    const prepLabel = lang==='it' ? 'Preparato per' : 'Prepared for';
+    children.push(new D.Paragraph({
+      children: [
+        new D.TextRun({ text: `${prepLabel}: `, color: '777777', size: 18, font: 'Calibri' }),
+        new D.TextRun({ text: company, color: '191919', bold: true, size: 18, font: 'Calibri' }),
+        new D.TextRun({ text: `  ·  ${today}`, color: '777777', size: 18, font: 'Calibri' }),
+      ],
+      spacing: { before: cit(0.1), after: cit(0.08) }
+    }));
+
+    // ── 4 Stats (2×2 table) ─────────────────────────────────────
+    const statsData = [
+      { num:'60%', label: lang==='it' ? 'delle ricerche AI termina senza un click (Bain, 2025)' : 'of AI searches end without a click (Bain, 2025)' },
+      { num:'62%', label: lang==='it' ? 'dei brand tecnicamente invisibili agli LLM (Semrush)' : 'of brands are technically invisible to LLMs (Semrush)' },
+      { num:'75%', label: lang==='it' ? 'citation rate con profilo Trustpilot attivo (vs 1%)' : 'citation rate with active Trustpilot profile (vs 1%)' },
+      { num:'14%', label: lang==='it' ? 'delle citation AI va ai siti di recensioni — fonte #2 (Seer)' : 'of AI citations go to review sites — #2 source (Seer)' },
+    ];
+    const mkStatCell = (st) => new D.TableCell({
+      shading: { type: D.ShadingType.CLEAR, fill: 'F4F4F6', color: 'auto' },
+      children: [
+        new D.Paragraph({ children: [new D.TextRun({ text: st.num, color: '00B67A', bold: true, size: 52, font: 'Calibri' })], spacing: { after: 0 } }),
+        new D.Paragraph({ children: [new D.TextRun({ text: st.label, color: '555555', size: 17, font: 'Calibri' })], spacing: { before: cit(0.02), after: cit(0.06) } })
+      ],
+      margins: { top: cit(0.08), bottom: cit(0.08), left: cit(0.1), right: cit(0.1) }
+    });
+    children.push(sectionLbl(lang==='it' ? 'DATI CHIAVE' : 'KEY STATISTICS'));
+    children.push(new D.Table({
+      width: { size: 100, type: D.WidthType.PERCENTAGE },
+      rows: [
+        new D.TableRow({ children: [mkStatCell(statsData[0]), mkStatCell(statsData[1])] }),
+        new D.TableRow({ children: [mkStatCell(statsData[2]), mkStatCell(statsData[3])] }),
+      ]
+    }));
+
+    // ── Score section ────────────────────────────────────────────
+    children.push(sectionLbl('AI RELEVANCE SCORE'));
+    const tierLabelTxt = {
+      red:    { it:'🔴 Invisibile per l\'AI', en:'🔴 Invisible to AI' },
+      yellow: { it:'🟡 Parzialmente Visibile', en:'🟡 Partially Visible' },
+      green:  { it:'🟢 AI-Ready', en:'🟢 AI-Ready' }
+    }[scoreTier][lang];
+
+    children.push(new D.Table({
+      width: { size: 100, type: D.WidthType.PERCENTAGE },
+      borders: noBorder,
+      rows: [new D.TableRow({ children: [
+        new D.TableCell({
+          width: { size: 22, type: D.WidthType.PERCENTAGE },
+          children: [new D.Paragraph({
+            children: [
+              new D.TextRun({ text: `${total}`, color: tierColor, bold: true, size: 104, font: 'Calibri' }),
+              new D.TextRun({ text: '/30', color: '999999', size: 36, font: 'Calibri' }),
+            ],
+            alignment: D.AlignmentType.CENTER, spacing: { after: 0 }
+          })],
+          borders: noBorder,
+          verticalAlign: D.VerticalAlign ? D.VerticalAlign.CENTER : undefined
+        }),
+        new D.TableCell({
+          width: { size: 78, type: D.WidthType.PERCENTAGE },
+          children: [
+            new D.Paragraph({ children: [new D.TextRun({ text: tierLabelTxt, color: tierColor, bold: true, size: 26, font: 'Calibri' })], spacing: { before: cit(0.06), after: cit(0.1) } }),
+            ...[
+              { label: lang==='it' ? 'D1 — Volume & Recency' : 'D1 — Volume & Recency', score: state.scores.d1 },
+              { label: lang==='it' ? 'D2 — Response & Engagement' : 'D2 — Response & Engagement', score: state.scores.d2 },
+              { label: lang==='it' ? 'D3 — TrustScore & Trend' : 'D3 — TrustScore & Trend', score: state.scores.d3 },
+            ].map(d => new D.Paragraph({
+              children: [
+                new D.TextRun({ text: `${d.label}`, color: '555555', size: 19, font: 'Calibri' }),
+                new D.TextRun({ text: `   ${d.score}/10`, color: tierColor, bold: true, size: 19, font: 'Calibri' }),
+              ],
+              spacing: { after: cit(0.04) }
+            }))
+          ],
+          borders: noBorder,
+          margins: { left: cit(0.18) }
+        })
+      ]})]
+    }));
+
+    // ── Checklist ─────────────────────────────────────────────────
+    children.push(sectionLbl('LLM BRAND VISIBILITY CHECKLIST'));
+    const stIcons  = { yes:'✓', partial:'~', no:'✗' };
+    const stColors = { yes:'059669', partial:'D97706', no:'DC2626' };
+    const clRows = CHECKLIST[lang].map((item, i) => {
+      const status = state.checklist[i];
+      const icon   = stIcons[status] || '—';
+      const icolor = stColors[status] || '999999';
+      const bgFill = i % 2 === 0 ? 'FFFFFF' : 'F9F9F9';
+      return new D.TableRow({ children: [
+        new D.TableCell({
+          width: { size: 7, type: D.WidthType.PERCENTAGE },
+          shading: { type: D.ShadingType.CLEAR, fill: bgFill, color: 'auto' },
+          children: [new D.Paragraph({ children: [new D.TextRun({ text: icon, color: icolor, bold: true, size: 22, font: 'Calibri' })], alignment: D.AlignmentType.CENTER, spacing: { after: 0 } })],
+          margins: { top: cit(0.04), bottom: cit(0.04) }
+        }),
+        new D.TableCell({
+          width: { size: 93, type: D.WidthType.PERCENTAGE },
+          shading: { type: D.ShadingType.CLEAR, fill: bgFill, color: 'auto' },
+          children: [new D.Paragraph({ children: [new D.TextRun({ text: item.signal, color: '191919', size: 19, font: 'Calibri' })], spacing: { after: 0 } })],
+          margins: { top: cit(0.04), bottom: cit(0.04), left: cit(0.08) }
+        }),
+      ]});
+    });
+    children.push(new D.Table({ width: { size: 100, type: D.WidthType.PERCENTAGE }, rows: clRows }));
+
+    // PAGE BREAK 1→2
+    children.push(new D.Paragraph({ children: [new D.PageBreak()] }));
+
+    // ══════════════════════════════════════════════════════════════
+    // PAGE 2: Scenario · Roadmap
+    // ══════════════════════════════════════════════════════════════
+
+    children.push(hdrBar(
+      lang==='it' ? 'Scenario Selezionato' : 'Selected Scenario',
+      '191919', 'FFFFFF', 28
+    ));
+
+    if (scenario) {
+      children.push(new D.Paragraph({
+        children: [new D.TextRun({ text: scenario.title, color: '191919', bold: true, size: 28, font: 'Calibri' })],
+        spacing: { before: cit(0.12), after: cit(0.08) }
+      }));
+      const bodyText = typeof scenario.body === 'function' ? scenario.body(state.companyName) : (scenario.body || '');
+      children.push(new D.Paragraph({
+        children: [new D.TextRun({ text: bodyText, color: '333333', size: 20, font: 'Calibri' })],
+        spacing: { after: cit(0.12) }
+      }));
+      // Quick win amber box
+      children.push(colorBox([
+        new D.Paragraph({ children: [new D.TextRun({ text: '⚡ Quick Win', color: 'D97706', bold: true, size: 22, font: 'Calibri' })], spacing: { after: cit(0.06) } }),
+        new D.Paragraph({ children: [new D.TextRun({ text: scenario.qw, color: '444444', size: 19, font: 'Calibri' })], spacing: { after: 0 } }),
+      ], 'FFFBEB', 'F5A623'));
+    }
+
+    // Roadmap section
+    children.push(sectionLbl(`ROADMAP 90 ${lang==='it'?'GIORNI':'DAYS'}`, tierColor));
+    roadmap.steps.forEach((step, i) => {
+      children.push(new D.Paragraph({
+        children: [new D.TextRun({ text: `${i+1}.  ${step.period} — ${step.action}`, color: tierColor, bold: true, size: 22, font: 'Calibri' })],
+        spacing: { before: cit(0.12), after: cit(0.04) }
+      }));
+      children.push(new D.Paragraph({
+        children: [new D.TextRun({ text: step.detail, color: '444444', size: 19, font: 'Calibri' })],
+        spacing: { after: cit(0.03) }
+      }));
+      children.push(new D.Paragraph({
+        children: [new D.TextRun({ text: `→ ${step.kpi}`, color: tierColor, bold: true, size: 17, font: 'Calibri' })],
+        spacing: { after: cit(0.06) }
+      }));
+    });
+
+    // PAGE BREAK 2→3
+    children.push(new D.Paragraph({ children: [new D.PageBreak()] }));
+
+    // ══════════════════════════════════════════════════════════════
+    // PAGE 3: Recommended Plan
+    // ══════════════════════════════════════════════════════════════
+
+    if (recPlan) {
+      const pc = recPlan.color.replace('#','');
+      const pbg = recPlan.bg.replace('#','');
+
+      children.push(hdrBar(
+        `${lang==='it'?'Piano Consigliato':'Recommended Plan'} — ${recPlan.name}`,
+        pc, 'FFFFFF', 32
+      ));
+      children.push(new D.Paragraph({
+        children: [new D.TextRun({ text: recPlan.tier[lang], color: pc, size: 21, font: 'Calibri' })],
+        spacing: { before: cit(0.08), after: cit(0.04) }
+      }));
+
+      // WHY
+      children.push(sectionLbl(lang==='it' ? 'PERCHÉ QUESTO PIANO — E PERCHÉ ORA' : 'WHY THIS PLAN — AND WHY NOW', pc));
+      children.push(colorBox([
+        new D.Paragraph({ children: [new D.TextRun({ text: WHY[lang][scoreTier][recPlanKey], color: '333333', size: 19, font: 'Calibri' })], spacing: { after: 0 } })
+      ], pbg, pc));
+
+      // Features (3-column table)
+      children.push(sectionLbl(lang==='it' ? 'COSA INCLUDE' : "WHAT'S INCLUDED"));
+      const featCells = recPlan.features[lang].map(feat => new D.TableCell({
+        children: [
+          new D.Paragraph({ children: [new D.TextRun({ text: feat.icon + '  ' + feat.title, color: pc, bold: true, size: 20, font: 'Calibri' })], spacing: { after: cit(0.06) } }),
+          ...feat.items.map(item => new D.Paragraph({ children: [new D.TextRun({ text: '·  ' + item, color: '555555', size: 17, font: 'Calibri' })], spacing: { after: cit(0.03) } }))
+        ],
+        borders: thinBorder,
+        margins: { top: cit(0.08), bottom: cit(0.08), left: cit(0.1), right: cit(0.1) }
+      }));
+      children.push(new D.Table({ width: { size: 100, type: D.WidthType.PERCENTAGE }, rows: [new D.TableRow({ children: featCells })] }));
+
+      // Plan roadmap
+      children.push(sectionLbl(`ROADMAP 90 ${lang==='it'?'GIORNI':'DAYS'} — ${recPlan.name.toUpperCase()}`, pc));
+      recPlan.roadmap[lang].forEach((step, i) => {
+        children.push(new D.Paragraph({
+          children: [new D.TextRun({ text: `${i+1}.  ${step.period} — ${step.action}`, color: pc, bold: true, size: 22, font: 'Calibri' })],
+          spacing: { before: cit(0.1), after: cit(0.04) }
+        }));
+        children.push(new D.Paragraph({
+          children: [new D.TextRun({ text: step.detail, color: '444444', size: 19, font: 'Calibri' })],
+          spacing: { after: cit(0.03) }
+        }));
+        children.push(new D.Paragraph({
+          children: [new D.TextRun({ text: `→ ${step.kpi}`, color: pc, bold: true, size: 17, font: 'Calibri' })],
+          spacing: { after: cit(0.06) }
+        }));
+      });
+    }
+
+    // Build & download document
+    const doc = new docx.Document({
+      creator: 'Trustpilot AI Check',
+      title: `AI Check — ${company}`,
+      description: 'AI Relevance Score & LLM Visibility Audit',
+      sections: [{
+        properties: {
+          page: {
+            margin: { top: cit(0.9), right: cit(0.85), bottom: cit(0.9), left: cit(0.85) }
+          }
+        },
+        children
+      }]
+    });
+
+    const blob = await docx.Packer.toBlob(doc);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const safeCompany = (state.companyName || 'Company').replace(/[^a-zA-Z0-9À-ÿ\s_-]/g,'').replace(/\s+/g,'_');
+    a.download = `AI_Check_${safeCompany}_${new Date().toISOString().split('T')[0]}.docx`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+  } finally {
+    const btn = document.getElementById('btn-docs');
+    if (btn) { btn.disabled = false; btn.innerHTML = STRINGS[lang].btn_docs; }
+  }
+}
+
+// ─── INIT ──────────────────────────────────────────────────────────
+renderStep1();
+renderStep2();
+renderChecklist();
+updateProgress();
+</script>
+
+</body>
+</html>
