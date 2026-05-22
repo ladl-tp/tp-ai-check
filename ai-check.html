@@ -2015,16 +2015,39 @@ function renderStep2() {
     const clean  = domain.replace(/^https?:\/\//,'').replace(/^www\./,'').replace(/\/$/,'');
     const tpUrl  = `https://www.trustpilot.com/review/${clean}`;
     const it     = lang === 'it';
-    const found  = state.scanData?.found;
+    const sd     = state.scanData || {};
+    const found  = sd.found === true;
+
+    // ── Map raw Trustpilot values → dropdown option values ───────────
+    const r  = sd.totalReviews ?? -1;
+    const ts = sd.trustScore   ?? -1;
+    const rr = sd.responseRate ?? -1;
+    const d  = sd.lastDaysAgo  ?? -1;
+
+    const vReviews = r  < 0  ? '' : r === 0 ? '0' : r <= 12 ? '6' : r <= 50 ? '30' : r <= 200 ? '125' : '500';
+    const vScore   = ts < 0  ? '' : ts < 2  ? '0' : ts < 3.5 ? '2.5' : ts < 4.0 ? '3.7' : ts < 4.5 ? '4.2' : '4.7';
+    const vRR      = rr < 0  ? '' : rr < 10 ? '5' : rr < 50 ? '30' : rr < 80 ? '65' : '90';
+    const vRecency = d  < 0  ? '' : d > 180 ? '250' : d > 60 ? '120' : d > 30 ? '45' : '15';
+
+    // sel(v, opt) → 'selected' if value matches
+    const S2 = (val, opt) => val === opt ? ' selected' : '';
+
+    // Debug line shown in banner (raw values from scan)
+    const debugLine = found
+      ? `<div style="font-size:11px;color:#047857;margin-top:3px;font-family:monospace">
+           reviews:${sd.totalReviews ?? '?'} · score:${sd.trustScore ?? '?'} · rr:${sd.responseRate ?? '?'}% · days:${sd.lastDaysAgo ?? '?'}
+         </div>`
+      : '';
 
     const banner = found
-      ? `<div style="display:flex;align-items:center;gap:10px;background:#f0fdf8;border:1px solid #bbf7d0;border-radius:10px;padding:12px 16px;margin-bottom:18px;">
+      ? `<div style="display:flex;align-items:flex-start;gap:10px;background:#f0fdf8;border:1px solid #bbf7d0;border-radius:10px;padding:12px 16px;margin-bottom:18px;">
            <span style="font-size:18px">✅</span>
-           <div>
+           <div style="flex:1">
              <div style="font-weight:700;color:#065f46;font-size:14px">${it ? 'Profilo Trustpilot trovato' : 'Trustpilot profile found'}</div>
              <div style="font-size:12px;color:#047857">${it ? 'Dati precompilati automaticamente — verifica e procedi.' : 'Data pre-filled automatically — review and confirm.'}</div>
+             ${debugLine}
            </div>
-           <a href="${tpUrl}" target="_blank" style="margin-left:auto;font-size:12px;color:#065f46;font-weight:600;text-decoration:none;white-space:nowrap;">🔗 ${it ? 'Apri profilo' : 'Open profile'}</a>
+           <a href="${tpUrl}" target="_blank" style="font-size:12px;color:#065f46;font-weight:600;text-decoration:none;white-space:nowrap;">🔗 ${it ? 'Apri profilo' : 'Open profile'}</a>
          </div>`
       : `<div style="display:flex;align-items:center;gap:10px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:12px 16px;margin-bottom:18px;">
            <span style="font-size:18px">⚠️</span>
@@ -2035,6 +2058,7 @@ function renderStep2() {
            <a href="${tpUrl}" target="_blank" style="margin-left:auto;font-size:12px;color:#92400e;font-weight:600;text-decoration:none;white-space:nowrap;">🔗 ${it ? 'Cerca su Trustpilot' : 'Search Trustpilot'}</a>
          </div>`;
 
+    // ── Build selects with `selected` baked into the HTML ────────────
     document.getElementById('step-2').innerHTML = `
       <div class="step-title">${it ? 'Dati Trustpilot' : 'Trustpilot Data'} — <span style="font-family:monospace;font-size:80%">${clean}</span></div>
       <div class="step-subtitle" style="margin-bottom:16px">
@@ -2047,43 +2071,43 @@ function renderStep2() {
         <div class="form-group" style="margin:0">
           <label>${it ? 'Recensioni totali' : 'Total reviews'}</label>
           <select id="m-reviews" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
-            <option value="">—</option>
-            <option value="0">${it ? 'Nessun profilo / 0' : 'No profile / 0'}</option>
-            <option value="6">1–12</option>
-            <option value="30">13–50</option>
-            <option value="125">51–200</option>
-            <option value="500">200+</option>
+            <option value=""${S2(vReviews,'')}>—</option>
+            <option value="0"${S2(vReviews,'0')}>${it ? 'Nessun profilo / 0' : 'No profile / 0'}</option>
+            <option value="6"${S2(vReviews,'6')}>1–12</option>
+            <option value="30"${S2(vReviews,'30')}>13–50</option>
+            <option value="125"${S2(vReviews,'125')}>51–200</option>
+            <option value="500"${S2(vReviews,'500')}>200+</option>
           </select>
         </div>
         <div class="form-group" style="margin:0">
           <label>TrustScore</label>
           <select id="m-score" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
-            <option value="">—</option>
-            <option value="0">${it ? 'Nessuno / meno di 2.0' : 'None / below 2.0'}</option>
-            <option value="2.5">2.0 – 3.5 ★</option>
-            <option value="3.7">3.5 – 4.0 ★</option>
-            <option value="4.2">4.0 – 4.5 ★</option>
-            <option value="4.7">4.5 – 5.0 ★</option>
+            <option value=""${S2(vScore,'')}>—</option>
+            <option value="0"${S2(vScore,'0')}>${it ? 'Nessuno / meno di 2.0' : 'None / below 2.0'}</option>
+            <option value="2.5"${S2(vScore,'2.5')}>2.0 – 3.5 ★</option>
+            <option value="3.7"${S2(vScore,'3.7')}>3.5 – 4.0 ★</option>
+            <option value="4.2"${S2(vScore,'4.2')}>4.0 – 4.5 ★</option>
+            <option value="4.7"${S2(vScore,'4.7')}>4.5 – 5.0 ★</option>
           </select>
         </div>
         <div class="form-group" style="margin:0">
-          <label>${it ? 'Response rate' : 'Response rate'}</label>
+          <label>Response rate</label>
           <select id="m-rr" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
-            <option value="">—</option>
-            <option value="5">0–10%</option>
-            <option value="30">10–50%</option>
-            <option value="65">50–80%</option>
-            <option value="90">80%+</option>
+            <option value=""${S2(vRR,'')}>—</option>
+            <option value="5"${S2(vRR,'5')}>0–10%</option>
+            <option value="30"${S2(vRR,'30')}>10–50%</option>
+            <option value="65"${S2(vRR,'65')}>50–80%</option>
+            <option value="90"${S2(vRR,'90')}>80%+</option>
           </select>
         </div>
         <div class="form-group" style="margin:0">
           <label>${it ? 'Ultima recensione' : 'Most recent review'}</label>
           <select id="m-recency" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
-            <option value="">—</option>
-            <option value="250">${it ? 'Più di 6 mesi fa' : 'More than 6 months ago'}</option>
-            <option value="120">${it ? '2–6 mesi fa' : '2–6 months ago'}</option>
-            <option value="45">${it ? '1–2 mesi fa' : '1–2 months ago'}</option>
-            <option value="15">${it ? 'Ultimi 30 giorni' : 'Within last 30 days'}</option>
+            <option value=""${S2(vRecency,'')}>—</option>
+            <option value="250"${S2(vRecency,'250')}>${it ? 'Più di 6 mesi fa' : 'More than 6 months ago'}</option>
+            <option value="120"${S2(vRecency,'120')}>${it ? '2–6 mesi fa' : '2–6 months ago'}</option>
+            <option value="45"${S2(vRecency,'45')}>${it ? '1–2 mesi fa' : '1–2 months ago'}</option>
+            <option value="15"${S2(vRecency,'15')}>${it ? 'Ultimi 30 giorni' : 'Within last 30 days'}</option>
           </select>
         </div>
       </div>
@@ -2101,34 +2125,8 @@ function renderStep2() {
       </div>
     `;
 
-    // ── Pre-populate dropdowns if Trustpilot data was found ──────────
-    if (state.scanData?.found) {
-      const sd = state.scanData;
-      const sel = (id, val) => { const el = document.getElementById(id); if (el) el.value = String(val); };
-
-      // Total reviews → nearest band
-      const r = sd.totalReviews ?? 0;
-      sel('m-reviews', r === 0 ? '0' : r <= 12 ? '6' : r <= 50 ? '30' : r <= 200 ? '125' : '500');
-
-      // TrustScore → nearest band
-      const ts = sd.trustScore ?? 0;
-      sel('m-score', !ts || ts < 2 ? '0' : ts < 3.5 ? '2.5' : ts < 4.0 ? '3.7' : ts < 4.5 ? '4.2' : '4.7');
-
-      // Response rate → nearest band (may be null)
-      if (sd.responseRate !== null && sd.responseRate !== undefined) {
-        const rr = sd.responseRate;
-        sel('m-rr', rr < 10 ? '5' : rr < 50 ? '30' : rr < 80 ? '65' : '90');
-      }
-
-      // Days since last review → nearest band (may be null)
-      if (sd.lastDaysAgo !== null && sd.lastDaysAgo !== undefined) {
-        const d = sd.lastDaysAgo;
-        sel('m-recency', d > 180 ? '250' : d > 60 ? '120' : d > 30 ? '45' : '15');
-      }
-
-      // Trigger live score calculation
-      calcMetricsScore();
-    }
+    // Trigger score calculation (selects already have correct values from HTML)
+    if (found) calcMetricsScore();
 
     return;
   }
