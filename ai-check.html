@@ -996,36 +996,6 @@
   }
   .btn-print:hover { border-color: var(--dark); }
 
-  /* SCAN OVERLAY */
-  #scan-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(255,255,255,0.96); z-index: 2000;
-    flex-direction: column; align-items: center; justify-content: center; gap: 20px;
-  }
-  #scan-overlay.active { display: flex; }
-  .scan-spinner {
-    width: 48px; height: 48px; border: 4px solid #e5e7eb;
-    border-top-color: var(--green); border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .scan-status-text { font-size: 15px; font-weight: 600; color: var(--mid); }
-  .scan-domain-label { font-size: 13px; color: #aaa; font-family: monospace; }
-
-  /* SCAN DATA PANEL (inside step-3) */
-  .scan-data-panel {
-    background: #f0fdf8; border: 1px solid #bbf7d0; border-radius: 12px;
-    padding: 16px 20px; margin-bottom: 20px;
-    display: flex; flex-direction: column; gap: 10px;
-  }
-  .scan-data-panel.not-found { background: #fef2f2; border-color: #fca5a5; }
-  .scan-panel-header { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; color: #065f46; }
-  .scan-panel-header.not-found { color: #991b1b; }
-  .scan-metrics { display: flex; gap: 24px; flex-wrap: wrap; }
-  .scan-metric { display: flex; flex-direction: column; gap: 2px; }
-  .scan-metric-val { font-size: 22px; font-weight: 800; color: var(--green); }
-  .scan-metric-lbl { font-size: 11px; color: var(--mid); text-transform: uppercase; letter-spacing: 0.4px; }
-  .scan-source { font-size: 11px; color: #aaa; margin-top: 2px; }
 
   /* TOAST */
   #toast {
@@ -2015,99 +1985,65 @@ function renderStep2() {
     const clean  = domain.replace(/^https?:\/\//,'').replace(/^www\./,'').replace(/\/$/,'');
     const tpUrl  = `https://www.trustpilot.com/review/${clean}`;
     const it     = lang === 'it';
-    const sd     = state.scanData || {};
-    const found  = sd.found === true;
 
-    // ── Map raw Trustpilot values → dropdown option values ───────────
-    const r  = sd.totalReviews ?? -1;
-    const ts = sd.trustScore   ?? -1;
-    const rr = sd.responseRate ?? -1;
-    const d  = sd.lastDaysAgo  ?? -1;
-
-    const vReviews = r  < 0  ? '' : r === 0 ? '0' : r <= 12 ? '6' : r <= 50 ? '30' : r <= 200 ? '125' : '500';
-    const vScore   = ts < 0  ? '' : ts < 2  ? '0' : ts < 3.5 ? '2.5' : ts < 4.0 ? '3.7' : ts < 4.5 ? '4.2' : '4.7';
-    const vRR      = rr < 0  ? '' : rr < 10 ? '5' : rr < 50 ? '30' : rr < 80 ? '65' : '90';
-    const vRecency = d  < 0  ? '' : d > 180 ? '250' : d > 60 ? '120' : d > 30 ? '45' : '15';
-
-    // sel(v, opt) → 'selected' if value matches
-    const S2 = (val, opt) => val === opt ? ' selected' : '';
-
-    // Debug line shown in banner (raw values from scan)
-    const debugLine = found
-      ? `<div style="font-size:11px;color:#047857;margin-top:3px;font-family:monospace">
-           reviews:${sd.totalReviews ?? '?'} · score:${sd.trustScore ?? '?'} · rr:${sd.responseRate ?? '?'}% · days:${sd.lastDaysAgo ?? '?'}
-         </div>`
-      : '';
-
-    const banner = found
-      ? `<div style="display:flex;align-items:flex-start;gap:10px;background:#f0fdf8;border:1px solid #bbf7d0;border-radius:10px;padding:12px 16px;margin-bottom:18px;">
-           <span style="font-size:18px">✅</span>
-           <div style="flex:1">
-             <div style="font-weight:700;color:#065f46;font-size:14px">${it ? 'Profilo Trustpilot trovato' : 'Trustpilot profile found'}</div>
-             <div style="font-size:12px;color:#047857">${it ? 'Dati precompilati automaticamente — verifica e procedi.' : 'Data pre-filled automatically — review and confirm.'}</div>
-             ${debugLine}
-           </div>
-           <a href="${tpUrl}" target="_blank" style="font-size:12px;color:#065f46;font-weight:600;text-decoration:none;white-space:nowrap;">🔗 ${it ? 'Apri profilo' : 'Open profile'}</a>
-         </div>`
-      : `<div style="display:flex;align-items:center;gap:10px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:12px 16px;margin-bottom:18px;">
-           <span style="font-size:18px">⚠️</span>
-           <div>
-             <div style="font-weight:700;color:#92400e;font-size:14px">${it ? 'Nessun profilo trovato' : 'No profile found'}</div>
-             <div style="font-size:12px;color:#b45309">${it ? 'Inserisci i dati manualmente dal profilo Trustpilot.' : 'Enter data manually from the Trustpilot profile.'}</div>
-           </div>
-           <a href="${tpUrl}" target="_blank" style="margin-left:auto;font-size:12px;color:#92400e;font-weight:600;text-decoration:none;white-space:nowrap;">🔗 ${it ? 'Cerca su Trustpilot' : 'Search Trustpilot'}</a>
-         </div>`;
-
-    // ── Build selects with `selected` baked into the HTML ────────────
     document.getElementById('step-2').innerHTML = `
       <div class="step-title">${it ? 'Dati Trustpilot' : 'Trustpilot Data'} — <span style="font-family:monospace;font-size:80%">${clean}</span></div>
       <div class="step-subtitle" style="margin-bottom:16px">
-        ${it ? 'Il punteggio viene calcolato automaticamente dai dati qui sotto.'
-             : 'The score is calculated automatically from the data below.'}
+        ${it ? 'Apri il profilo e inserisci i dati qui sotto — il punteggio viene calcolato automaticamente.'
+             : 'Open the profile and enter the data below — the score is calculated automatically.'}
       </div>
-      ${banner}
+
+      <a href="${tpUrl}" target="_blank"
+         style="display:flex;align-items:center;gap:12px;background:#f0fdf8;border:1.5px solid #00b67a;border-radius:12px;padding:14px 18px;margin-bottom:22px;text-decoration:none;transition:background 0.15s;">
+        <span style="font-size:22px">🔗</span>
+        <div>
+          <div style="font-weight:700;color:#065f46;font-size:15px">${it ? 'Apri profilo Trustpilot' : 'Open Trustpilot profile'}</div>
+          <div style="font-size:12px;color:#047857;font-family:monospace">trustpilot.com/review/${clean}</div>
+        </div>
+        <span style="margin-left:auto;font-size:18px;color:#00b67a">→</span>
+      </a>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
         <div class="form-group" style="margin:0">
           <label>${it ? 'Recensioni totali' : 'Total reviews'}</label>
           <select id="m-reviews" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
-            <option value=""${S2(vReviews,'')}>—</option>
-            <option value="0"${S2(vReviews,'0')}>${it ? 'Nessun profilo / 0' : 'No profile / 0'}</option>
-            <option value="6"${S2(vReviews,'6')}>1–12</option>
-            <option value="30"${S2(vReviews,'30')}>13–50</option>
-            <option value="125"${S2(vReviews,'125')}>51–200</option>
-            <option value="500"${S2(vReviews,'500')}>200+</option>
+            <option value="">—</option>
+            <option value="0">${it ? 'Nessun profilo / 0' : 'No profile / 0'}</option>
+            <option value="6">1–12</option>
+            <option value="30">13–50</option>
+            <option value="125">51–200</option>
+            <option value="500">200+</option>
           </select>
         </div>
         <div class="form-group" style="margin:0">
           <label>TrustScore</label>
           <select id="m-score" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
-            <option value=""${S2(vScore,'')}>—</option>
-            <option value="0"${S2(vScore,'0')}>${it ? 'Nessuno / meno di 2.0' : 'None / below 2.0'}</option>
-            <option value="2.5"${S2(vScore,'2.5')}>2.0 – 3.5 ★</option>
-            <option value="3.7"${S2(vScore,'3.7')}>3.5 – 4.0 ★</option>
-            <option value="4.2"${S2(vScore,'4.2')}>4.0 – 4.5 ★</option>
-            <option value="4.7"${S2(vScore,'4.7')}>4.5 – 5.0 ★</option>
+            <option value="">—</option>
+            <option value="0">${it ? 'Nessuno / sotto 2.0' : 'None / below 2.0'}</option>
+            <option value="2.5">2.0 – 3.5 ★</option>
+            <option value="3.7">3.5 – 4.0 ★</option>
+            <option value="4.2">4.0 – 4.5 ★</option>
+            <option value="4.7">4.5 – 5.0 ★</option>
           </select>
         </div>
         <div class="form-group" style="margin:0">
           <label>Response rate</label>
           <select id="m-rr" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
-            <option value=""${S2(vRR,'')}>—</option>
-            <option value="5"${S2(vRR,'5')}>0–10%</option>
-            <option value="30"${S2(vRR,'30')}>10–50%</option>
-            <option value="65"${S2(vRR,'65')}>50–80%</option>
-            <option value="90"${S2(vRR,'90')}>80%+</option>
+            <option value="">—</option>
+            <option value="5">0–10%</option>
+            <option value="30">10–50%</option>
+            <option value="65">50–80%</option>
+            <option value="90">80%+</option>
           </select>
         </div>
         <div class="form-group" style="margin:0">
           <label>${it ? 'Ultima recensione' : 'Most recent review'}</label>
           <select id="m-recency" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
-            <option value=""${S2(vRecency,'')}>—</option>
-            <option value="250"${S2(vRecency,'250')}>${it ? 'Più di 6 mesi fa' : 'More than 6 months ago'}</option>
-            <option value="120"${S2(vRecency,'120')}>${it ? '2–6 mesi fa' : '2–6 months ago'}</option>
-            <option value="45"${S2(vRecency,'45')}>${it ? '1–2 mesi fa' : '1–2 months ago'}</option>
-            <option value="15"${S2(vRecency,'15')}>${it ? 'Ultimi 30 giorni' : 'Within last 30 days'}</option>
+            <option value="">—</option>
+            <option value="250">${it ? 'Più di 6 mesi fa' : 'More than 6 months ago'}</option>
+            <option value="120">${it ? '2–6 mesi fa' : '2–6 months ago'}</option>
+            <option value="45">${it ? '1–2 mesi fa' : '1–2 months ago'}</option>
+            <option value="15">${it ? 'Ultimi 30 giorni' : 'Within last 30 days'}</option>
           </select>
         </div>
       </div>
@@ -2124,10 +2060,6 @@ function renderStep2() {
         </div>
       </div>
     `;
-
-    // Trigger score calculation (selects already have correct values from HTML)
-    if (found) calcMetricsScore();
-
     return;
   }
 
@@ -2319,8 +2251,7 @@ function updateProgress() {
     const dot = document.getElementById(`dot-${i}`);
     const lbl = document.getElementById(`lbl-${i}`);
     if (!dot||!lbl) continue;
-    // In auto-scan mode, step 2 is treated as "done" (skipped) once past step 1
-    const isDone = i < s || (state.scanMode === 'auto' && i === 2 && s >= 3);
+    const isDone = i < s;
     dot.className = 'step-dot'+(isDone?' done':i===s?' active':'');
     dot.textContent = isDone ? '✓' : i;
     lbl.className = 'step-label'+(i===s?' active':'');
@@ -2345,13 +2276,10 @@ function nextStep() {
   if (state.currentStep===1) {
     syncCompanyName();
     const domain = state.companyDomain.trim();
-    if (domain) {
-      // Auto-scan mode: skip step 2 entirely
-      triggerScan(domain);
-      return;
-    }
-    // No domain → manual quiz (step 2)
-    state.scanMode = 'manual';
+    // If domain provided → auto mode (step 2 shows TP link + 4 fields)
+    // If no domain     → manual mode (step 2 shows full quiz)
+    state.scanMode = domain ? 'auto' : 'manual';
+    state.scanData = null;
   }
   if (state.currentStep===2) { if (!step2Valid()) return; renderResults(); }
   if (state.currentStep===3) renderChecklist();
@@ -2373,12 +2301,7 @@ function nextStep() {
 function prevStep() {
   if (state.currentStep > 1) {
     document.getElementById(`step-${state.currentStep}`).classList.remove('active');
-    // In auto-scan mode, step 2 is skipped — go back to step 1 directly from step 3
-    if (state.scanMode === 'auto' && state.currentStep === 3) {
-      state.currentStep = 1;
-    } else {
-      state.currentStep--;
-    }
+    state.currentStep--;
     document.getElementById(`step-${state.currentStep}`).classList.add('active');
     updateProgress();
     window.scrollTo({top:0,behavior:'smooth'});
@@ -2778,133 +2701,6 @@ function renderPlanDetail(planName) {
           </div>
         </div>`).join('')}
     </div>`;
-}
-
-// ─── DOMAIN SCAN ─────────────────────────────────────────────────────
-async function triggerScan(domain) {
-  const S = STRINGS[lang];
-  const overlay = document.getElementById('scan-overlay');
-  const statusEl = document.getElementById('scan-status-text');
-  const domainEl = document.getElementById('scan-domain-label');
-
-  if (statusEl) statusEl.textContent = S.scan_loading;
-  if (domainEl) domainEl.textContent = 'trustpilot.com/review/' + domain.replace(/^https?:\/\//,'').replace(/^www\./,'').replace(/\/$/,'');
-  overlay.classList.add('active');
-
-  try {
-    const data = await runDomainScan(domain);
-    state.scanData = data;
-    state.scanMode = 'auto';
-    // In both cases (found or not) → go to step 2.
-    // renderStep2 will pre-populate fields if found, leave empty if not.
-    document.getElementById(`step-${state.currentStep}`).classList.remove('active');
-    state.currentStep = 2;
-    renderStep2();
-    document.getElementById('step-2').classList.add('active');
-  } catch (e) {
-    state.scanData = { found: false, error: true, domain };
-    state.scanMode = 'auto';
-    document.getElementById(`step-${state.currentStep}`).classList.remove('active');
-    state.currentStep = 2;
-    renderStep2();
-    document.getElementById('step-2').classList.add('active');
-  } finally {
-    overlay.classList.remove('active');
-  }
-
-  updateProgress();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-async function runDomainScan(domain) {
-  const clean = domain.replace(/^https?:\/\//,'').replace(/^www\./,'').replace(/\/$/,'').toLowerCase();
-
-  // ── Strategy 1: Netlify Function (server-side, no CORS/Cloudflare issues) ──
-  // Resolves to /.netlify/functions/scan when deployed; skipped on local file:// open.
-  const isDeployed = location.protocol !== 'file:' && !location.hostname.startsWith('localhost');
-  if (isDeployed) {
-    try {
-      const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 15000);
-      const resp = await fetch(`/.netlify/functions/scan?domain=${encodeURIComponent(clean)}`, { signal: ctrl.signal });
-      clearTimeout(t);
-      if (resp.ok) {
-        const data = await resp.json();
-        return data; // { found, domain, displayName, totalReviews, trustScore, responseRate, lastDaysAgo }
-      }
-    } catch (_) { /* fall through to proxy */ }
-  }
-
-  // ── Strategy 2: CORS proxies (local dev fallback) ────────────────
-  const PROXIES = [
-    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-  ];
-  const tpUrl = `https://www.trustpilot.com/review/${clean}`;
-
-  for (const makeProxy of PROXIES) {
-    try {
-      const ctrl = new AbortController();
-      const t = setTimeout(() => ctrl.abort(), 12000);
-      const resp = await fetch(makeProxy(tpUrl), { signal: ctrl.signal });
-      clearTimeout(t);
-      if (!resp.ok) continue;
-      const html = await resp.text();
-      const parsed = parseTrustpilotHTML(html, clean);
-      if (parsed) return parsed;
-    } catch (_) { /* try next proxy */ }
-  }
-
-  return { found: false, error: true, domain: clean };
-}
-
-function parseTrustpilotHTML(html, domain) {
-  const doc = new DOMParser().parseFromString(html, 'text/html');
-
-  // Primary: __NEXT_DATA__ (Next.js page props — most complete)
-  const nd = doc.getElementById('__NEXT_DATA__');
-  if (nd) {
-    try {
-      const json = JSON.parse(nd.textContent);
-      const bu = json?.props?.pageProps?.businessUnit;
-      if (bu?.numberOfReviews) {
-        const totalReviews  = bu.numberOfReviews.total ?? 0;
-        const trustScore    = bu.score?.trustScore ?? 0;
-        const responseRate  = bu.responseRate ?? bu.replyStats?.responseRatePercent ?? null;
-        const displayName   = bu.displayName || domain;
-
-        // Days since last review (from first review in list)
-        const reviews = json?.props?.pageProps?.reviews ?? [];
-        let lastDaysAgo = null;
-        if (reviews.length > 0) {
-          const d = reviews[0]?.dates?.publishedDate;
-          if (d) lastDaysAgo = Math.floor((Date.now() - new Date(d).getTime()) / 86400000);
-        }
-        return { found: true, domain, displayName, totalReviews, trustScore, responseRate, lastDaysAgo };
-      }
-    } catch (_) {}
-  }
-
-  // Fallback: JSON-LD structured data
-  for (const el of doc.querySelectorAll('script[type="application/ld+json"]')) {
-    try {
-      const ld = JSON.parse(el.textContent);
-      const ar = ld?.aggregateRating;
-      if (ar) {
-        return {
-          found: true, domain,
-          displayName: ld.name || domain,
-          totalReviews: parseInt(ar.reviewCount) || 0,
-          trustScore:   parseFloat(ar.ratingValue) || 0,
-          responseRate: null,
-          lastDaysAgo:  null,
-        };
-      }
-    } catch (_) {}
-  }
-
-  // Not found on Trustpilot
-  return { found: false, error: false, domain };
 }
 
 function autoScore(sd) {
@@ -3342,12 +3138,6 @@ updateProgress();
 </script>
 
 <div id="toast"></div>
-
-<div id="scan-overlay">
-  <div class="scan-spinner"></div>
-  <div class="scan-status-text" id="scan-status-text">Scansione in corso…</div>
-  <div class="scan-domain-label" id="scan-domain-label"></div>
-</div>
 
 </body>
 </html>
