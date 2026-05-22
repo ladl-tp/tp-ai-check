@@ -2783,6 +2783,23 @@ async function triggerScan(domain) {
 async function runDomainScan(domain) {
   const clean = domain.replace(/^https?:\/\//,'').replace(/^www\./,'').replace(/\/$/,'').toLowerCase();
 
+  // ── Strategy 1: Netlify Function (server-side, no CORS/Cloudflare issues) ──
+  // Resolves to /.netlify/functions/scan when deployed; skipped on local file:// open.
+  const isDeployed = location.protocol !== 'file:' && !location.hostname.startsWith('localhost');
+  if (isDeployed) {
+    try {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 15000);
+      const resp = await fetch(`/.netlify/functions/scan?domain=${encodeURIComponent(clean)}`, { signal: ctrl.signal });
+      clearTimeout(t);
+      if (resp.ok) {
+        const data = await resp.json();
+        return data; // { found, domain, displayName, totalReviews, trustScore, responseRate, lastDaysAgo }
+      }
+    } catch (_) { /* fall through to proxy */ }
+  }
+
+  // ── Strategy 2: CORS proxies (local dev fallback) ────────────────
   const PROXIES = [
     u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
     u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
@@ -2801,6 +2818,7 @@ async function runDomainScan(domain) {
       if (parsed) return parsed;
     } catch (_) { /* try next proxy */ }
   }
+
   return { found: false, error: true, domain: clean };
 }
 
