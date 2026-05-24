@@ -1985,65 +1985,82 @@ function renderStep2() {
     const clean  = domain.replace(/^https?:\/\//,'').replace(/^www\./,'').replace(/\/$/,'');
     const tpUrl  = `https://www.trustpilot.com/review/${clean}`;
     const it     = lang === 'it';
+    const sd     = state.scanData || {};
+    const found  = sd.found === true;
+
+    // Map raw API values → dropdown option values
+    const r  = sd.totalReviews ?? -1;
+    const ts = sd.trustScore   ?? -1;
+    const d  = sd.lastDaysAgo  ?? -1;
+    const vR = r  < 0 ? '' : r === 0 ? '0' : r <= 12 ? '6' : r <= 50 ? '30' : r <= 200 ? '125' : '500';
+    const vS = ts < 0 ? '' : ts < 2  ? '0' : ts < 3.5 ? '2.5' : ts < 4.0 ? '3.7' : ts < 4.5 ? '4.2' : '4.7';
+    const vD = d  < 0 ? '' : d > 180 ? '250' : d > 60 ? '120' : d > 30 ? '45' : '15';
+    const s  = (v, o) => v === o ? ' selected' : '';
+
+    const banner = found
+      ? `<div style="display:flex;align-items:flex-start;gap:12px;background:#f0fdf8;border:1.5px solid #00b67a;border-radius:12px;padding:14px 18px;margin-bottom:20px;">
+           <span style="font-size:20px">✅</span>
+           <div style="flex:1">
+             <div style="font-weight:700;color:#065f46;font-size:14px">${it ? 'Profilo trovato' : 'Profile found'} — ${sd.displayName || clean}</div>
+             <div style="font-size:12px;color:#047857;margin-top:2px">${it ? '3 campi precompilati. Aggiungi il Response rate e procedi.' : '3 fields pre-filled. Add the Response rate and proceed.'}</div>
+             <div style="font-size:11px;color:#047857;font-family:monospace;margin-top:4px">reviews:${sd.totalReviews} · score:${sd.trustScore} · last review:${d >= 0 ? d+'d ago' : 'n/a'}</div>
+           </div>
+           <a href="${tpUrl}" target="_blank" style="font-size:12px;color:#065f46;font-weight:600;text-decoration:none;white-space:nowrap">🔗 ${it ? 'Apri' : 'Open'}</a>
+         </div>`
+      : `<a href="${tpUrl}" target="_blank"
+           style="display:flex;align-items:center;gap:12px;background:#f0fdf8;border:1.5px solid #00b67a;border-radius:12px;padding:14px 18px;margin-bottom:22px;text-decoration:none;">
+           <span style="font-size:22px">🔗</span>
+           <div>
+             <div style="font-weight:700;color:#065f46;font-size:15px">${it ? 'Apri profilo Trustpilot' : 'Open Trustpilot profile'}</div>
+             <div style="font-size:12px;color:#047857;font-family:monospace">trustpilot.com/review/${clean}</div>
+           </div>
+           <span style="margin-left:auto;font-size:18px;color:#00b67a">→</span>
+         </a>`;
 
     document.getElementById('step-2').innerHTML = `
-      <div class="step-title">${it ? 'Dati Trustpilot' : 'Trustpilot Data'} — <span style="font-family:monospace;font-size:80%">${clean}</span></div>
-      <div class="step-subtitle" style="margin-bottom:16px">
-        ${it ? 'Apri il profilo e inserisci i dati qui sotto — il punteggio viene calcolato automaticamente.'
-             : 'Open the profile and enter the data below — the score is calculated automatically.'}
-      </div>
-
-      <a href="${tpUrl}" target="_blank"
-         style="display:flex;align-items:center;gap:12px;background:#f0fdf8;border:1.5px solid #00b67a;border-radius:12px;padding:14px 18px;margin-bottom:22px;text-decoration:none;transition:background 0.15s;">
-        <span style="font-size:22px">🔗</span>
-        <div>
-          <div style="font-weight:700;color:#065f46;font-size:15px">${it ? 'Apri profilo Trustpilot' : 'Open Trustpilot profile'}</div>
-          <div style="font-size:12px;color:#047857;font-family:monospace">trustpilot.com/review/${clean}</div>
-        </div>
-        <span style="margin-left:auto;font-size:18px;color:#00b67a">→</span>
-      </a>
-
+      ${banner}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
         <div class="form-group" style="margin:0">
           <label>${it ? 'Recensioni totali' : 'Total reviews'}</label>
           <select id="m-reviews" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
-            <option value="">—</option>
-            <option value="0">${it ? 'Nessun profilo / 0' : 'No profile / 0'}</option>
-            <option value="6">1–12</option>
-            <option value="30">13–50</option>
-            <option value="125">51–200</option>
-            <option value="500">200+</option>
+            <option value=""${s(vR,'')}>—</option>
+            <option value="0"${s(vR,'0')}>${it ? 'Nessun profilo / 0' : 'No profile / 0'}</option>
+            <option value="6"${s(vR,'6')}>1–12</option>
+            <option value="30"${s(vR,'30')}>13–50</option>
+            <option value="125"${s(vR,'125')}>51–200</option>
+            <option value="500"${s(vR,'500')}>200+</option>
           </select>
         </div>
         <div class="form-group" style="margin:0">
           <label>TrustScore</label>
           <select id="m-score" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
-            <option value="">—</option>
-            <option value="0">${it ? 'Nessuno / sotto 2.0' : 'None / below 2.0'}</option>
-            <option value="2.5">2.0 – 3.5 ★</option>
-            <option value="3.7">3.5 – 4.0 ★</option>
-            <option value="4.2">4.0 – 4.5 ★</option>
-            <option value="4.7">4.5 – 5.0 ★</option>
+            <option value=""${s(vS,'')}>—</option>
+            <option value="0"${s(vS,'0')}>${it ? 'Nessuno / sotto 2.0' : 'None / below 2.0'}</option>
+            <option value="2.5"${s(vS,'2.5')}>2.0 – 3.5 ★</option>
+            <option value="3.7"${s(vS,'3.7')}>3.5 – 4.0 ★</option>
+            <option value="4.2"${s(vS,'4.2')}>4.0 – 4.5 ★</option>
+            <option value="4.7"${s(vS,'4.7')}>4.5 – 5.0 ★</option>
           </select>
         </div>
         <div class="form-group" style="margin:0">
           <label>Response rate</label>
-          <select id="m-rr" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
+          <select id="m-rr" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid ${found ? '#f59e0b' : 'var(--border)'};border-radius:8px;font-size:14px;background:${found ? '#fffbeb' : '#fff'}">
             <option value="">—</option>
             <option value="5">0–10%</option>
             <option value="30">10–50%</option>
             <option value="65">50–80%</option>
             <option value="90">80%+</option>
           </select>
+          ${found ? `<div style="font-size:11px;color:#92400e;margin-top:4px">⚠ ${it ? 'Inserisci manualmente' : 'Enter manually'}</div>` : ''}
         </div>
         <div class="form-group" style="margin:0">
           <label>${it ? 'Ultima recensione' : 'Most recent review'}</label>
           <select id="m-recency" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
-            <option value="">—</option>
-            <option value="250">${it ? 'Più di 6 mesi fa' : 'More than 6 months ago'}</option>
-            <option value="120">${it ? '2–6 mesi fa' : '2–6 months ago'}</option>
-            <option value="45">${it ? '1–2 mesi fa' : '1–2 months ago'}</option>
-            <option value="15">${it ? 'Ultimi 30 giorni' : 'Within last 30 days'}</option>
+            <option value=""${s(vD,'')}>—</option>
+            <option value="250"${s(vD,'250')}>${it ? 'Più di 6 mesi fa' : 'More than 6 months ago'}</option>
+            <option value="120"${s(vD,'120')}>${it ? '2–6 mesi fa' : '2–6 months ago'}</option>
+            <option value="45"${s(vD,'45')}>${it ? '1–2 mesi fa' : '1–2 months ago'}</option>
+            <option value="15"${s(vD,'15')}>${it ? 'Ultimi 30 giorni' : 'Within last 30 days'}</option>
           </select>
         </div>
       </div>
@@ -2060,6 +2077,7 @@ function renderStep2() {
         </div>
       </div>
     `;
+    if (found) calcMetricsScore();
     return;
   }
 
@@ -2276,9 +2294,13 @@ function nextStep() {
   if (state.currentStep===1) {
     syncCompanyName();
     const domain = state.companyDomain.trim();
-    // If domain provided → auto mode (step 2 shows TP link + 4 fields)
-    // If no domain     → manual mode (step 2 shows full quiz)
-    state.scanMode = domain ? 'auto' : 'manual';
+    if (domain) {
+      state.scanMode = 'auto';
+      state.scanData = null;
+      triggerScan(domain);   // async: calls Netlify Function, then advances to step 2
+      return;
+    }
+    state.scanMode = 'manual';
     state.scanData = null;
   }
   if (state.currentStep===2) { if (!step2Valid()) return; renderResults(); }
@@ -2701,6 +2723,36 @@ function renderPlanDetail(planName) {
           </div>
         </div>`).join('')}
     </div>`;
+}
+
+// ─── DOMAIN SCAN (via Netlify Function → Trustpilot official API) ──
+async function triggerScan(domain) {
+  const btn = document.getElementById('btn-next');
+  const lbl = document.getElementById('btn-next-label');
+  const orig = lbl ? lbl.textContent : '';
+  if (lbl) lbl.textContent = lang === 'it' ? 'Verifica…' : 'Checking…';
+  if (btn) btn.disabled = true;
+
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 12000);
+    const resp = await fetch(`/.netlify/functions/scan?domain=${encodeURIComponent(domain)}`, { signal: ctrl.signal });
+    clearTimeout(t);
+    if (resp.ok) state.scanData = await resp.json();
+  } catch (_) {
+    state.scanData = null;
+  }
+
+  if (lbl) lbl.textContent = orig;
+  if (btn) btn.disabled = false;
+
+  // Advance to step 2
+  document.getElementById(`step-${state.currentStep}`).classList.remove('active');
+  state.currentStep = 2;
+  renderStep2();
+  document.getElementById('step-2').classList.add('active');
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function autoScore(sd) {
