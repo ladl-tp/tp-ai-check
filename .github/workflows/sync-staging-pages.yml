@@ -1,0 +1,39 @@
+name: Sync staging → GitHub Pages /staging/
+
+on:
+  push:
+    branches: [staging]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout staging branch
+        uses: actions/checkout@v4
+        with:
+          ref: staging
+          path: staging-src
+
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main-src
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Copy index.html to main/staging/
+        run: |
+          mkdir -p main-src/staging
+          cp staging-src/index.html main-src/staging/index.html
+
+      - name: Commit and push to main
+        run: |
+          cd main-src
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add staging/index.html
+          git diff --staged --quiet && echo "No changes" || \
+            git commit -m "chore: sync staging → /staging/ [skip ci]" && git push
