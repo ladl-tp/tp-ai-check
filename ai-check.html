@@ -1462,6 +1462,9 @@
             <button class="btn-print" id="btn-docs" onclick="generatePPT()" style="background:var(--green); border-color:var(--green); color:white;" data-i18n="btn_docs">
               ⬇ Scarica PPT
             </button>
+            <button class="btn-print" id="btn-pdf" onclick="generatePDF()" style="background:var(--green); border-color:var(--green); color:white;" data-i18n="btn_pdf">
+              ⬇ Scarica PDF
+            </button>
           </div>
         </div>
       </div>
@@ -1567,6 +1570,7 @@ const STRINGS = {
     cta_body:'Il tuo Trustpilot rep può aiutarti ad attivare il piano e lanciare i primi passi della roadmap entro questa settimana.',
     btn_print:'🖨 Salva come PDF',
     btn_docs:'⬇ Scarica PPT',
+    btn_pdf:'⬇ Scarica PDF',
     s1_lbl_domain:'Dominio aziendale',
     s1_ph_domain:'es. acme.com',
     scan_loading:'Scansione Trustpilot in corso…',
@@ -1660,6 +1664,7 @@ const STRINGS = {
     cta_body:"Your Trustpilot rep can help you activate the plan and launch the first roadmap steps this week.",
     btn_print:'🖨 Print or save as PDF',
     btn_docs:'⬇ Download PPT',
+    btn_pdf:'⬇ Download PDF',
     s1_lbl_domain:'Company domain',
     s1_ph_domain:'e.g. acme.com',
     scan_loading:'Scanning Trustpilot…',
@@ -3100,6 +3105,229 @@ async function generatePPT() {
   }
 }
 
+
+// ─── PDF GENERATION ─────────────────────────────────────────────────
+async function generatePDF() {
+  const btn = document.getElementById('btn-pdf');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Generando...'; }
+
+  try {
+    if (!window.jspdf) {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js';
+        s.onload = resolve; s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+    const { jsPDF } = window.jspdf;
+
+    // ── same data setup as generatePPT() ─────────────────────────────
+    const it = lang === 'it';
+    const total = state.total;
+    const scoreTier = total <= 10 ? 'red' : total <= 20 ? 'yellow' : 'green';
+    const company = state.companyName || (it ? 'la tua azienda' : 'your company');
+    const today = new Date().toLocaleDateString(it ? 'it-IT' : 'en-GB', { day:'2-digit', month:'long', year:'numeric' });
+
+    const scenarios = SCENARIOS[lang];
+    let scenario = null;
+    if (state.selectedScenario !== null) scenario = scenarios.find(s => s.id === state.selectedScenario);
+    if (!scenario) scenario = scenarios.find(s => s.trigger(state.scores)) || scenarios[0];
+
+    const roadmap = ROADMAPS[lang][scoreTier];
+    const recPlanKey = state.planChoice.recommended;
+    const recPlan = recPlanKey ? PLAN_DATA[recPlanKey] : null;
+
+    const TC  = { red:'E74C3C', yellow:'F5A623', green:'00B67A' }[scoreTier];
+    const tierLabel = { red:it?"Invisibile per l'AI":'Invisible to AI', yellow:it?'Parzialmente Visibile':'Partially Visible', green:'AI-Ready' }[scoreTier];
+    const tierDesc  = { red:it?"Il brand non è rilevato dagli LLM. Serve azione immediata.":'The brand is not detected by LLMs. Immediate action needed.', yellow:it?'Il brand è parzialmente visibile. Opportunità concrete di miglioramento.':'The brand is partially visible. Concrete opportunities to improve.', green:it?'Il brand è AI-Ready. Focus su consolidamento e ottimizzazione.':'The brand is AI-Ready. Focus on consolidation and optimisation.' }[scoreTier];
+
+    const W=13.33, H=7.5, TP_GREEN='00B67A', TP_DARK='191919', TP_LIGHT='F3F4F6', TP_BORDER='E5E7EB';
+    const LOGO_RATIO = 1071/263;
+
+    const doc = new jsPDF({ orientation:'l', unit:'in', format:[W, H] });
+
+    // ── helpers ──────────────────────────────────────────────────────
+    const hx = h => { h=h.replace('#',''); return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; };
+    const fc  = (x,y,w,h,col) => { doc.setFillColor(...hx(col)); doc.rect(x,y,w,h,'F'); };
+    const fsc = (x,y,w,h,fc2,sc2,lw=0.012) => { doc.setFillColor(...hx(fc2)); doc.setDrawColor(...hx(sc2)); doc.setLineWidth(lw); doc.rect(x,y,w,h,'FD'); };
+    const rr  = (x,y,w,h,r,col) => { doc.setFillColor(...hx(col)); doc.roundedRect(x,y,w,h,r,r,'F'); };
+    const el  = (cx,cy,rx,ry,col) => { doc.setFillColor(...hx(col)); doc.ellipse(cx,cy,rx,ry,'F'); };
+    const eli = (cx,cy,rx,ry,col,sc2,lw=0.06) => { doc.setFillColor(...hx(col)); doc.setDrawColor(...hx(sc2)); doc.setLineWidth(lw); doc.ellipse(cx,cy,rx,ry,'FD'); };
+    const im  = (data,x,y,w,h) => { try{ doc.addImage(data,'PNG',x,y,w,h); }catch(e){} };
+
+    const txt = (text, x, y, w, h, o={}) => {
+      if (!text && text!==0) return;
+      doc.setTextColor(...hx(o.color||'191919'));
+      doc.setFontSize(o.fontSize||11);
+      doc.setFont('helvetica', o.bold?'bold':'normal');
+      const al = o.align||'left';
+      const tx = al==='center'?x+w/2 : al==='right'?x+w : x;
+      const ty = o.valign==='middle' ? y+h/2 : y+(o.fontSize||11)/72*1.1;
+      const bl = o.valign==='middle' ? 'middle' : 'top';
+      if (o.wrap===false) {
+        doc.text(String(text), tx, ty, {align:al, baseline:bl});
+      } else {
+        const lines = doc.splitTextToSize(String(text), w||10);
+        doc.text(lines.slice(0, o.maxLines||99), tx, ty, {align:al, baseline:bl, lineHeightFactor:1.35});
+      }
+    };
+
+    const hdr = (title) => {
+      fc(0,0,W,0.7,TP_DARK);
+      const lw=1.72, lh=lw/LOGO_RATIO;
+      im(logoWhiteB64, 0.22, (0.7-lh)/2, lw, lh);
+      fc(2.08,0.18,0.02,0.34,'444444');
+      txt(title, 2.24,0,7.2,0.7, {fontSize:17,bold:true,color:'FFFFFF',valign:'middle'});
+      txt(company, 9.6,0,3.5,0.7, {fontSize:10,bold:true,color:TP_GREEN,valign:'middle',align:'right',wrap:false});
+    };
+    const ftr = () => fc(0,H-0.22,W,0.22,TP_GREEN);
+
+    // ═══════════════════════════════════════════════════════════════
+    // PAGE 1 — COVER
+    // ═══════════════════════════════════════════════════════════════
+    fc(0,0,W,H,TP_DARK);
+    fc(0,0,0.22,H,TP_GREEN);
+    const cvLw=2.55, cvLh=cvLw/LOGO_RATIO;
+    im(logoWhiteB64, 0.45, 0.22, cvLw, cvLh);
+    // Decorative circles
+    el(12.5,6.4,2.4,2.4,'003D2B'); el(12.8,6.7,1.9,1.9,'005940'); el(13.1,7.0,1.35,1.35,TP_GREEN);
+    txt('AI RELEVANCE SCORE',0.45,1.25,9.5,0.4,{fontSize:12,bold:true,color:TP_GREEN,wrap:false});
+    txt(company,0.45,1.62,9.5,0.78,{fontSize:38,bold:true,color:'FFFFFF',valign:'middle',wrap:false});
+    fc(0.45,2.42,5.5,0.02,'333333');
+    txt(String(total),0.45,2.5,4.5,2.3,{fontSize:180,bold:true,color:TC,valign:'middle',wrap:false});
+    txt('/30',0.45,4.88,3,0.45,{fontSize:24,color:'505050',wrap:false});
+    rr(0.45,5.42,5.0,0.58,0.08,TC);
+    txt(tierLabel.toUpperCase(),0.45,5.42,5.0,0.58,{fontSize:14,bold:true,color:'FFFFFF',align:'center',valign:'middle',wrap:false});
+    txt(tierDesc,0.45,6.1,9.8,0.55,{fontSize:11,color:'666666'});
+    txt(today,9.5,6.9,3.6,0.3,{fontSize:10,color:'444444',align:'right',wrap:false});
+
+    // ═══════════════════════════════════════════════════════════════
+    // PAGE 2 — SCORE BREAKDOWN
+    // ═══════════════════════════════════════════════════════════════
+    doc.addPage(); fc(0,0,W,H,'FFFFFF'); hdr(it?'Analisi del Punteggio':'Score Breakdown');
+
+    const cr=1.25, cx=0.4+cr+0.2, cy=1.15+cr;
+    eli(cx,cy,cr,cr,TP_LIGHT,TC);
+    txt(String(total),cx-cr,cy-0.75,cr*2,1.1,{fontSize:72,bold:true,color:TC,align:'center',valign:'middle',wrap:false});
+    txt('/30',cx-cr,cy+0.38,cr*2,0.32,{fontSize:15,color:'AAAAAA',align:'center',wrap:false});
+    txt(tierLabel,cx-cr,cy+0.72,cr*2,0.38,{fontSize:12,bold:true,color:TC,align:'center',wrap:false});
+
+    [{label:'D1 — Volume & Recency',score:state.scores.d1},{label:'D2 — Response & Engagement',score:state.scores.d2},{label:'D3 — TrustScore & Trend',score:state.scores.d3}]
+    .forEach((d,i)=>{
+      const by=3.9+i*0.6, bW=5.25;
+      txt(d.label,0.4,by,bW,0.24,{fontSize:11,color:'555555'});
+      fc(0.4,by+0.25,bW,0.2,TP_BORDER);
+      if(d.score>0) fc(0.4,by+0.25,bW*d.score/10,0.2,TC);
+      txt(`${d.score}/10`,0.4+bW+0.04,by+0.17,0.5,0.3,{fontSize:11,bold:true,color:TC,align:'right',wrap:false});
+    });
+    fc(6.75,0.85,0.02,H-1.1,TP_BORDER);
+
+    txt(it?'Perché conta la visibilità AI':'Why AI Visibility Matters',7.05,0.88,6.0,0.42,{fontSize:15,bold:true,color:TP_DARK});
+    [{num:'60%',lbl:it?'delle ricerche AI si concludono senza un clic (Bain, 2025)':'of AI searches end without a click (Bain, 2025)'},
+     {num:'62%',lbl:it?'dei brand è invisibile agli LLM (Semrush, 2025)':'of brands are invisible to LLMs (Semrush, 2025)'},
+     {num:'75%',lbl:it?'citation rate per brand con profilo Trustpilot attivo':'citation rate for brands with an active Trustpilot profile'},
+     {num:'16×',lbl:it?'più citation a purchase intent vs awareness (Seer, 2026)':'more citations at purchase intent vs awareness (Seer, 2026)'}]
+    .forEach((st,i)=>{
+      const sW=(6.0-0.25)/2, sx=7.05+(i%2)*(sW+0.25), sy=1.4+Math.floor(i/2)*2.78;
+      fsc(sx,sy,sW,2.6,'F0FDF8','A7F3D0');
+      txt(st.num,sx+0.15,sy+0.15,sW-0.3,0.95,{fontSize:50,bold:true,color:TP_GREEN,wrap:false});
+      txt(st.lbl,sx+0.15,sy+1.1,sW-0.3,1.35,{fontSize:11,color:'374151'});
+    });
+    ftr();
+
+    // ═══════════════════════════════════════════════════════════════
+    // PAGE 3 — LLM AUDIT & ROADMAP
+    // ═══════════════════════════════════════════════════════════════
+    doc.addPage(); fc(0,0,W,H,'FFFFFF'); hdr('LLM Brand Visibility Audit');
+
+    const stC3={yes:'059669',partial:'D97706',no:'DC2626'}, stI3={yes:'✓',partial:'~',no:'✗'};
+    txt(it?'Checklist LLM':'LLM Checklist',0.4,0.82,5.8,0.36,{fontSize:13,bold:true,color:TP_DARK});
+    let clY3=1.26;
+    CHECKLIST[lang].forEach((item,i)=>{
+      if(clY3+0.3>4.1) return;
+      const st=state.checklist[i];
+      fc(0.4,clY3,5.8,0.29,i%2===0?'F9FAFB':'FFFFFF');
+      txt(stI3[st]||'-',0.45,clY3,0.34,0.29,{fontSize:11,bold:true,color:stC3[st]||'999999',valign:'middle',wrap:false});
+      txt(item.signal,0.82,clY3,5.33,0.29,{fontSize:10,color:'333333',valign:'middle'});
+      clY3+=0.3;
+    });
+    fc(6.5,0.82,0.02,3.22,TP_BORDER);
+
+    if(scenario){
+      txt(scenario.title,6.7,0.82,6.4,0.48,{fontSize:13,bold:true,color:TP_DARK});
+      const bRaw=typeof scenario.body==='function'?scenario.body(company):(scenario.body||'');
+      txt(bRaw.length>270?bRaw.substring(0,270)+'…':bRaw,6.7,1.35,6.4,1.5,{fontSize:10.5,color:'444444'});
+      fsc(6.7,2.92,6.4,1.1,'FFFBEB','F59E0B',0.015);
+      fc(6.7,2.92,0.16,1.1,'F59E0B');
+      txt(`Quick Win${it?' — questa settimana':' — this week'}`,6.95,2.97,6.05,0.3,{fontSize:11,bold:true,color:'D97706',wrap:false});
+      txt(scenario.qw||'',6.95,3.28,6.05,0.65,{fontSize:10.5,color:'444444'});
+    }
+
+    const rmY=4.15;
+    fc(0,rmY,W,0.05,TP_GREEN);
+    txt(it?'Roadmap 90 Giorni':'90-Day Roadmap',0.4,rmY+0.1,6,0.36,{fontSize:13,bold:true,color:TP_DARK});
+    const sW3=(W-1.0)/3-0.15;
+    roadmap.steps.forEach((step,i)=>{
+      const sx=0.4+i*(sW3+0.15), sy=rmY+0.53, sh=H-sy-0.3;
+      fsc(sx,sy,sW3,sh,i%2===0?'F9FAFB':'FFFFFF',TC,0.01);
+      fc(sx,sy,sW3,0.3,TC);
+      txt(step.period,sx+0.08,sy,sW3-0.16,0.3,{fontSize:9,bold:true,color:'FFFFFF',valign:'middle',wrap:false});
+      txt(step.action,sx+0.08,sy+0.34,sW3-0.16,0.38,{fontSize:10,bold:true,color:TP_DARK});
+      const det=(step.detail||'').length>160?(step.detail||'').substring(0,160)+'…':(step.detail||'');
+      txt(det,sx+0.08,sy+0.74,sW3-0.16,sh-1.12,{fontSize:9.5,color:'555555'});
+      txt('> '+(step.kpi||''),sx+0.08,sy+sh-0.36,sW3-0.16,0.32,{fontSize:9,color:TC});
+    });
+    ftr();
+
+    // ═══════════════════════════════════════════════════════════════
+    // PAGE 4 — RECOMMENDED PLAN
+    // ═══════════════════════════════════════════════════════════════
+    if(recPlan){
+      doc.addPage(); fc(0,0,W,H,'FFFFFF');
+      const pc=recPlan.color.replace('#','');
+      fc(0,0,W,0.7,pc);
+      const p4lw=1.72, p4lh=p4lw/LOGO_RATIO;
+      im(logoWhiteB64,0.22,(0.7-p4lh)/2,p4lw,p4lh);
+      fc(2.08,0.18,0.02,0.34,'555555');
+      txt(it?'Piano Consigliato':'Recommended Plan',2.24,0,7.2,0.7,{fontSize:17,bold:true,color:'FFFFFF',valign:'middle'});
+      txt(company,9.6,0,3.5,0.7,{fontSize:10,bold:true,color:'FFFFFF',align:'right',valign:'middle',wrap:false});
+
+      txt(recPlan.name,0.5,0.85,8,0.95,{fontSize:60,bold:true,color:pc,wrap:false});
+      txt(recPlan.tier[lang],0.5,1.82,12,0.36,{fontSize:14,color:'777777'});
+
+      const wt=((WHY[lang]||{})[scoreTier]||{})[recPlanKey]||'';
+      fsc(0.5,2.28,12.3,1.05,'F9FAFB',TP_BORDER);
+      fc(0.5,2.28,0.18,1.05,pc);
+      txt(it?'Perché questo piano:':'Why this plan:',0.82,2.33,11.8,0.3,{fontSize:11,bold:true,color:pc});
+      txt(wt,0.82,2.63,11.8,0.62,{fontSize:11,color:'333333'});
+
+      txt(it?'Cosa include':"What's included",0.5,3.45,12,0.36,{fontSize:13,bold:true,color:TP_DARK});
+      const feats=recPlan.features[lang]||[], fW=(W-1.2)/2-0.2, fH=1.5;
+      feats.forEach((feat,i)=>{
+        if(!feat) return;
+        const fx=0.5+(i%2)*(fW+0.4), fy=3.88+Math.floor(i/2)*(fH+0.15);
+        if(fy+fH>H-0.42) return;
+        fsc(fx,fy,fW,fH,TP_LIGHT,TP_BORDER);
+        fc(fx,fy,fW,0.3,pc);
+        txt(`${feat.icon}  ${feat.title}`,fx+0.12,fy,fW-0.24,0.3,{fontSize:10.5,bold:true,color:'FFFFFF',valign:'middle',wrap:false});
+        txt((feat.items||[]).map(x=>`- ${x}`).join('\n'),fx+0.12,fy+0.34,fW-0.24,fH-0.42,{fontSize:9.5,color:'444444'});
+      });
+
+      txt(it?'Report generato automaticamente. Dati da fonti pubbliche: Bain, Semrush, Seer.':'Automatically generated. Data from public sources: Bain, Semrush, Seer.',
+        0.5,H-0.42,W-1,0.2,{fontSize:8,color:'AAAAAA'});
+      ftr();
+    }
+
+    // ── Download ──────────────────────────────────────────────────────
+    const safeC=(state.companyName||'Company').replace(/[^a-zA-Z0-9À-ÿ\s_-]/g,'').replace(/\s+/g,'_');
+    doc.save(`AI_Check_${safeC}_${new Date().toISOString().split('T')[0]}.pdf`);
+
+  } finally {
+    const btn = document.getElementById('btn-pdf');
+    if (btn) { btn.disabled=false; btn.innerHTML=STRINGS[lang].btn_pdf; }
+  }
+}
 
 // ─── INIT ──────────────────────────────────────────────────────────
 renderStep1();
