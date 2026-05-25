@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/docx@7.8.2/build/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <style>
   :root {
     --green: #00b67a;
@@ -1459,8 +1459,8 @@
             <button class="btn-print" onclick="window.print()" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.2); color:white;" data-i18n="btn_print">
               🖨 Salva come PDF
             </button>
-            <button class="btn-print" id="btn-docs" onclick="openGoogleDoc()" style="background:var(--green); border-color:var(--green); color:white;" data-i18n="btn_docs">
-              📄 Crea Google Doc
+            <button class="btn-print" id="btn-docs" onclick="generatePPT()" style="background:var(--green); border-color:var(--green); color:white;" data-i18n="btn_docs">
+              ⬇ Scarica PPT
             </button>
           </div>
         </div>
@@ -1566,7 +1566,7 @@ const STRINGS = {
     cta_ready:'Pronto a partire?',
     cta_body:'Il tuo Trustpilot rep può aiutarti ad attivare il piano e lanciare i primi passi della roadmap entro questa settimana.',
     btn_print:'🖨 Salva come PDF',
-    btn_docs:'📄 Crea Google Doc',
+    btn_docs:'⬇ Scarica PPT',
     s1_lbl_domain:'Dominio aziendale',
     s1_ph_domain:'es. acme.com',
     scan_loading:'Scansione Trustpilot in corso…',
@@ -1659,7 +1659,7 @@ const STRINGS = {
     cta_ready:'Ready to act on this?',
     cta_body:"Your Trustpilot rep can help you activate the plan and launch the first roadmap steps this week.",
     btn_print:'🖨 Print or save as PDF',
-    btn_docs:'📄 Create Google Doc',
+    btn_docs:'⬇ Download PPT',
     s1_lbl_domain:'Company domain',
     s1_ph_domain:'e.g. acme.com',
     scan_loading:'Scanning Trustpilot…',
@@ -2780,26 +2780,17 @@ function showToast(msg, durationMs=4500) {
   setTimeout(() => t.classList.remove('show'), durationMs);
 }
 
-// ─── GOOGLE DOC FLOW ────────────────────────────────────────────────
-async function openGoogleDoc() {
-  await generateDOCS();
-  window.open('https://drive.google.com/drive/my-drive', '_blank');
-  showToast(lang === 'it'
-    ? '✓ Report scaricato! Caricalo su Google Drive per condividerlo come Google Doc.'
-    : '✓ Report downloaded! Upload it to Google Drive to share as a Google Doc.');
-}
-
-// ─── DOCX GENERATION ────────────────────────────────────────────────
-async function generateDOCS() {
+// ─── PPT GENERATION ─────────────────────────────────────────────────
+async function generatePPT() {
   const btn = document.getElementById('btn-docs');
   if (btn) { btn.disabled = true; btn.textContent = '⏳ Generando...'; }
 
   try {
-    const S = STRINGS[lang];
+    const it = lang === 'it';
     const total = state.total;
     const scoreTier = total <= 10 ? 'red' : total <= 20 ? 'yellow' : 'green';
-    const company = state.companyName || (lang === 'it' ? 'la tua azienda' : 'your company');
-    const today = new Date().toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-GB', { day:'2-digit', month:'long', year:'numeric' });
+    const company = state.companyName || (it ? 'la tua azienda' : 'your company');
+    const today = new Date().toLocaleDateString(it ? 'it-IT' : 'en-GB', { day:'2-digit', month:'long', year:'numeric' });
 
     const scenarios = SCENARIOS[lang];
     let scenario = null;
@@ -2809,344 +2800,273 @@ async function generateDOCS() {
     const roadmap = ROADMAPS[lang][scoreTier];
     const recPlanKey = state.planChoice.recommended;
     const recPlan = recPlanKey ? PLAN_DATA[recPlanKey] : null;
-    const tierColor = { red:'E74C3C', yellow:'F5A623', green:'00B67A' }[scoreTier];
 
-    const D = docx;
-    const W = 9458; // A4 content width in twips (11906 − 2×1224)
-    const cm = n => Math.round(n * 567);
+    const TC = { red:'E74C3C', yellow:'F5A623', green:'00B67A' }[scoreTier];
+    const tierLabel = {
+      red:   it ? "Invisibile per l'AI" : 'Invisible to AI',
+      yellow: it ? 'Parzialmente Visibile' : 'Partially Visible',
+      green: 'AI-Ready'
+    }[scoreTier];
+    const tierDesc = {
+      red:   it ? "Il brand non è ancora rilevato dagli LLM. Serve azione immediata." : 'The brand is not yet detected by LLMs. Immediate action needed.',
+      yellow: it ? 'Il brand è parzialmente visibile agli LLM. Opportunità concrete di miglioramento.' : 'The brand is partially visible to LLMs. Concrete opportunities to improve.',
+      green: it ? 'Il brand è AI-Ready. Focus su consolidamento e ottimizzazione.' : 'The brand is AI-Ready. Focus on consolidation and optimisation.'
+    }[scoreTier];
 
-    const noBorder = {
-      top:    { style:D.BorderStyle.NONE, size:0, color:'auto' },
-      bottom: { style:D.BorderStyle.NONE, size:0, color:'auto' },
-      left:   { style:D.BorderStyle.NONE, size:0, color:'auto' },
-      right:  { style:D.BorderStyle.NONE, size:0, color:'auto' },
-      insideH:{ style:D.BorderStyle.NONE, size:0, color:'auto' },
-      insideV:{ style:D.BorderStyle.NONE, size:0, color:'auto' },
+    const TP_GREEN  = '00B67A';
+    const TP_DARK   = '191919';
+    const TP_LIGHT  = 'F3F4F6';
+    const TP_BORDER = 'E5E7EB';
+    const W = 13.33, H = 7.5;
+
+    // Trustpilot ★ as inline base64 SVG
+    const starSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122 117"><polygon fill="#00b67a" points="61,2.5 75.5,42 121,42 84,67.5 98.5,107 61,81.5 23.5,107 38,67.5 1,42 46.5,42"/></svg>`;
+    const starB64 = 'data:image/svg+xml;base64,' + btoa(starSvg);
+
+    // Load PptxGenJS lazily if not already present
+    if (typeof PptxGenJS === 'undefined') {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js';
+        s.onload = resolve; s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+
+    const pptx = new PptxGenJS();
+    pptx.layout  = 'LAYOUT_WIDE';
+    pptx.title   = `AI Relevance Score — ${company}`;
+    pptx.author  = 'Trustpilot';
+
+    // ── Shared helpers ────────────────────────────────────────────────
+    const R      = pptx.ShapeType.rect;
+    const EL     = pptx.ShapeType.ellipse;
+    const RR     = pptx.ShapeType.roundRect;
+    const noLine = { type:'none' };
+
+    const hdr = (slide, title) => {
+      slide.addShape(R, { x:0, y:0, w:W, h:0.7, fill:{color:TP_DARK}, line:noLine });
+      slide.addImage({ data:starB64, x:0.28, y:0.13, w:0.4, h:0.4 });
+      slide.addText(title, { x:0.82, y:0, w:9, h:0.7, fontSize:18, bold:true, color:'FFFFFF', fontFace:'Arial', valign:'middle' });
+      slide.addText(`${company}  ·  ${today}`, { x:9.1, y:0, w:4.0, h:0.7, fontSize:10, color:'888888', fontFace:'Arial', valign:'middle', align:'right' });
     };
+    const ftr = (slide) => slide.addShape(R, { x:0, y:H-0.22, w:W, h:0.22, fill:{color:TP_GREEN}, line:noLine });
 
-    const run = (text, opts={}) => new D.TextRun({
-      text, font:'Calibri',
-      color:   opts.color   || '1A1A1A',
-      bold:    opts.bold    || false,
-      size:    opts.size    || 22,
-      italics: opts.italics || false,
+    // ═════════════════════════════════════════════════════════════════
+    // SLIDE 1 — COVER
+    // ═════════════════════════════════════════════════════════════════
+    const s1 = pptx.addSlide();
+    s1.background = { color:TP_DARK };
+
+    // Left green accent stripe
+    s1.addShape(R, { x:0, y:0, w:0.22, h:H, fill:{color:TP_GREEN}, line:noLine });
+
+    // Trustpilot wordmark
+    s1.addImage({ data:starB64, x:0.45, y:0.28, w:0.52, h:0.5 });
+    s1.addText('trustpilot', { x:1.08, y:0.28, w:3.5, h:0.5, fontSize:22, bold:true, color:'FFFFFF', fontFace:'Arial', valign:'middle' });
+
+    // Decorative layered circles (bottom-right)
+    s1.addShape(EL, { x:10.4, y:4.6, w:4.8, h:4.8, fill:{color:'003D2B'}, line:noLine });
+    s1.addShape(EL, { x:11.0, y:5.2, w:3.8, h:3.8, fill:{color:'005940'}, line:noLine });
+    s1.addShape(EL, { x:11.7, y:5.85, w:2.7, h:2.7, fill:{color:TP_GREEN}, line:noLine });
+
+    // "AI RELEVANCE SCORE" eyebrow label
+    s1.addText('AI RELEVANCE SCORE', {
+      x:0.45, y:1.45, w:9.5, h:0.45,
+      fontSize:13, bold:true, color:TP_GREEN, fontFace:'Arial', charSpacing:4
     });
 
-    const para = (runs, opts={}) => new D.Paragraph({
-      children: Array.isArray(runs) ? runs : [runs],
-      spacing: { before: opts.before||0, after: opts.after !== undefined ? opts.after : cm(0.1) },
-      alignment: opts.align || D.AlignmentType.LEFT,
+    // Big score number
+    s1.addText(String(total), {
+      x:0.35, y:1.85, w:5.5, h:3.0,
+      fontSize:210, bold:true, color:TC, fontFace:'Arial', align:'left', valign:'middle', shrinkText:false
+    });
+    s1.addText('/30', {
+      x:0.45, y:4.75, w:3, h:0.5,
+      fontSize:26, color:'505050', fontFace:'Arial', valign:'middle'
     });
 
-    // H1 with bottom border rule
-    const h1 = (text) => new D.Paragraph({
-      children: [new D.TextRun({ text, font:'Calibri', bold:true, size:40, color:'1A1A1A' })],
-      spacing: { before: cm(0.25), after: cm(0.18) },
-      border: { bottom:{ style:D.BorderStyle.SINGLE, size:6, color:'DDDDDD' } },
+    // Tier badge pill
+    s1.addShape(RR, { x:0.45, y:5.35, w:5.0, h:0.62, fill:{color:TC}, line:noLine, rectRadius:0.06 });
+    s1.addText(tierLabel.toUpperCase(), {
+      x:0.45, y:5.35, w:5.0, h:0.62,
+      fontSize:15, bold:true, color:'FFFFFF', fontFace:'Arial', align:'center', valign:'middle'
     });
 
-    // H2 subheading
-    const h2 = (text, color='1A1A1A') => new D.Paragraph({
-      children: [new D.TextRun({ text, font:'Calibri', bold:true, size:28, color })],
-      spacing: { before: cm(0.22), after: cm(0.08) },
+    // Tier description
+    s1.addText(tierDesc, {
+      x:0.45, y:6.1, w:9.8, h:0.55,
+      fontSize:11.5, color:'777777', fontFace:'Arial'
     });
 
-    // Thin separator
-    const rule = () => new D.Paragraph({
-      children: [],
-      border: { bottom:{ style:D.BorderStyle.SINGLE, size:4, color:'E5E7EB' } },
-      spacing: { before:0, after: cm(0.15) },
+    // ═════════════════════════════════════════════════════════════════
+    // SLIDE 2 — SCORE BREAKDOWN
+    // ═════════════════════════════════════════════════════════════════
+    const s2 = pptx.addSlide();
+    s2.background = { color:'FFFFFF' };
+    hdr(s2, it ? 'Analisi del Punteggio' : 'Score Breakdown');
+
+    // Score circle
+    const cr = 1.25, cx = 0.4+cr+0.2, cy = 1.15+cr;
+    s2.addShape(EL, { x:cx-cr, y:cy-cr, w:cr*2, h:cr*2, fill:{color:TP_LIGHT}, line:{color:TC, width:6} });
+    s2.addText(String(total), { x:cx-cr, y:cy-0.75, w:cr*2, h:1.1, fontSize:72, bold:true, color:TC, fontFace:'Arial', align:'center', valign:'middle' });
+    s2.addText('/30',         { x:cx-cr, y:cy+0.38, w:cr*2, h:0.32, fontSize:15, color:'AAAAAA', fontFace:'Arial', align:'center' });
+    s2.addText(tierLabel,     { x:cx-cr, y:cy+0.72, w:cr*2, h:0.38, fontSize:12, bold:true, color:TC, fontFace:'Arial', align:'center' });
+
+    // Dimension bars
+    const lcX = 0.4, barMaxW = 5.25;
+    [
+      { label:'D1 — Volume & Recency',      score:state.scores.d1 },
+      { label:'D2 — Response & Engagement', score:state.scores.d2 },
+      { label:'D3 — TrustScore & Trend',    score:state.scores.d3 },
+    ].forEach((dim, i) => {
+      const by = 3.9 + i*0.6;
+      s2.addText(dim.label, { x:lcX, y:by, w:barMaxW, h:0.24, fontSize:11, color:'555555', fontFace:'Arial' });
+      s2.addShape(R, { x:lcX, y:by+0.25, w:barMaxW, h:0.2, fill:{color:TP_BORDER}, line:noLine });
+      if (dim.score>0) s2.addShape(R, { x:lcX, y:by+0.25, w:barMaxW*dim.score/10, h:0.2, fill:{color:TC}, line:noLine });
+      s2.addText(`${dim.score}/10`, { x:lcX+barMaxW+0.04, y:by+0.17, w:0.5, h:0.3, fontSize:11, bold:true, color:TC, fontFace:'Arial', align:'right' });
     });
 
-    // Footer line
-    const footerLine = (txt) => new D.Paragraph({
-      children: [new D.TextRun({ text: txt, font:'Calibri', color:'BBBBBB', size:18, italics:true })],
-      spacing: { before: cm(0.4), after: 0 },
+    // Vertical divider
+    s2.addShape(R, { x:6.75, y:0.85, w:0.02, h:H-1.1, fill:{color:TP_BORDER}, line:noLine });
+
+    // Market stats 2×2
+    const rcX = 7.05, rcW = 6.0;
+    s2.addText(it?'Perché conta la visibilità AI':'Why AI Visibility Matters', {
+      x:rcX, y:0.88, w:rcW, h:0.42, fontSize:15, bold:true, color:TP_DARK, fontFace:'Arial'
+    });
+    [
+      { num:'60%', lbl: it?'delle ricerche AI si\nconcludono senza un clic\n(Bain, 2025)':'of AI searches end\nwithout a click\n(Bain, 2025)' },
+      { num:'62%', lbl: it?'dei brand è invisibile\nagli LLM\n(Semrush, 2025)':'of brands are invisible\nto LLMs\n(Semrush, 2025)' },
+      { num:'75%', lbl: it?'citation rate per brand\ncon profilo Trustpilot\nattivo':'citation rate for brands\nwith an active\nTrustpilot profile' },
+      { num:'16×', lbl: it?'più citation a purchase\nintent vs awareness\n(Seer, 2026)':'more citations at\npurchase intent vs\nawareness (Seer, 2026)' },
+    ].forEach((st, i) => {
+      const stW=(rcW-0.25)/2, sx=rcX+(i%2)*(stW+0.25), sy=1.4+Math.floor(i/2)*2.78;
+      s2.addShape(R, { x:sx, y:sy, w:stW, h:2.6, fill:{color:'F0FDF8'}, line:{color:'A7F3D0', width:1} });
+      s2.addText(st.num, { x:sx+0.15, y:sy+0.15, w:stW-0.3, h:0.95, fontSize:50, bold:true, color:TP_GREEN, fontFace:'Arial' });
+      s2.addText(st.lbl, { x:sx+0.15, y:sy+1.1,  w:stW-0.3, h:1.35, fontSize:11, color:'374151', fontFace:'Arial' });
+    });
+    ftr(s2);
+
+    // ═════════════════════════════════════════════════════════════════
+    // SLIDE 3 — LLM AUDIT & 90-DAY ROADMAP
+    // ═════════════════════════════════════════════════════════════════
+    const s3 = pptx.addSlide();
+    s3.background = { color:'FFFFFF' };
+    hdr(s3, 'LLM Brand Visibility Audit');
+
+    // Checklist (left)
+    const stC = { yes:'059669', partial:'D97706', no:'DC2626' };
+    const stI = { yes:'✓', partial:'◐', no:'✗' };
+    s3.addText(it?'Checklist LLM':'LLM Checklist', {
+      x:0.4, y:0.82, w:5.8, h:0.36, fontSize:13, bold:true, color:TP_DARK, fontFace:'Arial'
+    });
+    let clY = 1.26;
+    CHECKLIST[lang].forEach((item, i) => {
+      if (clY+0.3 > 4.1) return;
+      const st = state.checklist[i];
+      s3.addShape(R, { x:0.4, y:clY, w:5.8, h:0.29, fill:{color:i%2===0?'F9FAFB':'FFFFFF'}, line:noLine });
+      s3.addText(stI[st]||'—', { x:0.45, y:clY, w:0.34, h:0.29, fontSize:11, bold:true, color:stC[st]||'999999', fontFace:'Arial', valign:'middle' });
+      s3.addText(item.signal, { x:0.82, y:clY, w:5.33, h:0.29, fontSize:10, color:'333333', fontFace:'Arial', valign:'middle' });
+      clY += 0.3;
     });
 
-    const children = [];
+    // Divider
+    s3.addShape(R, { x:6.5, y:0.82, w:0.02, h:3.22, fill:{color:TP_BORDER}, line:noLine });
 
-    // ═══════════════════════════════════════════════════════════
-    // PAGE 1 — Score & Market Stats
-    // ═══════════════════════════════════════════════════════════
-
-    // Report title
-    children.push(new D.Paragraph({
-      children: [
-        new D.TextRun({ text:'AI Check', font:'Calibri', bold:true, size:52, color:'00B67A' }),
-        new D.TextRun({ text:'  —  AI Relevance Score & LLM Visibility Audit', font:'Calibri', size:26, color:'777777' }),
-      ],
-      spacing: { before:0, after: cm(0.05) },
-    }));
-
-    // Company + date with bottom rule
-    children.push(new D.Paragraph({
-      children: [
-        new D.TextRun({ text: company, font:'Calibri', bold:true, size:36, color:'1A1A1A' }),
-        new D.TextRun({ text: '   ·   '+today, font:'Calibri', size:22, color:'999999' }),
-      ],
-      spacing: { before:0, after: cm(0.3) },
-      border: { bottom:{ style:D.BorderStyle.SINGLE, size:6, color:'DDDDDD' } },
-    }));
-
-    // Score — big number inline with tier label
-    const tierLabelTxt = {
-      red:   { it:'Invisibile per l\'AI', en:'Invisible to AI' },
-      yellow:{ it:'Parzialmente Visibile', en:'Partially Visible' },
-      green: { it:'AI-Ready', en:'AI-Ready' },
-    }[scoreTier][lang];
-    const tierDescTxt = {
-      red:   { it:'Il brand non è ancora rilevato dagli LLM. È necessaria un\'azione immediata per costruire visibilità AI.', en:'The brand is not yet detected by LLMs. Immediate action is needed to build AI visibility.' },
-      yellow:{ it:'Il brand è parzialmente visibile agli LLM. Esistono opportunità concrete per rafforzare la presenza AI.', en:'The brand is partially visible to LLMs. Concrete opportunities exist to strengthen AI presence.' },
-      green: { it:'Il brand è pronto per l\'AI. Il focus ora è consolidare e ottimizzare la propria presenza nelle risposte LLM.', en:'The brand is AI-Ready. The focus now is to consolidate and optimise presence in LLM answers.' },
-    }[scoreTier][lang];
-
-    children.push(new D.Paragraph({
-      children: [
-        new D.TextRun({ text: String(total), font:'Calibri', bold:true, size:120, color: tierColor }),
-        new D.TextRun({ text: '/30', font:'Calibri', size:48, color:'CCCCCC' }),
-        new D.TextRun({ text: '    ', size:48 }),
-        new D.TextRun({ text: tierLabelTxt.toUpperCase(), font:'Calibri', bold:true, size:36, color: tierColor }),
-      ],
-      spacing: { before: cm(0.3), after: cm(0.08) },
-    }));
-    children.push(para(run(tierDescTxt, { color:'666666', size:22, italics:true }), { after:cm(0.15) }));
-
-    // Subdimensions table
-    const dims = [
-      { label:'D1 — '+(lang==='it'?'Volume & Recency':'Volume & Recency'), score: state.scores.d1 },
-      { label:'D2 — '+(lang==='it'?'Response & Engagement':'Response & Engagement'), score: state.scores.d2 },
-      { label:'D3 — '+(lang==='it'?'TrustScore & Trend':'TrustScore & Trend'), score: state.scores.d3 },
-    ];
-    const dW1 = Math.floor(W * 0.72), dW2 = W - dW1;
-    children.push(new D.Table({
-      width: { size:W, type:D.WidthType.DXA },
-      columnWidths: [dW1, dW2],
-      borders: noBorder,
-      rows: dims.map((d, i) => new D.TableRow({ children:[
-        new D.TableCell({
-          width: { size:dW1, type:D.WidthType.DXA },
-          shading: { type:D.ShadingType.CLEAR, fill: i%2===0?'F9FAFB':'FFFFFF', color:'auto' },
-          children: [para(run(d.label, { color:'555555', size:22 }), { after:0 })],
-          margins: { top:cm(0.06), bottom:cm(0.06), left:cm(0.15), right:cm(0.1) },
-        }),
-        new D.TableCell({
-          width: { size:dW2, type:D.WidthType.DXA },
-          shading: { type:D.ShadingType.CLEAR, fill: i%2===0?'F9FAFB':'FFFFFF', color:'auto' },
-          children: [para(run(d.score+'/10', { color:tierColor, bold:true, size:22 }), { after:0, align:D.AlignmentType.RIGHT })],
-          margins: { top:cm(0.06), bottom:cm(0.06), left:cm(0.1), right:cm(0.15) },
-        }),
-      ]})),
-    }));
-    children.push(para(run(''), { before:cm(0.2), after:0 }));
-
-    // Market stats — 2×2 grid
-    children.push(h2(lang==='it'?'Perché conta la visibilità AI':'Why AI Visibility Matters'));
-    const statsData = [
-      { num:'60%', label: lang==='it' ? 'delle ricerche AI terminano senza un click (Bain, 2025)' : 'of searches end without a click (Bain, 2025)' },
-      { num:'62%', label: lang==='it' ? 'dei brand non è rilevato dagli LLM (Semrush)' : 'of brands invisible to LLMs (Semrush)' },
-      { num:'75%', label: lang==='it' ? 'citation rate per brand con profilo Trustpilot' : 'citation rate for brands with Trustpilot profile' },
-      { num:'16×', label: lang==='it' ? 'più citation a purchase intent vs awareness (Seer)' : 'more citations at purchase intent vs awareness (Seer)' },
-    ];
-    const sw = Math.floor(W / 2);
-    const gridBorder = { top:{style:D.BorderStyle.SINGLE,size:4,color:'E5E7EB'}, bottom:{style:D.BorderStyle.SINGLE,size:4,color:'E5E7EB'}, left:{style:D.BorderStyle.NONE,size:0,color:'auto'}, right:{style:D.BorderStyle.NONE,size:0,color:'auto'}, insideH:{style:D.BorderStyle.SINGLE,size:4,color:'E5E7EB'}, insideV:{style:D.BorderStyle.SINGLE,size:4,color:'E5E7EB'} };
-    const makeStatCell = (st, width, fill) => new D.TableCell({
-      width: { size:width, type:D.WidthType.DXA },
-      shading: { type:D.ShadingType.CLEAR, fill, color:'auto' },
-      children: [
-        para(run(st.num, { color:'00B67A', bold:true, size:56 }), { after:0 }),
-        para(run(st.label, { color:'555555', size:20 }), { before:cm(0.04), after:cm(0.1) }),
-      ],
-      margins: { top:cm(0.15), bottom:cm(0.15), left:cm(0.2), right:cm(0.15) },
-    });
-    children.push(new D.Table({
-      width: { size:W, type:D.WidthType.DXA },
-      columnWidths: [sw, W-sw],
-      borders: gridBorder,
-      rows: [
-        new D.TableRow({ children:[ makeStatCell(statsData[0], sw, 'F7FDF9'), makeStatCell(statsData[1], W-sw, 'FFFFFF') ] }),
-        new D.TableRow({ children:[ makeStatCell(statsData[2], sw, 'FFFFFF'), makeStatCell(statsData[3], W-sw, 'F7FDF9') ] }),
-      ],
-    }));
-
-    children.push(footerLine(`Confidential Report  ·  ${lang==='it'?'Generato per':'Generated for'}: ${company}  ·  ${today}`));
-
-    // PAGE BREAK 1→2
-    children.push(new D.Paragraph({ children:[new D.PageBreak()] }));
-
-    // ═══════════════════════════════════════════════════════════
-    // PAGE 2 — LLM Audit · Scenario · Roadmap (only here)
-    // ═══════════════════════════════════════════════════════════
-
-    children.push(h1(lang==='it'?'LLM Brand Visibility Audit':'LLM Brand Visibility Audit'));
-
-    // Checklist
-    const stIcons  = { yes:'✓', partial:'◐', no:'✗' };
-    const stColors = { yes:'059669', partial:'D97706', no:'DC2626' };
-    const iW = Math.floor(W * 0.07);
-    const tW = W - iW;
-    const clRows = CHECKLIST[lang].map((item, i) => {
-      const status = state.checklist[i];
-      const icon   = stIcons[status] || '—';
-      const icolor = stColors[status] || '999999';
-      const bgFill = i%2===0 ? 'FFFFFF' : 'F9FAFB';
-      return new D.TableRow({ children:[
-        new D.TableCell({
-          width: { size:iW, type:D.WidthType.DXA },
-          shading: { type:D.ShadingType.CLEAR, fill:bgFill, color:'auto' },
-          children: [para(run(icon, { color:icolor, bold:true, size:22 }), { after:0, align:D.AlignmentType.CENTER })],
-          margins: { top:cm(0.05), bottom:cm(0.05), left:cm(0.05), right:cm(0.05) },
-        }),
-        new D.TableCell({
-          width: { size:tW, type:D.WidthType.DXA },
-          shading: { type:D.ShadingType.CLEAR, fill:bgFill, color:'auto' },
-          children: [para(run(item.signal, { color:'333333', size:22 }), { after:0 })],
-          margins: { top:cm(0.05), bottom:cm(0.05), left:cm(0.15), right:cm(0.1) },
-        }),
-      ]});
-    });
-    children.push(new D.Table({
-      width: { size:W, type:D.WidthType.DXA },
-      columnWidths: [iW, tW],
-      borders: { top:{style:D.BorderStyle.SINGLE,size:4,color:'E5E7EB'}, bottom:{style:D.BorderStyle.SINGLE,size:4,color:'E5E7EB'}, left:{style:D.BorderStyle.NONE,size:0,color:'auto'}, right:{style:D.BorderStyle.NONE,size:0,color:'auto'}, insideH:{style:D.BorderStyle.SINGLE,size:4,color:'E5E7EB'}, insideV:{style:D.BorderStyle.NONE,size:0,color:'auto'} },
-      rows: clRows,
-    }));
-    children.push(para(run(''), { before:cm(0.2), after:0 }));
-
-    // Scenario
+    // Scenario + Quick Win (right)
     if (scenario) {
-      children.push(h2(scenario.title));
-      const bodyText = typeof scenario.body==='function' ? scenario.body(state.companyName) : (scenario.body||'');
-      children.push(para(run(bodyText, { color:'444444', size:22 }), { after:cm(0.15) }));
-
-      // Quick Win callout box
-      children.push(new D.Table({
-        width: { size:W, type:D.WidthType.DXA },
-        columnWidths: [W],
-        borders: { top:{style:D.BorderStyle.SINGLE,size:8,color:'F59E0B'}, bottom:{style:D.BorderStyle.NONE,size:0,color:'auto'}, left:{style:D.BorderStyle.SINGLE,size:8,color:'F59E0B'}, right:{style:D.BorderStyle.NONE,size:0,color:'auto'}, insideH:{style:D.BorderStyle.NONE,size:0,color:'auto'}, insideV:{style:D.BorderStyle.NONE,size:0,color:'auto'} },
-        rows: [new D.TableRow({ children:[new D.TableCell({
-          width: { size:W, type:D.WidthType.DXA },
-          shading: { type:D.ShadingType.CLEAR, fill:'FFFBEB', color:'auto' },
-          children: [
-            para([run('Quick Win', { color:'D97706', bold:true, size:22 }), run(lang==='it'?' — questa settimana:':' — this week:', { color:'D97706', size:22 })], { after:cm(0.08) }),
-            para(run(scenario.qw, { color:'444444', size:22 }), { after:0 }),
-          ],
-          margins: { top:cm(0.12), bottom:cm(0.12), left:cm(0.2), right:cm(0.2) },
-        })]})],
-      }));
-      children.push(para(run(''), { before:cm(0.2), after:0 }));
+      s3.addText(scenario.title, {
+        x:6.7, y:0.82, w:6.4, h:0.48, fontSize:13, bold:true, color:TP_DARK, fontFace:'Arial'
+      });
+      const bodyRaw = typeof scenario.body==='function' ? scenario.body(company) : (scenario.body||'');
+      s3.addText(bodyRaw.length>270 ? bodyRaw.substring(0,270)+'…' : bodyRaw, {
+        x:6.7, y:1.35, w:6.4, h:1.5, fontSize:10.5, color:'444444', fontFace:'Arial'
+      });
+      s3.addShape(R, { x:6.7, y:2.92, w:6.4, h:1.1, fill:{color:'FFFBEB'}, line:{color:'F59E0B', width:1.5} });
+      s3.addShape(R, { x:6.7, y:2.92, w:0.16, h:1.1, fill:{color:'F59E0B'}, line:noLine });
+      s3.addText(`⚡ Quick Win${it?' — questa settimana':' — this week'}`, {
+        x:6.95, y:2.97, w:6.05, h:0.3, fontSize:11, bold:true, color:'D97706', fontFace:'Arial'
+      });
+      s3.addText(scenario.qw||'', { x:6.95, y:3.28, w:6.05, h:0.65, fontSize:10.5, color:'444444', fontFace:'Arial' });
     }
 
-    // Roadmap — only on this page
-    children.push(h2(lang==='it'?'Roadmap 90 Giorni':'90-Day Roadmap'));
-    roadmap.steps.forEach((step) => {
-      children.push(new D.Paragraph({
-        children: [
-          new D.TextRun({ text:'• ', font:'Calibri', color:tierColor, bold:true, size:24 }),
-          new D.TextRun({ text:step.period, font:'Calibri', color:tierColor, bold:true, size:24 }),
-          new D.TextRun({ text:' — ', font:'Calibri', color:'AAAAAA', size:24 }),
-          new D.TextRun({ text:step.action, font:'Calibri', color:tierColor, bold:true, size:24 }),
-        ],
-        spacing: { before:cm(0.18), after:cm(0.05) },
-      }));
-      children.push(para(run(step.detail, { color:'555555', size:22 }), { before:0, after:cm(0.04) }));
-      children.push(para([
-        run('→ ', { color:tierColor, bold:true, size:22 }),
-        run(step.kpi, { color:tierColor, size:22, italics:true }),
-      ], { after:cm(0.08) }));
+    // Roadmap strip (bottom)
+    const rmY = 4.15;
+    s3.addShape(R, { x:0, y:rmY, w:W, h:0.05, fill:{color:TP_GREEN}, line:noLine });
+    s3.addText(it?'Roadmap 90 Giorni':'90-Day Roadmap', {
+      x:0.4, y:rmY+0.1, w:6, h:0.36, fontSize:13, bold:true, color:TP_DARK, fontFace:'Arial'
     });
+    const stepW = (W-1.0)/3-0.15;
+    roadmap.steps.forEach((step, i) => {
+      const sx=0.4+i*(stepW+0.15), sy=rmY+0.53, sh=H-sy-0.3;
+      s3.addShape(R, { x:sx, y:sy, w:stepW, h:sh, fill:{color:i%2===0?'F9FAFB':'FFFFFF'}, line:{color:TC, width:1} });
+      s3.addShape(R, { x:sx, y:sy, w:stepW, h:0.3, fill:{color:TC}, line:noLine });
+      s3.addText(step.period, { x:sx+0.08, y:sy, w:stepW-0.16, h:0.3, fontSize:9, bold:true, color:'FFFFFF', fontFace:'Arial', valign:'middle' });
+      s3.addText(step.action, { x:sx+0.08, y:sy+0.34, w:stepW-0.16, h:0.38, fontSize:10, bold:true, color:TP_DARK, fontFace:'Arial' });
+      const det=(step.detail||'').length>170?(step.detail||'').substring(0,170)+'…':(step.detail||'');
+      s3.addText(det, { x:sx+0.08, y:sy+0.74, w:stepW-0.16, h:sh-1.12, fontSize:9.5, color:'555555', fontFace:'Arial' });
+      s3.addText('→ '+(step.kpi||''), { x:sx+0.08, y:sy+sh-0.36, w:stepW-0.16, h:0.32, fontSize:9, color:TC, fontFace:'Arial', italics:true });
+    });
+    ftr(s3);
 
-    children.push(footerLine(`Confidential Report  ·  ${lang==='it'?'Generato per':'Generated for'}: ${company}  ·  ${today}`));
-
-    // PAGE BREAK 2→3
-    children.push(new D.Paragraph({ children:[new D.PageBreak()] }));
-
-    // ═══════════════════════════════════════════════════════════
-    // PAGE 3 — Recommended Plan (no roadmap)
-    // ═══════════════════════════════════════════════════════════
-
+    // ═════════════════════════════════════════════════════════════════
+    // SLIDE 4 — RECOMMENDED PLAN
+    // ═════════════════════════════════════════════════════════════════
     if (recPlan) {
+      const s4 = pptx.addSlide();
+      s4.background = { color:'FFFFFF' };
       const pc  = recPlan.color.replace('#','');
-      const pbg = recPlan.bg.replace('#','');
 
-      children.push(h1(lang==='it'?'Piano Consigliato':'Recommended Plan'));
-      children.push(new D.Paragraph({
-        children: [
-          new D.TextRun({ text: recPlan.name, font:'Calibri', bold:true, size:44, color:pc }),
-          new D.TextRun({ text: '   —   ', font:'Calibri', size:28, color:'CCCCCC' }),
-          new D.TextRun({ text: recPlan.tier[lang], font:'Calibri', size:26, color:'666666' }),
-        ],
-        spacing: { before:cm(0.1), after:cm(0.2) },
-      }));
+      // Header (plan color)
+      s4.addShape(R, { x:0, y:0, w:W, h:0.7, fill:{color:pc}, line:noLine });
+      s4.addImage({ data:starB64, x:0.28, y:0.13, w:0.4, h:0.4 });
+      s4.addText(it?'Piano Consigliato':'Recommended Plan', {
+        x:0.82, y:0, w:9, h:0.7, fontSize:18, bold:true, color:'FFFFFF', fontFace:'Arial', valign:'middle'
+      });
+      s4.addText(`${company}  ·  ${today}`, {
+        x:9.1, y:0, w:4.0, h:0.7, fontSize:10, color:'FFFFFF', fontFace:'Arial', valign:'middle', align:'right', transparency:40
+      });
 
-      // Why this plan
-      children.push(h2(lang==='it'?'Perché questo piano':'Why this plan'));
-      children.push(new D.Table({
-        width: { size:W, type:D.WidthType.DXA },
-        columnWidths: [W],
-        borders: { top:{style:D.BorderStyle.SINGLE,size:8,color:pc}, bottom:{style:D.BorderStyle.NONE,size:0,color:'auto'}, left:{style:D.BorderStyle.SINGLE,size:8,color:pc}, right:{style:D.BorderStyle.NONE,size:0,color:'auto'}, insideH:{style:D.BorderStyle.NONE,size:0,color:'auto'}, insideV:{style:D.BorderStyle.NONE,size:0,color:'auto'} },
-        rows: [new D.TableRow({ children:[new D.TableCell({
-          width: { size:W, type:D.WidthType.DXA },
-          shading: { type:D.ShadingType.CLEAR, fill:pbg, color:'auto' },
-          children: [para(run(WHY[lang][scoreTier][recPlanKey], { color:'333333', size:22 }), { after:0 })],
-          margins: { top:cm(0.15), bottom:cm(0.15), left:cm(0.2), right:cm(0.2) },
-        })]})],
-      }));
+      // Plan name
+      s4.addText(recPlan.name, { x:0.5, y:0.85, w:8, h:0.95, fontSize:60, bold:true, color:pc, fontFace:'Arial' });
+      s4.addText(recPlan.tier[lang], { x:0.5, y:1.82, w:12, h:0.36, fontSize:14, color:'777777', fontFace:'Arial' });
 
-      // Features — 2 columns
-      children.push(h2(lang==='it'?'Cosa include':'What\'s included'));
-      const feats = recPlan.features[lang];
-      const fw = Math.floor(W / 2);
-      const featRows = [];
-      for (let i = 0; i < feats.length; i += 2) {
-        const makeFeatCell = (feat, width) => new D.TableCell({
-          width: { size:width, type:D.WidthType.DXA },
-          children: feat ? [
-            para(run(feat.icon+'  '+feat.title, { color:pc, bold:true, size:22 }), { after:cm(0.08) }),
-            ...feat.items.map(item => para([run('·  ', { color:'BBBBBB', size:22 }), run(item, { color:'444444', size:22 })], { after:cm(0.04) })),
-          ] : [para(run(''))],
-          borders: { top:{style:D.BorderStyle.SINGLE,size:4,color:'E5E7EB'}, bottom:{style:D.BorderStyle.SINGLE,size:4,color:'E5E7EB'}, left:{style:D.BorderStyle.NONE,size:0,color:'auto'}, right:{style:D.BorderStyle.NONE,size:0,color:'auto'}, insideH:{style:D.BorderStyle.NONE,size:0,color:'auto'}, insideV:{style:D.BorderStyle.NONE,size:0,color:'auto'} },
-          margins: { top:cm(0.1), bottom:cm(0.1), left:cm(0.05), right:cm(0.15) },
-        });
-        featRows.push(new D.TableRow({ children:[ makeFeatCell(feats[i], fw), makeFeatCell(feats[i+1], W-fw) ] }));
-      }
-      children.push(new D.Table({
-        width: { size:W, type:D.WidthType.DXA },
-        columnWidths: [fw, W-fw],
-        borders: noBorder,
-        rows: featRows,
-      }));
+      // "Why this plan" callout
+      const whyText = ((WHY[lang]||{})[scoreTier]||{})[recPlanKey]||'';
+      s4.addShape(R, { x:0.5, y:2.28, w:12.3, h:1.05, fill:{color:'F9FAFB'}, line:{color:TP_BORDER, width:1} });
+      s4.addShape(R, { x:0.5, y:2.28, w:0.18, h:1.05, fill:{color:pc}, line:noLine });
+      s4.addText(it?'Perché questo piano:':'Why this plan:', { x:0.82, y:2.33, w:11.8, h:0.3, fontSize:11, bold:true, color:pc, fontFace:'Arial' });
+      s4.addText(whyText, { x:0.82, y:2.63, w:11.8, h:0.62, fontSize:11, color:'333333', fontFace:'Arial' });
 
-      // Disclaimer
-      children.push(para(run(''), { before:cm(0.5), after:0 }));
-      children.push(rule());
-      children.push(para(run(
-        lang==='it'
-          ? 'Disclaimer: Questo report è generato automaticamente sulla base delle risposte fornite. I dati citati provengono da fonti pubbliche (Bain, Semrush, Seer). Rivedere le informazioni prima di utilizzarle per decisioni aziendali.'
-          : 'Disclaimer: This report is automatically generated based on responses provided. Cited statistics come from public sources (Bain, Semrush, Seer). Please review before using for business decisions.',
-        { color:'AAAAAA', size:18, italics:true }
-      ), { after:cm(0.05) }));
-      children.push(footerLine(`Confidential Report  ·  ${lang==='it'?'Generato per':'Generated for'}: ${company}  ·  ${today}`));
+      // Features grid
+      s4.addText(it?'Cosa include':'What\'s included', {
+        x:0.5, y:3.45, w:12, h:0.36, fontSize:13, bold:true, color:TP_DARK, fontFace:'Arial'
+      });
+      const feats=recPlan.features[lang]||[], featW=(W-1.2)/2-0.2, featH=1.5, featSY=3.88;
+      feats.forEach((feat, i) => {
+        if (!feat) return;
+        const fx=0.5+(i%2)*(featW+0.4), fy=featSY+Math.floor(i/2)*(featH+0.15);
+        if (fy+featH > H-0.42) return;
+        s4.addShape(R, { x:fx, y:fy, w:featW, h:featH, fill:{color:TP_LIGHT}, line:{color:TP_BORDER, width:1} });
+        s4.addShape(R, { x:fx, y:fy, w:featW, h:0.3,   fill:{color:pc}, line:noLine });
+        s4.addText(`${feat.icon}  ${feat.title}`, { x:fx+0.12, y:fy, w:featW-0.24, h:0.3, fontSize:10.5, bold:true, color:'FFFFFF', fontFace:'Arial', valign:'middle' });
+        s4.addText((feat.items||[]).map(x=>`·  ${x}`).join('\n'), { x:fx+0.12, y:fy+0.34, w:featW-0.24, h:featH-0.42, fontSize:9.5, color:'444444', fontFace:'Arial' });
+      });
+
+      // Disclaimer + footer
+      s4.addText(
+        it ? 'Report generato automaticamente. Dati da fonti pubbliche: Bain, Semrush, Seer.'
+           : 'Automatically generated. Data from public sources: Bain, Semrush, Seer.',
+        { x:0.5, y:H-0.42, w:W-1, h:0.2, fontSize:8, color:'AAAAAA', fontFace:'Arial', italics:true }
+      );
+      ftr(s4);
     }
 
-    // Build & download
-    const doc = new docx.Document({
-      creator: 'Trustpilot AI Check',
-      title: `AI Check — ${company}`,
-      sections: [{
-        properties: { page:{ margin:{ top:cm(1.6), right:cm(2.16), bottom:cm(1.6), left:cm(2.16) } } },
-        children
-      }]
-    });
-
-    const blob = await docx.Packer.toBlob(doc);
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
+    // ── Download ────────────────────────────────────────────────────────
     const safeCompany = (state.companyName||'Company').replace(/[^a-zA-Z0-9À-ÿ\s_-]/g,'').replace(/\s+/g,'_');
-    a.download = `AI_Check_${safeCompany}_${new Date().toISOString().split('T')[0]}.docx`;
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    await pptx.writeFile({ fileName:`AI_Check_${safeCompany}_${new Date().toISOString().split('T')[0]}.pptx` });
+    // ── end of PPT generation ──
 
   } finally {
     const btn = document.getElementById('btn-docs');
