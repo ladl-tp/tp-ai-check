@@ -2350,36 +2350,9 @@ function renderResults() {
   const total = state.total;
   const scoreTier = total<=10?'red':total<=20?'yellow':'green';
 
-  // ── Scan data panel ──
+  // ── Scan data panel — hidden (data already shown in step 2) ──
   const panelEl = document.getElementById('scan-data-panel');
-  if (panelEl) {
-    if (state.scanMode === 'auto' && state.scanData) {
-      const sd = state.scanData;
-      if (sd.found) {
-        const rr = sd.responseRate !== null ? sd.responseRate+'%' : '—';
-        const ts = sd.trustScore ? sd.trustScore.toFixed(1) : '—';
-        panelEl.innerHTML = `
-          <div class="scan-data-panel">
-            <div class="scan-panel-header">🔍 ${S.scan_found}: <span style="font-weight:400;margin-left:4px">${sd.displayName}</span></div>
-            <div class="scan-metrics">
-              <div class="scan-metric"><div class="scan-metric-val">${sd.totalReviews.toLocaleString()}</div><div class="scan-metric-lbl">${S.scan_reviews}</div></div>
-              <div class="scan-metric"><div class="scan-metric-val">${ts} ⭐</div><div class="scan-metric-lbl">${S.scan_score}</div></div>
-              <div class="scan-metric"><div class="scan-metric-val">${rr}</div><div class="scan-metric-lbl">${S.scan_response}</div></div>
-            </div>
-            <div class="scan-source">trustpilot.com/review/${sd.domain}</div>
-          </div>`;
-      } else {
-        const msg = sd.error ? S.scan_error : S.scan_no_profile;
-        panelEl.innerHTML = `
-          <div class="scan-data-panel not-found">
-            <div class="scan-panel-header not-found">⚠️ ${S.scan_not_found}</div>
-            <div style="font-size:13px;color:#7f1d1d;margin-top:2px">${msg}</div>
-          </div>`;
-      }
-    } else {
-      panelEl.innerHTML = '';
-    }
-  }
+  if (panelEl) panelEl.innerHTML = '';
 
   document.getElementById('score-big').textContent = total;
   document.getElementById('res-d1').textContent = d1;
