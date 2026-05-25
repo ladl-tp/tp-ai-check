@@ -1961,7 +1961,7 @@ function renderStep1() {
       </div>
       <div class="form-group" style="margin-bottom:0">
         <label>${S.s1_lbl_domain}
-          <span style="font-weight:400;color:#aaa;font-size:12px;margin-left:4px">(${lang==='it'?'usato per lo scan automatico':'used for auto-scan'})</span>
+          <span style="font-weight:400;color:#aaa;font-size:12px;margin-left:4px">(${lang==='it'?'per aprire il profilo Trustpilot':'to open Trustpilot profile'})</span>
         </label>
         <input type="text" id="domain-field" placeholder="${S.s1_ph_domain}" value="${cDomain}"
                oninput="state.companyDomain=this.value.trim()"
@@ -2703,26 +2703,10 @@ function renderPlanDetail(planName) {
     </div>`;
 }
 
-// ─── DOMAIN SCAN (via Netlify Function → Trustpilot official API) ──
-async function triggerScan(domain) {
-  const btn = document.getElementById('btn-next');
-  const lbl = document.getElementById('btn-next-label');
-  const orig = lbl ? lbl.textContent : '';
-  if (lbl) lbl.textContent = lang === 'it' ? 'Verifica…' : 'Checking…';
-  if (btn) btn.disabled = true;
-
-  try {
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 12000);
-    const resp = await fetch(`/.netlify/functions/scan?domain=${encodeURIComponent(domain)}`, { signal: ctrl.signal });
-    clearTimeout(t);
-    if (resp.ok) state.scanData = await resp.json();
-  } catch (_) {
-    state.scanData = null;
-  }
-
-  if (lbl) lbl.textContent = orig;
-  if (btn) btn.disabled = false;
+// ─── ADVANCE TO STEP 2 (domain used only for Trustpilot profile link) ──
+function triggerScan(domain) {
+  // API scan removed — domain is kept to generate the Trustpilot profile link
+  state.scanData = null;
 
   // Advance to step 2
   document.getElementById(`step-${state.currentStep}`).classList.remove('active');
