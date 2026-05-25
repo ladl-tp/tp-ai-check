@@ -2546,7 +2546,7 @@ function renderPlanPicker() {
   const S = STRINGS[lang];
   const total = state.total;
   const scoreTier = total<=12?'red':total<=22?'yellow':'green';
-  const suggestedMap = {red:'Premium',yellow:'Enterprise',green:'Enterprise'};
+  const suggestedMap = {red:'Enterprise',yellow:'Enterprise',green:'Enterprise'};
   const suggested = suggestedMap[scoreTier];
   const planColors = {Plus:'#e74c3c',Premium:'#f5a623',Enterprise:'#00b67a'};
 
@@ -2623,7 +2623,7 @@ function renderPlan() {
   const S = STRINGS[lang];
   const total = state.total;
   const scoreTier = total<=12?'red':total<=22?'yellow':'green';
-  const suggestedMap = {red:'Premium',yellow:'Enterprise',green:'Enterprise'};
+  const suggestedMap = {red:'Enterprise',yellow:'Enterprise',green:'Enterprise'};
 
   // Default to recommended from plan choice, then fallback to score suggestion
   if (!selectedPlanKey) {
