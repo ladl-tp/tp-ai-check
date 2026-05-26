@@ -1141,12 +1141,7 @@
         <div class="step-line" id="line-5"></div>
         <div class="step-item">
           <div class="step-dot" id="dot-6">6</div>
-          <span class="step-label" id="lbl-6" data-i18n="lbl_piano_pick">Scelta Piano</span>
-        </div>
-        <div class="step-line" id="line-6"></div>
-        <div class="step-item">
-          <div class="step-dot" id="dot-7">7</div>
-          <span class="step-label" id="lbl-7" data-i18n="lbl_piano">Il tuo Piano</span>
+          <span class="step-label" id="lbl-6" data-i18n="lbl_piano">Il tuo Piano</span>
         </div>
       </div>
     </div>
@@ -1684,7 +1679,7 @@ const STRINGS = {
 // ─── STATE ─────────────────────────────────────────────────────────
 const state = {
   currentStep: 1,
-  totalSteps: 7,
+  totalSteps: 6,
   companyName: '',
   companyDomain: '',
   scanMode: 'manual',   // 'manual' | 'auto'
@@ -1694,7 +1689,7 @@ const state = {
   total: 0,
   selectedScenario: null,
   checklist: {},
-  planChoice: { recommended: null, light: null }
+  planChoice: { recommended: 'Enterprise', light: null }
 };
 
 // ─── SCENARIOS ─────────────────────────────────────────────────────
@@ -1939,8 +1934,7 @@ function applyLang() {
   if (state.currentStep >= 3) renderResults();
   if (state.currentStep >= 4) renderChecklist();
   if (state.currentStep >= 5) renderRoadmap();
-  if (state.currentStep >= 6) renderPlanPicker();
-  if (state.currentStep >= 7) renderPlan();
+  if (state.currentStep >= 6) { state.planChoice.recommended='Enterprise'; renderPlan(); }
 }
 
 // ─── STEP 1 RENDER ─────────────────────────────────────────────────
@@ -2269,7 +2263,7 @@ function calcMetricsScore() {
 function updateProgress() {
   const s = state.currentStep;
   const S = STRINGS[lang];
-  const lblKeys = ['','lbl_company','lbl_score','lbl_results','lbl_checklist','lbl_roadmap','lbl_piano_pick','lbl_piano'];
+  const lblKeys = ['','lbl_company','lbl_score','lbl_results','lbl_checklist','lbl_roadmap','lbl_piano'];
   for (let i=1; i<=state.totalSteps; i++) {
     const dot = document.getElementById(`dot-${i}`);
     const lbl = document.getElementById(`lbl-${i}`);
@@ -2288,7 +2282,7 @@ function updateProgress() {
   if (back) back.style.visibility = s>1 ? 'visible' : 'hidden';
   if (back) back.innerHTML = S.btn_back;
   const nextLbl = document.getElementById('btn-next-label');
-  const btnLabels = ['',S.btn_1,S.btn_2,S.btn_3,S.btn_4,S.btn_5,S.btn_6,''];
+  const btnLabels = ['',S.btn_1,S.btn_2,S.btn_3,S.btn_4,S.btn_6,''];
   if (nextLbl) nextLbl.textContent = btnLabels[s] || '';
   const nextBtn = document.getElementById('btn-next');
   if (nextBtn) nextBtn.style.display = s>=state.totalSteps ? 'none' : 'flex';
@@ -2311,9 +2305,8 @@ function nextStep() {
   if (state.currentStep===2) { if (!step2Valid()) return; renderResults(); }
   if (state.currentStep===3) renderChecklist();
   if (state.currentStep===4) renderRoadmap();
-  if (state.currentStep===5) renderPlanPicker();
-  if (state.currentStep===6) {
-    if (!state.planChoice.recommended || !state.planChoice.light) { alert(S.val5); return; }
+  if (state.currentStep===5) {
+    state.planChoice.recommended = 'Enterprise';
     renderPlan();
   }
   if (state.currentStep < state.totalSteps) {
@@ -2630,7 +2623,7 @@ function renderPlan() {
     selectedPlanKey = state.planChoice.recommended || suggestedMap[scoreTier];
   }
 
-  const el7 = document.getElementById('step-7');
+  const el7 = document.getElementById('step-6');
   if (el7) el7.querySelector('.step-title').textContent = S.s7_title;
 
   // Plan selector cards (3 plans)
