@@ -282,6 +282,13 @@
     background: var(--green);
     color: white;
   }
+  .step-dot.clickable {
+    cursor: pointer;
+  }
+  .step-dot.clickable:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
   /* Line sits between step-items, vertically centred with the dot */
   .step-line {
     flex: 1;
@@ -1684,6 +1691,7 @@ const STRINGS = {
 // ─── STATE ─────────────────────────────────────────────────────────
 const state = {
   currentStep: 1,
+  maxStep: 1,
   totalSteps: 7,
   companyName: '',
   companyDomain: '',
@@ -2275,10 +2283,14 @@ function updateProgress() {
     const lbl = document.getElementById(`lbl-${i}`);
     if (!dot||!lbl) continue;
     const isDone = i < s;
-    dot.className = 'step-dot'+(isDone?' done':i===s?' active':'');
+    const isReachable = i <= state.maxStep && i !== s;
+    dot.className = 'step-dot'+(isDone?' done':i===s?' active':'')+(isReachable?' clickable':'');
     dot.textContent = isDone ? '✓' : i;
+    dot.onclick = isReachable ? () => goToStep(i) : null;
     lbl.className = 'step-label'+(i===s?' active':'');
     lbl.textContent = S[lblKeys[i]] || '';
+    if (lbl) lbl.style.cursor = isReachable ? 'pointer' : '';
+    if (lbl) lbl.onclick = isReachable ? () => goToStep(i) : null;
     if (i < state.totalSteps) {
       const line = document.getElementById(`line-${i}`);
       if (line) line.className = 'step-line'+(isDone?' done':'');
@@ -2292,6 +2304,28 @@ function updateProgress() {
   if (nextLbl) nextLbl.textContent = btnLabels[s] || '';
   const nextBtn = document.getElementById('btn-next');
   if (nextBtn) nextBtn.style.display = s>=state.totalSteps ? 'none' : 'flex';
+}
+
+
+// ─── JUMP TO STEP ───────────────────────────────────────────────────────────
+function goToStep(n) {
+  if (n === state.currentStep) return;
+  if (n < 1 || n > state.maxStep) return;
+    const renders = {
+      1: () => renderStep1(),
+      2: () => renderStep2(),
+      3: () => renderResults(),
+      4: () => renderChecklist(),
+      5: () => renderRoadmap(),
+      6: () => renderPlanPicker(),
+      7: () => renderPlan(),
+    };
+  document.getElementById(`step-${state.currentStep}`).classList.remove('active');
+  state.currentStep = n;
+  if (renders[n]) renders[n]();
+  document.getElementById(`step-${state.currentStep}`).classList.add('active');
+  updateProgress();
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
 function nextStep() {
@@ -2319,6 +2353,7 @@ function nextStep() {
   if (state.currentStep < state.totalSteps) {
     document.getElementById(`step-${state.currentStep}`).classList.remove('active');
     state.currentStep++;
+    state.maxStep = Math.max(state.maxStep, state.currentStep);
     document.getElementById(`step-${state.currentStep}`).classList.add('active');
     updateProgress();
     window.scrollTo({top:0,behavior:'smooth'});
@@ -2707,6 +2742,7 @@ function renderPlanDetail(planName) {
 function _goToStep2() {
   document.getElementById(`step-${state.currentStep}`).classList.remove('active');
   state.currentStep = 2;
+  state.maxStep = Math.max(state.maxStep, 2);
   renderStep2();
   document.getElementById('step-2').classList.add('active');
   updateProgress();
