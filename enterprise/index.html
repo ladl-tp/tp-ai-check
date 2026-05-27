@@ -97,28 +97,55 @@
     padding: 4px 10px;
     border-radius: 20px;
   }
-  .lang-switch {
-    display: flex;
-    border: 1px solid rgba(255,255,255,0.25);
-    border-radius: 20px;
-    overflow: hidden;
-  }
-  .lang-btn {
+  .lang-picker { position: relative; }
+  .lang-globe-btn {
     background: none;
-    border: none;
-    color: rgba(255,255,255,0.5);
-    font-size: 12px;
-    font-weight: 700;
-    padding: 4px 12px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    color: rgba(255,255,255,0.85);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 12px 4px 10px;
     cursor: pointer;
-    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
     transition: all 0.2s;
+    white-space: nowrap;
   }
-  .lang-btn.active {
-    background: var(--green);
-    color: white;
+  .lang-globe-btn:hover { border-color: rgba(255,255,255,0.7); color: #fff; }
+  .lang-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    overflow: hidden;
+    z-index: 9999;
+    min-width: 140px;
   }
-  .lang-btn:not(.active):hover { color: white; }
+  .lang-dropdown.open { display: block; }
+  .lang-opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+  .lang-opt:hover { background: #f3f4f6; }
+  .lang-opt.active { color: var(--green); background: #f0fdf8; }
+  .lang-opt .flag { font-size: 16px; }
 
   /* HERO */
   .hero {
@@ -1076,9 +1103,16 @@
   </div>
   <div class="header-right">
     <span class="header-badge" data-i18n="header_badge">AI Check Tool</span>
-    <div class="lang-switch">
-      <button class="lang-btn active" id="lb-it" onclick="setLang('it')">IT</button>
-      <button class="lang-btn" id="lb-en" onclick="setLang('en')">EN</button>
+    <div class="lang-picker" id="lang-picker">
+      <button class="lang-globe-btn" onclick="toggleLangMenu(event)" id="lang-globe-btn">
+        🌐 <span id="lang-current">EN</span>
+      </button>
+      <div class="lang-dropdown" id="lang-dropdown">
+        <button class="lang-opt" onclick="setLang('en')"><span class="flag">🇬🇧</span> English</button>
+        <button class="lang-opt" onclick="setLang('it')"><span class="flag">🇮🇹</span> Italiano</button>
+        <button class="lang-opt" onclick="setLang('es')"><span class="flag">🇪🇸</span> Español</button>
+        <button class="lang-opt" onclick="setLang('de')"><span class="flag">🇩🇪</span> Deutsch</button>
+      </div>
     </div>
   </div>
 </header>
@@ -1490,7 +1524,7 @@
 
 <script>
 // ─── LANGUAGE ──────────────────────────────────────────────────────
-let lang = 'it';
+let lang = 'en';
 
 const STRINGS = {
   it: {
@@ -1585,7 +1619,49 @@ const STRINGS = {
     scan_response:'Response rate',
     val2:"Rispondi a tutte le domande per calcolare il punteggio.",
     val5:"Seleziona sia il Piano Consigliato che il Piano Light per continuare (devono essere piani diversi).",
-    footer:"© 2025 Trustpilot A/S · trustpilot.com · Dati: Bain & Company, Semrush, Seer Interactive (2025–2026)"
+    footer:"© 2025 Trustpilot A/S · trustpilot.com · Dati: Bain & Company, Semrush, Seer Interactive (2025–2026)",
+    scan_profile_found:'Profilo trovato',
+    scan_precompiled_hint:'3 campi precompilati. Aggiungi il Response rate e procedi.',
+    scan_open:'Apri',
+    scan_open_profile:'Apri profilo Trustpilot',
+    scan_verifying:'Verifica…',
+    scan_domain_not_found:'Dominio non trovato su Trustpilot. Controlla che sia corretto.',
+    scan_proceed_anyway:'Procedi comunque →',
+    fallback_company:'la tua azienda',
+    ppt_tier_red:"Invisibile per l'AI",
+    ppt_tier_yellow:'Parzialmente Visibile',
+    ppt_tier_green:'AI-Ready',
+    ppt_tier_desc_red:"Il brand non è ancora rilevato dagli LLM. Serve azione immediata.",
+    ppt_tier_desc_yellow:'Il brand è parzialmente visibile agli LLM. Opportunità concrete di miglioramento.',
+    ppt_tier_desc_green:'Il brand è AI-Ready. Focus su consolidamento e ottimizzazione.',
+    ppt_score_breakdown:'Analisi del Punteggio',
+    ppt_report_footer:'Report generato automaticamente. Dati da fonti pubbliche: Bain, Semrush, Seer.',
+    ppt_rec_plan:'Piano Consigliato',
+    ppt_why_plan:'Perché questo piano:',
+    ppt_included:"Cosa include",
+    scan_total_reviews:'Recensioni totali',
+    scan_no_reviews_opt:'Nessun profilo / 0',
+    scan_score_none:'Nessuno / sotto 2.0',
+    scan_enter_manually:'Inserisci manualmente',
+    scan_last_review:'Ultima recensione',
+    scan_1_2_months:'1–2 mesi fa',
+    scan_last_30d:'Ultimi 30 giorni',
+    date_locale:'it-IT',
+    ppt_roadmap_tagline:'con la roadmap integrata.',,
+    ppt_why_ai_visibility:'Perché conta la visibilità AI',
+    ppt_stat_1:'delle ricerche AI si\nconcludono senza un clic\n(Bain, 2025)',
+    ppt_stat_2:'dei brand è invisibile\nagli LLM\n(Semrush, 2025)',
+    ppt_stat_3:'citation rate per brand\ncon profilo Trustpilot\nattivo',
+    ppt_stat_4:'più citation a purchase\nintent vs awareness\n(Seer, 2026)',
+    ppt_stat_1f:'delle ricerche AI si concludono senza un clic (Bain, 2025)',
+    ppt_stat_2f:'dei brand è invisibile agli LLM (Semrush, 2025)',
+    ppt_stat_3f:'citation rate per brand con profilo Trustpilot attivo',
+    ppt_stat_4f:'più citation a purchase intent vs awareness (Seer, 2026)',
+    ppt_ent_plan_title:'Piano Enterprise',
+    ppt_ent_plan_sub:'Il piano su misura per',
+    ppt_llm_checklist:'Checklist LLM',
+    ppt_quick_win:'Quick Win — questa settimana',
+    ppt_roadmap_90d:'Roadmap 90 Giorni',
   },
   en: {
     header_badge:'AI Check Tool',
@@ -1679,8 +1755,321 @@ const STRINGS = {
     scan_response:'Response rate',
     val2:"Please answer all questions to calculate your score.",
     val5:"Please select both a Recommended Plan and a Light Plan before continuing (they must be different plans).",
-    footer:"© 2025 Trustpilot A/S · trustpilot.com · Data: Bain & Company, Semrush, Seer Interactive (2025–2026)"
-  }
+    footer:"© 2025 Trustpilot A/S · trustpilot.com · Data: Bain & Company, Semrush, Seer Interactive (2025–2026)",
+    scan_profile_found:'Profile found',
+    scan_precompiled_hint:'3 fields pre-filled. Add the Response rate and proceed.',
+    scan_open:'Open',
+    scan_open_profile:'Open Trustpilot profile',
+    scan_verifying:'Checking…',
+    scan_domain_not_found:'Domain not found on Trustpilot. Please check it is correct.',
+    scan_proceed_anyway:'Proceed anyway →',
+    fallback_company:'your company',
+    ppt_tier_red:'Invisible to AI',
+    ppt_tier_yellow:'Partially Visible',
+    ppt_tier_green:'AI-Ready',
+    ppt_tier_desc_red:'The brand is not yet detected by LLMs. Immediate action needed.',
+    ppt_tier_desc_yellow:'The brand is partially visible to LLMs. Concrete opportunities to improve.',
+    ppt_tier_desc_green:'The brand is AI-Ready. Focus on consolidation and optimisation.',
+    ppt_score_breakdown:'Score Breakdown',
+    ppt_report_footer:'Automatically generated. Data from public sources: Bain, Semrush, Seer.',
+    ppt_rec_plan:'Recommended Plan',
+    ppt_why_plan:'Why this plan:',
+    ppt_included:"What's included",
+    scan_total_reviews:'Total reviews',
+    scan_no_reviews_opt:'No profile / 0',
+    scan_score_none:'None / below 2.0',
+    scan_enter_manually:'Enter manually',
+    scan_last_review:'Most recent review',
+    scan_1_2_months:'1–2 months ago',
+    scan_last_30d:'Within last 30 days',
+    date_locale:'en-GB',
+    ppt_roadmap_tagline:'with the integrated roadmap.',,
+    ppt_why_ai_visibility:'Why AI Visibility Matters',
+    ppt_stat_1:'of AI searches end\nwithout a click\n(Bain, 2025)',
+    ppt_stat_2:'of brands are invisible\nto LLMs\n(Semrush, 2025)',
+    ppt_stat_3:'citation rate for brands\nwith an active\nTrustpilot profile',
+    ppt_stat_4:'more citations at\npurchase intent vs\nawareness (Seer, 2026)',
+    ppt_stat_1f:'of AI searches end without a click (Bain, 2025)',
+    ppt_stat_2f:'of brands are invisible to LLMs (Semrush, 2025)',
+    ppt_stat_3f:'citation rate for brands with an active Trustpilot profile',
+    ppt_stat_4f:'more citations at purchase intent vs awareness (Seer, 2026)',
+    ppt_ent_plan_title:'Enterprise Plan',
+    ppt_ent_plan_sub:'The plan tailored for',
+    ppt_llm_checklist:'LLM Checklist',
+    ppt_quick_win:'Quick Win — this week',
+    ppt_roadmap_90d:'90-Day Roadmap',
+  },
+  es: {
+    header_badge:'AI Check Tool',
+    hero_eyebrow:'★ Enterprise Edition · Basado en datos de Trustpilot',
+    hero_p:"¿A qué velocidad tu organización está perdiendo oportunidades enterprise porque la IA no conoce tu marca?",
+    stat2_lbl:'de las búsquedas terminan sin un clic (Bain, 2025)',
+    stat3_lbl:'de las marcas son técnicamente invisibles para los LLMs (Semrush)',
+    stat4_lbl:'tasa de citación para marcas con perfil Trustpilot activo',
+    stat5_lbl:'más citas de reseñas en consultas de intención de compra (Seer)',
+    cta_start:'Comienza tu AI Check ↓',
+    lbl_company:'Empresa', lbl_score:'Puntuación', lbl_results:'Resultados',
+    lbl_checklist:'Checklist', lbl_roadmap:'Roadmap', lbl_piano_pick:'Elección de Plan', lbl_piano:'Tu Plan',
+    btn_back:'← Atrás',
+    btn_1:'Iniciar evaluación', btn_2:'Calcular puntuación',
+    btn_3:'Ver Checklist', btn_4:'Ver Roadmap', btn_5:'Elegir Plan', btn_6:'Ver tu Plan',
+    s1_title:"Enterprise AI Check",
+    s1_sub:"Auditoría de AI-readiness calibrada para organizaciones enterprise: volúmenes, mercados, estándares y benchmarks del sector. Unos 5 minutos.",
+    s1_lbl_company:'Nombre de empresa', s1_ph_company:'ej. Acme S.L.',
+    s1_lbl_name:'Tu nombre <span style="color:#aaa;font-weight:400">(opcional)</span>', s1_ph_name:'ej. María García',
+    s1_lbl_industry:'Sector <span style="color:#aaa;font-weight:400">(opcional)</span>', s1_ph_industry:'ej. SaaS, E-commerce, Servicios financieros',
+    s1_info:"<strong>Cómo funciona:</strong> Evalúa tu visibilidad de IA en 3 dimensiones, identifica tu mayor oportunidad, completa un checklist LLM y recibe una hoja de ruta de 90 días.",
+    s2_title:'AI Relevance Score', s2_sub_pre:'Responde las preguntas sobre', s2_sub_suf:'— calculamos la puntuación automáticamente.',
+    s5_title:'Tu AI Relevance Roadmap',
+    s5_sub_roadmap:'Basada en tu AI Relevance Score — tres pasos concretos para convertirte en la marca que recomienda la IA.',
+    s6_title:'Elige el Plan', s6_sub:'La puntuación de IA es un punto de partida.',
+    s7_title:'Tu Plan',
+    d1_name:'1 — Volumen y Recencia de Reseñas', d1_desc:'¿Cuántas reseñas tienes? ¿Qué tan recientes?',
+    q1_lbl:'¿Cuántas reseñas de Trustpilot tiene tu empresa?',
+    q1_a:'Sin perfil / 0 reseñas', q1_as:'La IA cita la marca menos del 1% de las veces',
+    q1_b:'1–12 reseñas', q1_bs:'Por debajo del umbral mínimo de visibilidad de IA',
+    q1_c:'13–50 reseñas', q1_cs:'Por encima del umbral: tasa de citación ~54%',
+    q1_d:'50+ reseñas', q1_ds:'Perfil activo: hasta 75% de tasa de citación',
+    q2_lbl:'¿Cuándo llegó la última reseña?',
+    q2_a:'Hace más de 6 meses', q2_as:'Señal obsoleta para los LLMs',
+    q2_b:'Hace 2–6 meses', q2_bs:'Brecha de recencia, citación inconsistente',
+    q2_c:'En el último mes', q2_cs:'Señal reciente, buena cadencia',
+    q2_d:'En los últimos 30 días', q2_ds:'Cadencia constante — benchmark AI-Ready',
+    d2_name:'2 — Tasa de Respuesta y Engagement', d2_desc:'¿La marca responde visiblemente a las reseñas?',
+    q3_lbl:'¿A qué porcentaje de reseñas respondéis?',
+    q3_a:'0–10% (o ninguna)', q3_as:'La IA lee la marca como ausente',
+    q3_b:'10–50% (solo negativas)', q3_bs:'Engagement parcial, tono inconsistente',
+    q3_c:'50–80%', q3_cs:'Buen engagement, pero no sistemático',
+    q3_d:'80%+ (positivas y negativas)', q3_ds:'Señal fuerte: la marca escucha y responde',
+    q4_lbl:'¿En cuánto tiempo respondéis de media?',
+    q4_a:'No respondemos', q4_b:'Ocasionalmente, sin cadencia',
+    q4_c:'En 1–2 semanas', q4_d:'En 7 días, siempre', q4_ds:'Benchmark AI-Ready',
+    d3_name:'3 — TrustScore y Tendencia de Estrellas', d3_desc:'¿Qué señal proyecta la IA?',
+    q5_lbl:'¿Cuál es vuestro TrustScore actual en Trustpilot?',
+    q5_a:'Sin perfil / no verificado', q5_as:'Sin señal para la IA',
+    q5_b:'Menos de 3.5 ★', q5_bs:'Señal negativa para los LLMs',
+    q5_c:'3.5 – 4.0 ★', q5_cs:'Visible pero no una señal fuerte',
+    q5_d:'Por encima de 4.0 ★', q5_ds:'La IA menciona la puntuación en el 59% de las citas',
+    q6_lbl:'¿Cómo ha evolucionado vuestro TrustScore últimamente?',
+    q6_a:'En descenso', q6_as:'Señal negativa para la IA',
+    q6_b:'Estable / inconsistente',
+    q6_c:'Mejorando orgánicamente', q6_cs:'Señal positiva fuerte para los LLMs',
+    score_of:'de 30',
+    s3_title:"Lo que encontramos — Elige tu escenario",
+    s3_sub:"Hemos destacado el escenario más cercano a tu puntuación.",
+    badge_best:'★ Más relevante', badge_sc:'Escenario', qw_pre:'⚡ Quick Win esta semana:',
+    tier_red:'🔴 Invisible para la IA', tier_yellow:'🟡 Parcialmente visible — en riesgo', tier_green:'🟢 AI-Ready — ventaja competitiva',
+    msg_red:"Tu empresa es actualmente invisible para las plataformas de IA.",
+    msg_yellow:"Tienes cierta presencia, pero las brechas limitan tu visibilidad de IA.",
+    msg_green:"Estás en una posición sólida para la visibilidad de IA.",
+    s4_title:'LLM Brand Visibility Checklist', s4_sub_pre:'Examina cada señal para', s4_sub_suf:'— marca: ✓ presente, ~ parcial, ✗ ausente.',
+    cl_yes:'✓ En orden', cl_partial:'~ Parcial', cl_no:'✗ Ausente',
+    s5_sub:'La puntuación de IA es un punto de partida.',
+    score_hint_pre:'La puntuación sugiere', score_hint_suf:'como punto de partida.',
+    btn_rec:'★ Plan Recomendado', btn_light:'◇ Plan Light',
+    sum_rec:'Plan Recomendado', sum_light:'Plan Light',
+    s6_title:'Tu Plan',
+    role_rec:'Plan Recomendado', role_light:'Plan Light',
+    why_title:'Por qué este plan — y por qué ahora',
+    feat_title:'Qué incluye',
+    roadmap_title:'Hoja de ruta de 90 días',
+    cta_ready:'¿Listo para actuar?',
+    cta_body:"Tu representante de Trustpilot puede ayudarte a activar el plan esta semana.",
+    btn_print:'🖨 Guardar como PDF',
+    btn_docs:'⬇ Descargar PPT',
+    btn_pdf:'⬇ Descargar PDF',
+    s1_lbl_domain:'Dominio de empresa',
+    s1_ph_domain:'ej. acme.com',
+    scan_loading:'Escaneando Trustpilot…',
+    scan_found:'Perfil de Trustpilot encontrado',
+    scan_not_found:'No se encontró perfil de Trustpilot',
+    scan_no_profile:'Puntuación calculada sin perfil activo de Trustpilot.',
+    scan_error:'No se pudo contactar Trustpilot. Puntuación calculada con 0 reseñas.',
+    scan_reviews:'Reseñas',
+    scan_score:'TrustScore',
+    scan_response:'Tasa de respuesta',
+    val2:"Por favor responde todas las preguntas para calcular la puntuación.",
+    val5:"Por favor selecciona tanto un Plan Recomendado como un Plan Light antes de continuar.",
+    footer:"© 2025 Trustpilot A/S · trustpilot.com · Datos: Bain & Company, Semrush, Seer Interactive (2025–2026)",
+    scan_profile_found:'Perfil encontrado',
+    scan_precompiled_hint:'3 campos prellenados. Añade la tasa de respuesta y continúa.',
+    scan_open:'Abrir',
+    scan_open_profile:'Abrir perfil de Trustpilot',
+    scan_verifying:'Verificando…',
+    scan_domain_not_found:'Dominio no encontrado en Trustpilot. Comprueba que sea correcto.',
+    scan_proceed_anyway:'Continuar de todas formas →',
+    fallback_company:'tu empresa',
+    ppt_tier_red:'Invisible para la IA',
+    ppt_tier_yellow:'Parcialmente Visible',
+    ppt_tier_green:'AI-Ready',
+    ppt_tier_desc_red:'La marca aún no es detectada por los LLMs. Se necesita acción inmediata.',
+    ppt_tier_desc_yellow:'La marca es parcialmente visible para los LLMs. Oportunidades concretas de mejora.',
+    ppt_tier_desc_green:'La marca es AI-Ready. Foco en consolidación y optimización.',
+    ppt_score_breakdown:'Análisis de Puntuación',
+    ppt_report_footer:'Generado automáticamente. Datos de fuentes públicas: Bain, Semrush, Seer.',
+    ppt_rec_plan:'Plan Recomendado',
+    ppt_why_plan:'Por qué este plan:',
+    ppt_included:'Qué incluye',
+    scan_total_reviews:'Reseñas totales',
+    scan_no_reviews_opt:'Sin perfil / 0',
+    scan_score_none:'Ninguno / bajo 2.0',
+    scan_enter_manually:'Introducir manualmente',
+    scan_last_review:'Última reseña',
+    scan_1_2_months:'Hace 1–2 meses',
+    scan_last_30d:'Últimos 30 días',
+    date_locale:'es-ES',
+    ppt_roadmap_tagline:'con la hoja de ruta integrada.',,
+    ppt_why_ai_visibility:'Por qué importa la visibilidad de IA',
+    ppt_stat_1:'de las búsquedas de IA terminan\nsin un clic\n(Bain, 2025)',
+    ppt_stat_2:'de las marcas son invisibles\npara los LLMs\n(Semrush, 2025)',
+    ppt_stat_3:'tasa de citación para marcas\ncon perfil Trustpilot\nactivo',
+    ppt_stat_4:'más citas a intención\nde compra vs awareness\n(Seer, 2026)',
+    ppt_stat_1f:'de las búsquedas de IA terminan sin un clic (Bain, 2025)',
+    ppt_stat_2f:'de las marcas son invisibles para los LLMs (Semrush, 2025)',
+    ppt_stat_3f:'tasa de citación para marcas con perfil Trustpilot activo',
+    ppt_stat_4f:'más citas a intención de compra vs awareness (Seer, 2026)',
+    ppt_ent_plan_title:'Plan Enterprise',
+    ppt_ent_plan_sub:'El plan a medida para',
+    ppt_llm_checklist:'Checklist LLM',
+    ppt_quick_win:'Quick Win — esta semana',
+    ppt_roadmap_90d:'Hoja de ruta de 90 días',
+  },
+  de: {
+    header_badge:'AI Check Tool',
+    hero_eyebrow:'★ Enterprise Edition · Basierend auf Trustpilot-Daten',
+    hero_p:"Wie viele Enterprise-Chancen verliert Ihre Organisation, weil KI Ihre Marke nicht kennt?",
+    stat2_lbl:'der Suchanfragen enden ohne einen Klick (Bain, 2025)',
+    stat3_lbl:'der Marken sind für LLMs technisch unsichtbar (Semrush)',
+    stat4_lbl:'Zitationsrate für Marken mit aktivem Trustpilot-Profil',
+    stat5_lbl:'mehr Rezensions-Zitierungen bei Kaufabsicht vs. Awareness (Seer)',
+    cta_start:'Starte deinen AI Check ↓',
+    lbl_company:'Unternehmen', lbl_score:'Score', lbl_results:'Ergebnisse',
+    lbl_checklist:'Checkliste', lbl_roadmap:'Roadmap', lbl_piano_pick:'Planauswahl', lbl_piano:'Dein Plan',
+    btn_back:'← Zurück',
+    btn_1:'Bewertung starten', btn_2:'Score berechnen',
+    btn_3:'Zur Checkliste', btn_4:'Roadmap ansehen', btn_5:'Plan wählen', btn_6:'Deinen Plan entdecken',
+    s1_title:"Enterprise AI Check",
+    s1_sub:"KI-Bereitschafts-Audit kalibriert für Enterprise-Organisationen: Volumen, Märkte, Standards und Branchen-Benchmarks. Etwa 5 Minuten.",
+    s1_lbl_company:'Unternehmensname', s1_ph_company:'z. B. Acme GmbH',
+    s1_lbl_name:'Dein Name <span style="color:#aaa;font-weight:400">(optional)</span>', s1_ph_name:'z. B. Max Mustermann',
+    s1_lbl_industry:'Branche <span style="color:#aaa;font-weight:400">(optional)</span>', s1_ph_industry:'z. B. SaaS, E-Commerce, Financial Services',
+    s1_info:"<strong>So funktioniert es:</strong> Bewerte deine KI-Sichtbarkeit in 3 Dimensionen, identifiziere deine größte Chance, vervollständige eine LLM-Checkliste und erhalte eine 90-Tage-Roadmap.",
+    s2_title:'AI Relevance Score', s2_sub_pre:'Beantworte die Fragen zu', s2_sub_suf:'— wir berechnen den Score automatisch.',
+    s5_title:'Deine AI Relevance Roadmap',
+    s5_sub_roadmap:'Basierend auf deinem AI Relevance Score — drei konkrete Schritte.',
+    s6_title:'Plan wählen', s6_sub:'Der KI-Score ist ein Ausgangspunkt.',
+    s7_title:'Dein Plan',
+    d1_name:'1 — Bewertungsvolumen & Aktualität', d1_desc:'Wie viele Bewertungen hast du? Wie aktuell?',
+    q1_lbl:'Wie viele Trustpilot-Bewertungen hat dein Unternehmen?',
+    q1_a:'Kein Profil / 0 Bewertungen', q1_as:'KI zitiert die Marke weniger als 1% der Zeit',
+    q1_b:'1–12 Bewertungen', q1_bs:'Unterhalb der Mindestschwelle für KI-Sichtbarkeit',
+    q1_c:'13–50 Bewertungen', q1_cs:'Über der Schwelle: ~54% Zitationsrate',
+    q1_d:'50+ Bewertungen', q1_ds:'Aktives Profil: bis zu 75% Zitationsrate',
+    q2_lbl:'Wann kam die letzte Bewertung?',
+    q2_a:'Vor mehr als 6 Monaten', q2_as:'Veraltetes Signal für LLMs',
+    q2_b:'Vor 2–6 Monaten', q2_bs:'Aktualitätslücke, inkonsistente Zitierung',
+    q2_c:'Im letzten Monat', q2_cs:'Aktuelles Signal, guter Rhythmus',
+    q2_d:'In den letzten 30 Tagen', q2_ds:'Gleichmäßiger Rhythmus — AI-Ready-Benchmark',
+    d2_name:'2 — Antwortrate & Engagement', d2_desc:'Reagiert die Marke sichtbar auf Bewertungen?',
+    q3_lbl:'Auf welchen Prozentsatz der Bewertungen antwortet ihr?',
+    q3_a:'0–10% (oder keine)', q3_as:'KI liest die Marke als abwesend',
+    q3_b:'10–50% (nur negative)', q3_bs:'Lückenhaftes Engagement, inkonsistenter Ton',
+    q3_c:'50–80%', q3_cs:'Gutes Engagement, aber nicht systematisch',
+    q3_d:'80%+ (positive und negative)', q3_ds:'Starkes Signal: Marke hört zu und antwortet',
+    q4_lbl:'Wie schnell antwortet ihr durchschnittlich?',
+    q4_a:'Wir antworten nicht', q4_b:'Gelegentlich, ohne Rhythmus',
+    q4_c:'Innerhalb von 1–2 Wochen', q4_d:'Innerhalb von 7 Tagen, konsequent', q4_ds:'AI-Ready-Benchmark',
+    d3_name:'3 — TrustScore & Stern-Trend', d3_desc:'Welches Signal sendet die KI?',
+    q5_lbl:'Wie lautet euer aktueller TrustScore auf Trustpilot?',
+    q5_a:'Kein Profil / nicht verifiziert', q5_as:'Kein Signal für KI',
+    q5_b:'Unter 3.5 ★', q5_bs:'Negatives Signal für LLMs',
+    q5_c:'3.5 – 4.0 ★', q5_cs:'Sichtbar, aber kein starkes Signal',
+    q5_d:'Über 4.0 ★', q5_ds:'KI erwähnt den Score in 59% der Zitierungen',
+    q6_lbl:'Wie hat sich euer TrustScore zuletzt entwickelt?',
+    q6_a:'Sinkend', q6_as:'Negatives Signal für KI',
+    q6_b:'Stabil / inkonsistent',
+    q6_c:'Organisch verbessernd', q6_cs:'Starkes positives Signal für LLMs',
+    score_of:'von 30',
+    s3_title:"Was wir gefunden haben — Wähle dein Szenario",
+    s3_sub:"Wir haben das Szenario hervorgehoben, das am besten zu deinem Score passt.",
+    badge_best:'★ Am relevantesten', badge_sc:'Szenario', qw_pre:'⚡ Quick Win diese Woche:',
+    tier_red:'🔴 Unsichtbar für KI', tier_yellow:'🟡 Teilweise sichtbar — gefährdet', tier_green:'🟢 AI-Ready — Wettbewerbsvorteil',
+    msg_red:"Dein Unternehmen ist derzeit für KI-Plattformen unsichtbar.",
+    msg_yellow:"Du hast eine gewisse Präsenz, aber Lücken begrenzen deine KI-Sichtbarkeit.",
+    msg_green:"Du bist gut positioniert für KI-Sichtbarkeit.",
+    s4_title:'LLM Brand Visibility Checkliste', s4_sub_pre:'Prüfe jedes Signal für', s4_sub_suf:'— markiere: ✓ vorhanden, ~ teilweise, ✗ fehlend.',
+    cl_yes:'✓ In Ordnung', cl_partial:'~ Teilweise', cl_no:'✗ Fehlend',
+    s5_sub:'Der KI-Score ist ein Ausgangspunkt.',
+    score_hint_pre:'Score schlägt vor', score_hint_suf:'als Ausgangspunkt.',
+    btn_rec:'★ Empfohlener Plan', btn_light:'◇ Light-Plan',
+    sum_rec:'Empfohlener Plan', sum_light:'Light-Plan',
+    s6_title:'Dein Plan',
+    role_rec:'Empfohlener Plan', role_light:'Light-Plan',
+    why_title:'Warum dieser Plan — und warum jetzt',
+    feat_title:'Was ist enthalten',
+    roadmap_title:'90-Tage-Roadmap',
+    cta_ready:'Bereit zu handeln?',
+    cta_body:"Dein Trustpilot-Rep kann dir helfen, den Plan zu aktivieren.",
+    btn_print:'🖨 Als PDF speichern',
+    btn_docs:'⬇ PPT herunterladen',
+    btn_pdf:'⬇ PDF herunterladen',
+    s1_lbl_domain:'Unternehmensdomäne',
+    s1_ph_domain:'z. B. acme.de',
+    scan_loading:'Trustpilot wird gescannt…',
+    scan_found:'Trustpilot-Profil gefunden',
+    scan_not_found:'Kein Trustpilot-Profil gefunden',
+    scan_no_profile:'Score ohne aktives Trustpilot-Profil berechnet.',
+    scan_error:'Trustpilot nicht erreichbar. Score mit 0 Bewertungen berechnet.',
+    scan_reviews:'Bewertungen',
+    scan_score:'TrustScore',
+    scan_response:'Antwortrate',
+    val2:"Bitte beantworte alle Fragen, um den Score zu berechnen.",
+    val5:"Bitte wähle sowohl einen Empfohlenen Plan als auch einen Light-Plan aus.",
+    footer:"© 2025 Trustpilot A/S · trustpilot.com · Daten: Bain & Company, Semrush, Seer Interactive (2025–2026)",
+    scan_profile_found:'Profil gefunden',
+    scan_precompiled_hint:'3 Felder vorausgefüllt. Füge die Antwortrate hinzu und fahre fort.',
+    scan_open:'Öffnen',
+    scan_open_profile:'Trustpilot-Profil öffnen',
+    scan_verifying:'Überprüfe…',
+    scan_domain_not_found:'Domain auf Trustpilot nicht gefunden. Bitte überprüfe, ob sie korrekt ist.',
+    scan_proceed_anyway:'Trotzdem fortfahren →',
+    fallback_company:'dein Unternehmen',
+    ppt_tier_red:'Unsichtbar für KI',
+    ppt_tier_yellow:'Teilweise Sichtbar',
+    ppt_tier_green:'AI-Ready',
+    ppt_tier_desc_red:'Die Marke wird von LLMs noch nicht erkannt. Sofortiger Handlungsbedarf.',
+    ppt_tier_desc_yellow:'Die Marke ist für LLMs teilweise sichtbar. Konkrete Verbesserungsmöglichkeiten.',
+    ppt_tier_desc_green:'Die Marke ist AI-Ready. Fokus auf Konsolidierung und Optimierung.',
+    ppt_score_breakdown:'Score-Analyse',
+    ppt_report_footer:'Automatisch generiert. Daten aus öffentlichen Quellen: Bain, Semrush, Seer.',
+    ppt_rec_plan:'Empfohlener Plan',
+    ppt_why_plan:'Warum dieser Plan:',
+    ppt_included:'Was ist enthalten',
+    scan_total_reviews:'Bewertungen gesamt',
+    scan_no_reviews_opt:'Kein Profil / 0',
+    scan_score_none:'Keine / unter 2.0',
+    scan_enter_manually:'Manuell eingeben',
+    scan_last_review:'Letzte Bewertung',
+    scan_1_2_months:'Vor 1–2 Monaten',
+    scan_last_30d:'Letzte 30 Tage',
+    date_locale:'de-DE',
+    ppt_roadmap_tagline:'mit der integrierten Roadmap.',,
+    ppt_why_ai_visibility:'Warum KI-Sichtbarkeit wichtig ist',
+    ppt_stat_1:'der KI-Suchanfragen enden\nohne Klick\n(Bain, 2025)',
+    ppt_stat_2:'der Marken sind für\nLLMs unsichtbar\n(Semrush, 2025)',
+    ppt_stat_3:'Zitationsrate für Marken\nmit aktivem\nTrustpilot-Profil',
+    ppt_stat_4:'mehr Zitierungen bei\nKaufabsicht vs Awareness\n(Seer, 2026)',
+    ppt_stat_1f:'der KI-Suchanfragen enden ohne Klick (Bain, 2025)',
+    ppt_stat_2f:'der Marken sind für LLMs unsichtbar (Semrush, 2025)',
+    ppt_stat_3f:'Zitationsrate für Marken mit aktivem Trustpilot-Profil',
+    ppt_stat_4f:'mehr Zitierungen bei Kaufabsicht vs Awareness (Seer, 2026)',
+    ppt_ent_plan_title:'Enterprise-Plan',
+    ppt_ent_plan_sub:'Der maßgeschneiderte Plan für',
+    ppt_llm_checklist:'LLM-Checkliste',
+    ppt_quick_win:'Quick Win — diese Woche',
+    ppt_roadmap_90d:'90-Tage-Roadmap',
+  },
+
 };
 
 // ─── STATE ─────────────────────────────────────────────────────────
@@ -1918,10 +2307,25 @@ const WHY = {
 };
 
 // ─── LANGUAGE FUNCTIONS ────────────────────────────────────────────
+function toggleLangMenu(e) {
+  e.stopPropagation();
+  document.getElementById('lang-dropdown').classList.toggle('open');
+}
+document.addEventListener('click', function() {
+  const dd = document.getElementById('lang-dropdown');
+  if (dd) dd.classList.remove('open');
+});
+
 function setLang(l) {
   lang = l;
-  document.getElementById('lb-it').classList.toggle('active', l === 'it');
-  document.getElementById('lb-en').classList.toggle('active', l === 'en');
+  const labels = { en:'EN', it:'IT', es:'ES', de:'DE' };
+  const el = document.getElementById('lang-current');
+  if (el) el.textContent = labels[l] || l.toUpperCase();
+  document.querySelectorAll('.lang-opt').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim().startsWith(labels[l]));
+  });
+  const dd = document.getElementById('lang-dropdown');
+  if (dd) dd.classList.remove('open');
   document.documentElement.lang = l;
   applyLang();
 }
@@ -1991,7 +2395,6 @@ function renderStep2() {
     const domain = state.companyDomain;
     const clean  = domain.replace(/^https?:\/\//,'').replace(/^www\./,'').replace(/\/$/,'');
     const tpUrl  = `https://www.trustpilot.com/review/${clean}`;
-    const it     = lang === 'it';
     const sd     = state.scanData || {};
     const found  = sd.found === true;
 
@@ -2008,17 +2411,17 @@ function renderStep2() {
       ? `<div style="display:flex;align-items:flex-start;gap:12px;background:#f0fdf8;border:1.5px solid #00b67a;border-radius:12px;padding:14px 18px;margin-bottom:20px;">
            <span style="font-size:20px">✅</span>
            <div style="flex:1">
-             <div style="font-weight:700;color:#065f46;font-size:14px">${it ? 'Profilo trovato' : 'Profile found'} — ${sd.displayName || clean}</div>
-             <div style="font-size:12px;color:#047857;margin-top:2px">${it ? '3 campi precompilati. Aggiungi il Response rate e procedi.' : '3 fields pre-filled. Add the Response rate and proceed.'}</div>
+             <div style="font-weight:700;color:#065f46;font-size:14px">${S.scan_profile_found} — ${sd.displayName || clean}</div>
+             <div style="font-size:12px;color:#047857;margin-top:2px">${S.scan_precompiled_hint}</div>
              <div style="font-size:11px;color:#047857;font-family:monospace;margin-top:4px">reviews:${sd.totalReviews} · score:${sd.trustScore} · last review:${d >= 0 ? d+'d ago' : 'n/a'}</div>
            </div>
-           <a href="${tpUrl}" target="_blank" style="font-size:12px;color:#065f46;font-weight:600;text-decoration:none;white-space:nowrap">🔗 ${it ? 'Apri' : 'Open'}</a>
+           <a href="${tpUrl}" target="_blank" style="font-size:12px;color:#065f46;font-weight:600;text-decoration:none;white-space:nowrap">🔗 ${S.scan_open}</a>
          </div>`
       : `<a href="${tpUrl}" target="_blank"
            style="display:flex;align-items:center;gap:12px;background:#f0fdf8;border:1.5px solid #00b67a;border-radius:12px;padding:14px 18px;margin-bottom:22px;text-decoration:none;">
            <span style="font-size:22px">🔗</span>
            <div>
-             <div style="font-weight:700;color:#065f46;font-size:15px">${it ? 'Apri profilo Trustpilot' : 'Open Trustpilot profile'}</div>
+             <div style="font-weight:700;color:#065f46;font-size:15px">${S.scan_open_profile}</div>
              <div style="font-size:12px;color:#047857;font-family:monospace">trustpilot.com/review/${clean}</div>
            </div>
            <span style="margin-left:auto;font-size:18px;color:#00b67a">→</span>
@@ -2028,10 +2431,10 @@ function renderStep2() {
       ${banner}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
         <div class="form-group" style="margin:0">
-          <label>${it ? 'Recensioni totali' : 'Total reviews'}</label>
+          <label>${S.scan_total_reviews}</label>
           <select id="m-reviews" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
             <option value=""${s(vR,'')}>—</option>
-            <option value="0"${s(vR,'0')}>${it ? 'Nessun profilo / 0' : 'No profile / 0'}</option>
+            <option value="0"${s(vR,'0')}>${S.scan_no_reviews_opt}</option>
             <option value="6"${s(vR,'6')}>1–12</option>
             <option value="30"${s(vR,'30')}>13–50</option>
             <option value="125"${s(vR,'125')}>51–200</option>
@@ -2042,7 +2445,7 @@ function renderStep2() {
           <label>TrustScore</label>
           <select id="m-score" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
             <option value=""${s(vS,'')}>—</option>
-            <option value="0"${s(vS,'0')}>${it ? 'Nessuno / sotto 2.0' : 'None / below 2.0'}</option>
+            <option value="0"${s(vS,'0')}>${S.scan_score_none}</option>
             <option value="2.5"${s(vS,'2.5')}>2.0 – 3.5 ★</option>
             <option value="3.7"${s(vS,'3.7')}>3.5 – 4.0 ★</option>
             <option value="4.2"${s(vS,'4.2')}>4.0 – 4.5 ★</option>
@@ -2058,16 +2461,16 @@ function renderStep2() {
             <option value="65">50–80%</option>
             <option value="90">80%+</option>
           </select>
-          ${found ? `<div style="font-size:11px;color:#92400e;margin-top:4px">⚠ ${it ? 'Inserisci manualmente' : 'Enter manually'}</div>` : ''}
+          ${found ? `<div style="font-size:11px;color:#92400e;margin-top:4px">⚠ ${S.scan_enter_manually}</div>` : ''}
         </div>
         <div class="form-group" style="margin:0">
-          <label>${it ? 'Ultima recensione' : 'Most recent review'}</label>
+          <label>${S.scan_last_review}</label>
           <select id="m-recency" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
             <option value=""${s(vD,'')}>—</option>
-            <option value="250"${s(vD,'250')}>${it ? 'Più di 6 mesi fa' : 'More than 6 months ago'}</option>
-            <option value="120"${s(vD,'120')}>${it ? '2–6 mesi fa' : '2–6 months ago'}</option>
-            <option value="45"${s(vD,'45')}>${it ? '1–2 mesi fa' : '1–2 months ago'}</option>
-            <option value="15"${s(vD,'15')}>${it ? 'Ultimi 30 giorni' : 'Within last 30 days'}</option>
+            <option value="250"${s(vD,'250')}>${S.q2_a}</option>
+            <option value="120"${s(vD,'120')}>${S.q2_b}</option>
+            <option value="45"${s(vD,'45')}>${S.scan_1_2_months}</option>
+            <option value="15"${s(vD,'15')}>${S.scan_last_30d}</option>
           </select>
         </div>
       </div>
@@ -2075,7 +2478,7 @@ function renderStep2() {
       <div id="metrics-score-preview" style="display:none;text-align:center;padding:20px;background:var(--light);border-radius:12px;border:2px solid var(--border);">
         <div style="font-size:12px;color:var(--mid);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">AI Relevance Score</div>
         <div id="msp-total" style="font-size:52px;font-weight:800;line-height:1"></div>
-        <div style="font-size:13px;color:#aaa;margin-bottom:6px;">${it ? 'su 30' : 'out of 30'}</div>
+        <div style="font-size:13px;color:#aaa;margin-bottom:6px;">${S.score_of}</div>
         <div id="msp-tier" style="font-size:13px;font-weight:600;"></div>
         <div style="display:flex;justify-content:center;gap:20px;margin-top:12px;font-size:12px;color:var(--mid);">
           <span>D1: <strong id="msp-d1" style="color:var(--dark)">—</strong>/10</span>
@@ -2405,7 +2808,7 @@ function renderResults() {
   document.getElementById('step-3').querySelector('.step-title').textContent = S.s3_title;
   document.getElementById('step-3').querySelector('.step-subtitle').textContent = S.s3_sub;
 
-  const scenarios = SCENARIOS[lang];
+  const scenarios = SCENARIOS[lang] || SCENARIOS.en;
   const s = {d1,d2,d3,total};
   const recommended = scenarios.find(sc => sc.trigger(s)) || scenarios[0];
   if (!state.selectedScenario) state.selectedScenario = recommended.id;
@@ -2441,7 +2844,7 @@ function selectScenario(id) {
 // ─── STEP 4: CHECKLIST ─────────────────────────────────────────────
 function renderChecklist() {
   const S = STRINGS[lang];
-  const items = CHECKLIST[lang];
+  const items = CHECKLIST[lang] || CHECKLIST.en;
   document.getElementById('step-4').querySelector('.step-title').textContent = S.s4_title;
   document.getElementById('step-4').querySelector('.step-subtitle').innerHTML =
     `${S.s4_sub_pre} <em class="company-name-display" id="check-company-label">${state.companyName||'your company'}</em> ${S.s4_sub_suf}`;
@@ -2607,8 +3010,8 @@ function renderPlanPicker() {
       <div class="picker-card${isRec?' has-recommended':''}${isLight?' has-light':''}" style="border-color:${borderColor}">
         ${isSugg ? `<div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:${plan.color};color:white;font-size:10px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;z-index:1;">★ Score ${total}/30</div>` : ''}
         <div class="picker-card-name" style="color:${plan.color}">${plan.name}</div>
-        <div class="picker-card-tier" style="color:${plan.color}">${plan.tier[lang]}</div>
-        <div class="picker-card-meta">${plan.meta[lang].join('<br>')}</div>
+        <div class="picker-card-tier" style="color:${plan.color}">${plan.tier[lang] || plan.tier.en}</div>
+        <div class="picker-card-meta">${plan.meta[lang] || plan.meta.en.join('<br>')}</div>
         <div class="picker-btns">
           <button class="picker-btn${isRec?' active-recommended':''}" onclick="pickPlanRole('${plan.name}','recommended')" ${recDisabled}>${S.btn_rec}</button>
           <button class="picker-btn${isLight?' active-light':''}" onclick="pickPlanRole('${plan.name}','light')" ${lightDisabled}>${S.btn_light}</button>
@@ -2650,17 +3053,16 @@ function renderPlan() {
   const S = STRINGS[lang];
   const plan = PLAN_DATA.Enterprise;
   const scoreTier = state.total<=12?'red':state.total<=22?'yellow':'green';
-  const whyText = WHY[lang][scoreTier]['Enterprise'];
-  const it = lang === 'it';
-  const company = state.companyName || (it ? 'la tua azienda' : 'your company');
+  const whyText = (WHY[lang] || WHY.en)[scoreTier]['Enterprise'];
+  const company = state.companyName || S.fallback_company;
   const el = document.getElementById('step-6');
   if (!el) return;
 
   el.innerHTML = `
-    <div class="step-title">${it ? 'Piano Enterprise' : 'Enterprise Plan'}</div>
+    <div class="step-title">${S.ppt_ent_plan_title}</div>
     <div class="step-subtitle">
-      ${it ? 'Il piano su misura per' : 'The plan tailored for'}
-      <em class="company-name-display">${company}</em> — con la roadmap integrata.
+      ${S.ppt_ent_plan_sub}
+      <em class="company-name-display">${company}</em> — ${S.ppt_roadmap_tagline}
     </div>
 
     <div style="border:2px solid ${plan.color};border-radius:12px;padding:24px;margin-bottom:24px;background:${plan.bg};">
@@ -2669,7 +3071,7 @@ function renderPlan() {
     </div>
 
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;" class="plan-features-grid">
-      ${plan.features[lang].map(f => `
+      ${(plan.features[lang] || plan.features.en).map(f => `
         <div style="border:1px solid var(--border);border-radius:10px;padding:16px;background:white;">
           <div style="font-size:18px;margin-bottom:6px;">${f.icon}</div>
           <div style="font-size:13px;font-weight:700;margin-bottom:10px;">${f.title}</div>
@@ -2678,9 +3080,9 @@ function renderPlan() {
     </div>
 
     <div style="font-size:20px;font-weight:800;margin-bottom:4px;">${S.roadmap_title} — Enterprise</div>
-    <div style="font-size:14px;color:var(--mid);margin-bottom:24px;">${plan.tier[lang]}</div>
+    <div style="font-size:14px;color:var(--mid);margin-bottom:24px;">${plan.tier[lang] || plan.tier.en}</div>
     <div class="roadmap-steps">
-      ${plan.roadmap[lang].map((step,i) => `
+      ${(plan.roadmap[lang] || plan.roadmap.en).map((step,i) => `
         <div class="roadmap-step">
           <div class="step-circle" style="background:${plan.color};">0${i+1}</div>
           <div class="step-content">
@@ -2733,13 +3135,13 @@ async function triggerScan(domain) {
   const btn   = document.getElementById('btn-next');
   const lbl   = document.getElementById('btn-next-label');
   const orig  = lbl ? lbl.textContent : '';
-  const it    = lang === 'it';
+  const S     = STRINGS[lang];
 
   // Reset previous error
   const prev = document.getElementById('domain-error');
   if (prev) prev.remove();
 
-  if (lbl) lbl.textContent = it ? 'Verifica…' : 'Checking…';
+  if (lbl) lbl.textContent = S.scan_verifying;
   if (btn) btn.disabled = true;
 
   let domainOk = true; // default: proceed (fail-open on network errors)
@@ -2766,9 +3168,9 @@ async function triggerScan(domain) {
       err.id = 'domain-error';
       err.style.cssText = 'margin-top:8px;padding:10px 14px;background:#fff5f5;border:1.5px solid #f87171;border-radius:8px;font-size:13px;color:#b91c1c;display:flex;justify-content:space-between;align-items:center;gap:10px;';
       err.innerHTML = `
-        <span>⚠️ ${it ? 'Dominio non trovato su Trustpilot. Controlla che sia corretto.' : 'Domain not found on Trustpilot. Please check it is correct.'}</span>
+        <span>⚠️ ${S.scan_domain_not_found}</span>
         <button onclick="proceedManual()" style="flex-shrink:0;padding:5px 12px;background:transparent;border:1.5px solid #b91c1c;border-radius:6px;color:#b91c1c;font-size:12px;font-weight:600;cursor:pointer;">
-          ${it ? 'Procedi comunque →' : 'Proceed anyway →'}
+          ${S.scan_proceed_anyway}
         </button>`;
       domainInput.closest('.form-group').appendChild(err);
     }
@@ -2844,32 +3246,24 @@ async function generatePPT() {
   if (btn) { btn.disabled = true; btn.textContent = '⏳ Generando...'; }
 
   try {
-    const it = lang === 'it';
+    const S = STRINGS[lang];
     const total = state.total;
     const scoreTier = total <= 12 ? 'red' : total <= 22 ? 'yellow' : 'green';
-    const company = state.companyName || (it ? 'la tua azienda' : 'your company');
-    const today = new Date().toLocaleDateString(it ? 'it-IT' : 'en-GB', { day:'2-digit', month:'long', year:'numeric' });
+    const company = state.companyName || S.fallback_company;
+    const today = new Date().toLocaleDateString(S.date_locale, { day:'2-digit', month:'long', year:'numeric' });
 
-    const scenarios = SCENARIOS[lang];
+    const scenarios = SCENARIOS[lang] || SCENARIOS.en;
     let scenario = null;
     if (state.selectedScenario !== null) scenario = scenarios.find(s => s.id === state.selectedScenario);
     if (!scenario) scenario = scenarios.find(s => s.trigger(state.scores)) || scenarios[0];
 
-    const roadmap = ROADMAPS[lang][scoreTier];
+    const roadmap = (ROADMAPS[lang] || ROADMAPS.en)[scoreTier];
     const recPlanKey = state.planChoice.recommended;
     const recPlan = recPlanKey ? PLAN_DATA[recPlanKey] : null;
 
     const TC = { red:'E74C3C', yellow:'F5A623', green:'00B67A' }[scoreTier];
-    const tierLabel = {
-      red:   it ? "Invisibile per l'AI" : 'Invisible to AI',
-      yellow: it ? 'Parzialmente Visibile' : 'Partially Visible',
-      green: 'AI-Ready'
-    }[scoreTier];
-    const tierDesc = {
-      red:   it ? "Il brand non è ancora rilevato dagli LLM. Serve azione immediata." : 'The brand is not yet detected by LLMs. Immediate action needed.',
-      yellow: it ? 'Il brand è parzialmente visibile agli LLM. Opportunità concrete di miglioramento.' : 'The brand is partially visible to LLMs. Concrete opportunities to improve.',
-      green: it ? 'Il brand è AI-Ready. Focus su consolidamento e ottimizzazione.' : 'The brand is AI-Ready. Focus on consolidation and optimisation.'
-    }[scoreTier];
+    const tierLabel = { red:S.ppt_tier_red, yellow:S.ppt_tier_yellow, green:S.ppt_tier_green }[scoreTier];
+    const tierDesc  = { red:S.ppt_tier_desc_red, yellow:S.ppt_tier_desc_yellow, green:S.ppt_tier_desc_green }[scoreTier];
 
     const TP_GREEN  = '00B67A';
     const TP_DARK   = '191919';
@@ -2979,7 +3373,7 @@ async function generatePPT() {
     // ═════════════════════════════════════════════════════════════════
     const s2 = pptx.addSlide();
     s2.background = { color:'FFFFFF' };
-    hdr(s2, it ? 'Analisi del Punteggio' : 'Score Breakdown');
+    hdr(s2, S.ppt_score_breakdown);
 
     // Score circle
     const cr = 1.25, cx = 0.4+cr+0.2, cy = 1.15+cr;
@@ -3007,14 +3401,14 @@ async function generatePPT() {
 
     // Market stats 2×2
     const rcX = 7.05, rcW = 6.0;
-    s2.addText(it?'Perché conta la visibilità AI':'Why AI Visibility Matters', {
+    s2.addText(S.ppt_why_ai_visibility, {
       x:rcX, y:0.88, w:rcW, h:0.42, fontSize:15, bold:true, color:TP_DARK, fontFace:'Arial'
     });
     [
-      { num:'60%', lbl: it?'delle ricerche AI si\nconcludono senza un clic\n(Bain, 2025)':'of AI searches end\nwithout a click\n(Bain, 2025)' },
-      { num:'62%', lbl: it?'dei brand è invisibile\nagli LLM\n(Semrush, 2025)':'of brands are invisible\nto LLMs\n(Semrush, 2025)' },
-      { num:'75%', lbl: it?'citation rate per brand\ncon profilo Trustpilot\nattivo':'citation rate for brands\nwith an active\nTrustpilot profile' },
-      { num:'16×', lbl: it?'più citation a purchase\nintent vs awareness\n(Seer, 2026)':'more citations at\npurchase intent vs\nawareness (Seer, 2026)' },
+      { num:'60%', lbl: S.ppt_stat_1 },
+      { num:'62%', lbl: S.ppt_stat_2 },
+      { num:'75%', lbl: S.ppt_stat_3 },
+      { num:'16×', lbl: S.ppt_stat_4 },
     ].forEach((st, i) => {
       const stW=(rcW-0.25)/2, sx=rcX+(i%2)*(stW+0.25), sy=1.4+Math.floor(i/2)*2.78;
       s2.addShape(R, { x:sx, y:sy, w:stW, h:2.6, fill:{color:'F0FDF8'}, line:{color:'A7F3D0', width:1} });
@@ -3033,11 +3427,11 @@ async function generatePPT() {
     // Checklist (left)
     const stC = { yes:'059669', partial:'D97706', no:'DC2626' };
     const stI = { yes:'✓', partial:'◐', no:'✗' };
-    s3.addText(it?'Checklist LLM':'LLM Checklist', {
+    s3.addText(S.ppt_llm_checklist, {
       x:0.4, y:0.82, w:5.8, h:0.36, fontSize:13, bold:true, color:TP_DARK, fontFace:'Arial'
     });
     let clY = 1.26;
-    CHECKLIST[lang].forEach((item, i) => {
+    (CHECKLIST[lang] || CHECKLIST.en).forEach((item, i) => {
       if (clY+0.3 > 4.1) return;
       const st = state.checklist[i];
       s3.addShape(R, { x:0.4, y:clY, w:5.8, h:0.29, fill:{color:i%2===0?'F9FAFB':'FFFFFF'}, line:noLine });
@@ -3060,7 +3454,7 @@ async function generatePPT() {
       });
       s3.addShape(R, { x:6.7, y:2.92, w:6.4, h:1.1, fill:{color:'FFFBEB'}, line:{color:'F59E0B', width:1.5} });
       s3.addShape(R, { x:6.7, y:2.92, w:0.16, h:1.1, fill:{color:'F59E0B'}, line:noLine });
-      s3.addText(`⚡ Quick Win${it?' — questa settimana':' — this week'}`, {
+      s3.addText(`⚡ ${S.ppt_quick_win}`, {
         x:6.95, y:2.97, w:6.05, h:0.3, fontSize:11, bold:true, color:'D97706', fontFace:'Arial'
       });
       s3.addText(scenario.qw||'', { x:6.95, y:3.28, w:6.05, h:0.65, fontSize:10.5, color:'444444', fontFace:'Arial' });
@@ -3069,7 +3463,7 @@ async function generatePPT() {
     // Roadmap strip (bottom)
     const rmY = 4.15;
     s3.addShape(R, { x:0, y:rmY, w:W, h:0.05, fill:{color:TP_GREEN}, line:noLine });
-    s3.addText(it?'Roadmap 90 Giorni':'90-Day Roadmap', {
+    s3.addText(S.ppt_roadmap_90d, {
       x:0.4, y:rmY+0.1, w:6, h:0.36, fontSize:13, bold:true, color:TP_DARK, fontFace:'Arial'
     });
     const stepW = (W-1.0)/3-0.15;
@@ -3098,7 +3492,7 @@ async function generatePPT() {
       const p4lw = 1.72, p4lh = p4lw / LOGO_RATIO;
       s4.addImage({ data:logoWhiteB64, x:0.22, y:(0.7-p4lh)/2, w:p4lw, h:p4lh });
       s4.addShape(R, { x:2.08, y:0.18, w:0.02, h:0.34, fill:{color:'555555'}, line:noLine });
-      s4.addText(it?'Piano Consigliato':'Recommended Plan', {
+      s4.addText(S.ppt_rec_plan, {
         x:2.05, y:0, w:7.5, h:0.7, fontSize:17, bold:true, color:'FFFFFF', fontFace:'Arial', valign:'middle'
       });
       s4.addText(company, {
@@ -3107,20 +3501,20 @@ async function generatePPT() {
 
       // Plan name
       s4.addText(recPlan.name, { x:0.5, y:0.85, w:8, h:0.95, fontSize:60, bold:true, color:pc, fontFace:'Arial' });
-      s4.addText(recPlan.tier[lang], { x:0.5, y:1.82, w:12, h:0.36, fontSize:14, color:'777777', fontFace:'Arial' });
+      s4.addText(recPlan.tier[lang] || recPlan.tier.en, { x:0.5, y:1.82, w:12, h:0.36, fontSize:14, color:'777777', fontFace:'Arial' });
 
       // "Why this plan" callout
-      const whyText = ((WHY[lang]||{})[scoreTier]||{})[recPlanKey]||'';
+      const whyText = ((WHY[lang] || WHY.en||{})[scoreTier]||{})[recPlanKey]||'';
       s4.addShape(R, { x:0.5, y:2.28, w:12.3, h:1.05, fill:{color:'F9FAFB'}, line:{color:TP_BORDER, width:1} });
       s4.addShape(R, { x:0.5, y:2.28, w:0.18, h:1.05, fill:{color:pc}, line:noLine });
-      s4.addText(it?'Perché questo piano:':'Why this plan:', { x:0.82, y:2.33, w:11.8, h:0.3, fontSize:11, bold:true, color:pc, fontFace:'Arial' });
+      s4.addText(S.ppt_why_plan, { x:0.82, y:2.33, w:11.8, h:0.3, fontSize:11, bold:true, color:pc, fontFace:'Arial' });
       s4.addText(whyText, { x:0.82, y:2.63, w:11.8, h:0.62, fontSize:11, color:'333333', fontFace:'Arial' });
 
       // Features grid
-      s4.addText(it?'Cosa include':'What\'s included', {
+      s4.addText(S.ppt_included, {
         x:0.5, y:3.45, w:12, h:0.36, fontSize:13, bold:true, color:TP_DARK, fontFace:'Arial'
       });
-      const feats=recPlan.features[lang]||[], featW=(W-1.2)/2-0.2, featH=1.5, featSY=3.88;
+      const feats=recPlan.features[lang] || recPlan.features.en||[], featW=(W-1.2)/2-0.2, featH=1.5, featSY=3.88;
       feats.forEach((feat, i) => {
         if (!feat) return;
         const fx=0.5+(i%2)*(featW+0.4), fy=featSY+Math.floor(i/2)*(featH+0.15);
@@ -3133,8 +3527,7 @@ async function generatePPT() {
 
       // Disclaimer + footer
       s4.addText(
-        it ? 'Report generato automaticamente. Dati da fonti pubbliche: Bain, Semrush, Seer.'
-           : 'Automatically generated. Data from public sources: Bain, Semrush, Seer.',
+        S.ppt_report_footer,
         { x:0.5, y:H-0.42, w:W-1, h:0.2, fontSize:8, color:'AAAAAA', fontFace:'Arial', italics:true }
       );
       ftr(s4);
@@ -3169,24 +3562,24 @@ async function generatePDF() {
     const { jsPDF } = window.jspdf;
 
     // ── same data setup as generatePPT() ─────────────────────────────
-    const it = lang === 'it';
+    const S = STRINGS[lang];
     const total = state.total;
     const scoreTier = total <= 12 ? 'red' : total <= 22 ? 'yellow' : 'green';
-    const company = state.companyName || (it ? 'la tua azienda' : 'your company');
-    const today = new Date().toLocaleDateString(it ? 'it-IT' : 'en-GB', { day:'2-digit', month:'long', year:'numeric' });
+    const company = state.companyName || S.fallback_company;
+    const today = new Date().toLocaleDateString(S.date_locale, { day:'2-digit', month:'long', year:'numeric' });
 
-    const scenarios = SCENARIOS[lang];
+    const scenarios = SCENARIOS[lang] || SCENARIOS.en;
     let scenario = null;
     if (state.selectedScenario !== null) scenario = scenarios.find(s => s.id === state.selectedScenario);
     if (!scenario) scenario = scenarios.find(s => s.trigger(state.scores)) || scenarios[0];
 
-    const roadmap = ROADMAPS[lang][scoreTier];
+    const roadmap = (ROADMAPS[lang] || ROADMAPS.en)[scoreTier];
     const recPlanKey = state.planChoice.recommended;
     const recPlan = recPlanKey ? PLAN_DATA[recPlanKey] : null;
 
     const TC  = { red:'E74C3C', yellow:'F5A623', green:'00B67A' }[scoreTier];
-    const tierLabel = { red:it?"Invisibile per l'AI":'Invisible to AI', yellow:it?'Parzialmente Visibile':'Partially Visible', green:'AI-Ready' }[scoreTier];
-    const tierDesc  = { red:it?"Il brand non è rilevato dagli LLM. Serve azione immediata.":'The brand is not detected by LLMs. Immediate action needed.', yellow:it?'Il brand è parzialmente visibile. Opportunità concrete di miglioramento.':'The brand is partially visible. Concrete opportunities to improve.', green:it?'Il brand è AI-Ready. Focus su consolidamento e ottimizzazione.':'The brand is AI-Ready. Focus on consolidation and optimisation.' }[scoreTier];
+    const tierLabel = { red:S.ppt_tier_red, yellow:S.ppt_tier_yellow, green:S.ppt_tier_green }[scoreTier];
+    const tierDesc  = { red:S.ppt_tier_desc_red, yellow:S.ppt_tier_desc_yellow, green:S.ppt_tier_desc_green }[scoreTier];
 
     const W=13.33, H=7.5, TP_GREEN='00B67A', TP_DARK='191919', TP_LIGHT='F3F4F6', TP_BORDER='E5E7EB';
     const LOGO_RATIO = 1071/263;
@@ -3251,7 +3644,7 @@ async function generatePDF() {
     // ═══════════════════════════════════════════════════════════════
     // PAGE 2 — SCORE BREAKDOWN
     // ═══════════════════════════════════════════════════════════════
-    doc.addPage(); fc(0,0,W,H,'FFFFFF'); hdr(it?'Analisi del Punteggio':'Score Breakdown');
+    doc.addPage(); fc(0,0,W,H,'FFFFFF'); hdr(S.ppt_score_breakdown);
 
     const cr=1.25, cx=0.4+cr+0.2, cy=1.15+cr;
     eli(cx,cy,cr,cr,TP_LIGHT,TC);
@@ -3269,11 +3662,11 @@ async function generatePDF() {
     });
     fc(6.75,0.85,0.02,H-1.1,TP_BORDER);
 
-    txt(it?'Perché conta la visibilità AI':'Why AI Visibility Matters',7.05,0.88,6.0,0.42,{fontSize:15,bold:true,color:TP_DARK});
-    [{num:'60%',lbl:it?'delle ricerche AI si concludono senza un clic (Bain, 2025)':'of AI searches end without a click (Bain, 2025)'},
-     {num:'62%',lbl:it?'dei brand è invisibile agli LLM (Semrush, 2025)':'of brands are invisible to LLMs (Semrush, 2025)'},
-     {num:'75%',lbl:it?'citation rate per brand con profilo Trustpilot attivo':'citation rate for brands with an active Trustpilot profile'},
-     {num:'16×',lbl:it?'più citation a purchase intent vs awareness (Seer, 2026)':'more citations at purchase intent vs awareness (Seer, 2026)'}]
+    txt(S.ppt_why_ai_visibility,7.05,0.88,6.0,0.42,{fontSize:15,bold:true,color:TP_DARK});
+    [{num:'60%',lbl:S.ppt_stat_1f},
+     {num:'62%',lbl:S.ppt_stat_2f},
+     {num:'75%',lbl:S.ppt_stat_3f},
+     {num:'16×',lbl:S.ppt_stat_4f}]
     .forEach((st,i)=>{
       const sW=(6.0-0.25)/2, sx=7.05+(i%2)*(sW+0.25), sy=1.4+Math.floor(i/2)*2.78;
       fsc(sx,sy,sW,2.6,'F0FDF8','A7F3D0');
@@ -3288,9 +3681,9 @@ async function generatePDF() {
     doc.addPage(); fc(0,0,W,H,'FFFFFF'); hdr('LLM Brand Visibility Audit');
 
     const stC3={yes:'059669',partial:'D97706',no:'DC2626'}, stI3={yes:'✓',partial:'~',no:'✗'};
-    txt(it?'Checklist LLM':'LLM Checklist',0.4,0.82,5.8,0.36,{fontSize:13,bold:true,color:TP_DARK});
+    txt(S.ppt_llm_checklist,0.4,0.82,5.8,0.36,{fontSize:13,bold:true,color:TP_DARK});
     let clY3=1.26;
-    CHECKLIST[lang].forEach((item,i)=>{
+    (CHECKLIST[lang] || CHECKLIST.en).forEach((item,i)=>{
       if(clY3+0.3>4.1) return;
       const st=state.checklist[i];
       fc(0.4,clY3,5.8,0.29,i%2===0?'F9FAFB':'FFFFFF');
@@ -3306,13 +3699,13 @@ async function generatePDF() {
       txt(bRaw.length>270?bRaw.substring(0,270)+'…':bRaw,6.7,1.35,6.4,1.5,{fontSize:10.5,color:'444444'});
       fsc(6.7,2.92,6.4,1.1,'FFFBEB','F59E0B',0.015);
       fc(6.7,2.92,0.16,1.1,'F59E0B');
-      txt(`Quick Win${it?' — questa settimana':' — this week'}`,6.95,2.97,6.05,0.3,{fontSize:11,bold:true,color:'D97706',wrap:false});
+      txt(S.ppt_quick_win,6.95,2.97,6.05,0.3,{fontSize:11,bold:true,color:'D97706',wrap:false});
       txt(scenario.qw||'',6.95,3.28,6.05,0.65,{fontSize:10.5,color:'444444'});
     }
 
     const rmY=4.15;
     fc(0,rmY,W,0.05,TP_GREEN);
-    txt(it?'Roadmap 90 Giorni':'90-Day Roadmap',0.4,rmY+0.1,6,0.36,{fontSize:13,bold:true,color:TP_DARK});
+    txt(S.ppt_roadmap_90d,0.4,rmY+0.1,6,0.36,{fontSize:13,bold:true,color:TP_DARK});
     const sW3=(W-1.0)/3-0.15;
     roadmap.steps.forEach((step,i)=>{
       const sx=0.4+i*(sW3+0.15), sy=rmY+0.53, sh=H-sy-0.3;
@@ -3336,20 +3729,20 @@ async function generatePDF() {
       const p4lw=1.72, p4lh=p4lw/LOGO_RATIO;
       im(logoWhiteB64,0.22,(0.7-p4lh)/2,p4lw,p4lh);
       fc(2.08,0.18,0.02,0.34,'555555');
-      txt(it?'Piano Consigliato':'Recommended Plan',2.24,0,7.2,0.7,{fontSize:17,bold:true,color:'FFFFFF',valign:'middle'});
+      txt(S.ppt_rec_plan,2.24,0,7.2,0.7,{fontSize:17,bold:true,color:'FFFFFF',valign:'middle'});
       txt(company,9.6,0,3.5,0.7,{fontSize:10,bold:true,color:'FFFFFF',align:'right',valign:'middle',wrap:false});
 
       txt(recPlan.name,0.5,0.85,8,0.95,{fontSize:60,bold:true,color:pc,wrap:false});
-      txt(recPlan.tier[lang],0.5,1.82,12,0.36,{fontSize:14,color:'777777'});
+      txt(recPlan.tier[lang] || recPlan.tier.en,0.5,1.82,12,0.36,{fontSize:14,color:'777777'});
 
-      const wt=((WHY[lang]||{})[scoreTier]||{})[recPlanKey]||'';
+      const wt=((WHY[lang] || WHY.en||{})[scoreTier]||{})[recPlanKey]||'';
       fsc(0.5,2.28,12.3,1.05,'F9FAFB',TP_BORDER);
       fc(0.5,2.28,0.18,1.05,pc);
-      txt(it?'Perché questo piano:':'Why this plan:',0.82,2.33,11.8,0.3,{fontSize:11,bold:true,color:pc});
+      txt(S.ppt_why_plan,0.82,2.33,11.8,0.3,{fontSize:11,bold:true,color:pc});
       txt(wt,0.82,2.63,11.8,0.62,{fontSize:11,color:'333333'});
 
-      txt(it?'Cosa include':"What's included",0.5,3.45,12,0.36,{fontSize:13,bold:true,color:TP_DARK});
-      const feats=recPlan.features[lang]||[], fW=(W-1.2)/2-0.2, fH=1.5;
+      txt(S.ppt_included,0.5,3.45,12,0.36,{fontSize:13,bold:true,color:TP_DARK});
+      const feats=recPlan.features[lang] || recPlan.features.en||[], fW=(W-1.2)/2-0.2, fH=1.5;
       feats.forEach((feat,i)=>{
         if(!feat) return;
         const fx=0.5+(i%2)*(fW+0.4), fy=3.88+Math.floor(i/2)*(fH+0.15);
@@ -3360,7 +3753,7 @@ async function generatePDF() {
         txt((feat.items||[]).map(x=>`- ${x}`).join('\n'),fx+0.12,fy+0.34,fW-0.24,fH-0.42,{fontSize:9.5,color:'444444'});
       });
 
-      txt(it?'Report generato automaticamente. Dati da fonti pubbliche: Bain, Semrush, Seer.':'Automatically generated. Data from public sources: Bain, Semrush, Seer.',
+      txt(S.ppt_report_footer,
         0.5,H-0.42,W-1,0.2,{fontSize:8,color:'AAAAAA'});
       ftr();
     }
