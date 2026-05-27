@@ -2899,7 +2899,7 @@ const ROADMAPS = {
 function renderRoadmap() {
   const S = STRINGS[lang];
   const tier = state.total<=10 ? 'red' : state.total<=20 ? 'yellow' : 'green';
-  const rm = ROADMAPS[lang][tier];
+  const rm = (ROADMAPS[lang] || ROADMAPS.en)[tier];
   const el5 = document.getElementById('step-5');
   if (el5) el5.querySelector('.step-title').textContent = S.s5_title;
   const container = document.getElementById('roadmap-container');
