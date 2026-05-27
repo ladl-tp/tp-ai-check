@@ -2614,73 +2614,36 @@ let selectedPlanKey = null;
 
 function renderPlan() {
   const S = STRINGS[lang];
-  const total = state.total;
-  const scoreTier = total<=12?'red':total<=22?'yellow':'green';
-  const suggestedMap = {red:'Enterprise',yellow:'Enterprise',green:'Enterprise'};
-
-  // Default to recommended from plan choice, then fallback to score suggestion
-  if (!selectedPlanKey) {
-    selectedPlanKey = state.planChoice.recommended || suggestedMap[scoreTier];
-  }
-
-  const el7 = document.getElementById('step-6');
-  if (el7) el7.querySelector('.step-title').textContent = S.s7_title;
-
-  // Plan selector cards (3 plans)
-  const recName = state.planChoice.recommended;
-  const lightName = state.planChoice.light;
-  const planColors = {Plus:'#e74c3c', Premium:'#f5a623', Enterprise:'#00b67a'};
-
-  document.getElementById('plan-selector').innerHTML = Object.values(PLAN_DATA).map(plan => {
-    const isSel = plan.name === selectedPlanKey;
-    const isRec = plan.name === recName;
-    const isLight = plan.name === lightName;
-    let borderColor = isSel ? plan.color : 'var(--border)';
-    let badge = '';
-    if (isRec) badge = `<div style="font-size:10px;font-weight:700;color:${plan.color};margin-bottom:4px;">★ ${S.sum_rec}</div>`;
-    else if (isLight) badge = `<div style="font-size:10px;font-weight:700;color:#6366f1;margin-bottom:4px;">◇ ${S.sum_light}</div>`;
-    return `
-      <button onclick="selectPlanDetail('${plan.name}')" style="
-        border:2px solid ${borderColor};border-radius:12px;padding:16px;
-        background:${isSel?plan.bg:'white'};cursor:pointer;text-align:left;
-        transition:all 0.2s;position:relative;
-      ">
-        ${badge}
-        <div style="font-size:18px;font-weight:800;color:${plan.color};margin-bottom:4px;">${plan.name}</div>
-        <div style="font-size:11px;color:${plan.color};font-weight:600;margin-bottom:8px;">${plan.tier[lang]}</div>
-        ${plan.meta[lang].map(m=>`<div style="font-size:12px;color:var(--mid);margin-top:3px;">${m}</div>`).join('')}
-      </button>`;
-  }).join('');
-
-  renderPlanDetail(selectedPlanKey);
-}
-
-function selectPlanDetail(planName) {
-  selectedPlanKey = planName;
-  renderPlan();
-}
-
-function renderPlanDetail(planName) {
-  const S = STRINGS[lang];
-  const plan = PLAN_DATA[planName];
+  const plan = PLAN_DATA.Enterprise;
   const scoreTier = state.total<=12?'red':state.total<=22?'yellow':'green';
-  const detailEl = document.getElementById('plan-detail');
-  if (!detailEl || !plan) return;
+  const whyText = WHY[lang][scoreTier]['Enterprise'];
+  const it = lang === 'it';
+  const company = state.companyName || (it ? 'la tua azienda' : 'your company');
+  const el = document.getElementById('step-6');
+  if (!el) return;
 
-  detailEl.innerHTML = `
+  el.innerHTML = `
+    <div class="step-title">${it ? 'Piano Enterprise' : 'Enterprise Plan'}</div>
+    <div class="step-subtitle">
+      ${it ? 'Il piano su misura per' : 'The plan tailored for'}
+      <em class="company-name-display">${company}</em> — con la roadmap integrata.
+    </div>
+
     <div style="border:2px solid ${plan.color};border-radius:12px;padding:24px;margin-bottom:24px;background:${plan.bg};">
       <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:${plan.color};margin-bottom:8px;">${S.why_title}</div>
-      <div style="font-size:15px;line-height:1.7;color:var(--dark);">${WHY[lang][scoreTier][planName]}</div>
+      <div style="font-size:15px;line-height:1.7;color:var(--dark);">${whyText}</div>
     </div>
+
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;" class="plan-features-grid">
       ${plan.features[lang].map(f => `
         <div style="border:1px solid var(--border);border-radius:10px;padding:16px;background:white;">
           <div style="font-size:18px;margin-bottom:6px;">${f.icon}</div>
           <div style="font-size:13px;font-weight:700;margin-bottom:10px;">${f.title}</div>
-          ${f.items.map(item=>`<div style="font-size:12px;color:var(--mid);padding:3px 0;border-top:1px solid var(--border);line-height:1.4;">${item}</div>`).join('')}
+          ${f.items.map(item => `<div style="font-size:12px;color:var(--mid);padding:3px 0;border-top:1px solid var(--border);line-height:1.4;">${item}</div>`).join('')}
         </div>`).join('')}
     </div>
-    <div style="font-size:20px;font-weight:800;margin-bottom:4px;">${S.roadmap_title} — ${plan.name}</div>
+
+    <div style="font-size:20px;font-weight:800;margin-bottom:4px;">${S.roadmap_title} — Enterprise</div>
     <div style="font-size:14px;color:var(--mid);margin-bottom:24px;">${plan.tier[lang]}</div>
     <div class="roadmap-steps">
       ${plan.roadmap[lang].map((step,i) => `
@@ -2693,10 +2656,26 @@ function renderPlanDetail(planName) {
             <span class="step-kpi" style="background:${plan.bg};color:${plan.color};">&#8594; ${step.kpi}</span>
           </div>
         </div>`).join('')}
-    </div>`;
+    </div>
+
+    <div class="results-panel" style="margin-top:28px;">
+      <h3>${S.cta_ready}</h3>
+      <p>${S.cta_body}</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
+        <button class="btn-print" onclick="window.print()" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);color:white;">
+          🖨 ${S.btn_print}
+        </button>
+        <button class="btn-print" id="btn-docs" onclick="generatePPT()" style="background:var(--green);border-color:var(--green);color:white;">
+          ⬇ ${S.btn_docs}
+        </button>
+        <button class="btn-print" id="btn-pdf" onclick="generatePDF()" style="background:var(--green);border-color:var(--green);color:white;">
+          ⬇ ${S.btn_pdf}
+        </button>
+      </div>
+    </div>
+  `;
 }
 
-// ─── ADVANCE TO STEP 2 ─────────────────────────────────────────────────────
 function _goToStep2() {
   document.getElementById(`step-${state.currentStep}`).classList.remove('active');
   state.currentStep = 2;
