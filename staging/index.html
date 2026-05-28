@@ -2964,7 +2964,7 @@ function renderPlanPicker() {
         ${isSugg ? `<div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:${plan.color};color:white;font-size:10px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap;z-index:1;">★ Score ${total}/30</div>` : ''}
         <div class="picker-card-name" style="color:${plan.color}">${plan.name}</div>
         <div class="picker-card-tier" style="color:${plan.color}">${plan.tier[lang] || plan.tier.en}</div>
-        <div class="picker-card-meta">${plan.meta[lang] || plan.meta.en.join('<br>')}</div>
+        <div class="picker-card-meta">${(plan.meta[lang] || plan.meta.en).join('<br>')}</div>
         <div class="picker-btns">
           <button class="picker-btn${isRec?' active-recommended':''}" onclick="pickPlanRole('${plan.name}','recommended')" ${recDisabled}>${S.btn_rec}</button>
           <button class="picker-btn${isLight?' active-light':''}" onclick="pickPlanRole('${plan.name}','light')" ${lightDisabled}>${S.btn_light}</button>
@@ -3038,7 +3038,7 @@ function renderPlan() {
         ${badge}
         <div style="font-size:18px;font-weight:800;color:${plan.color};margin-bottom:4px;">${plan.name}</div>
         <div style="font-size:11px;color:${plan.color};font-weight:600;margin-bottom:8px;">${plan.tier[lang] || plan.tier.en}</div>
-        ${plan.meta[lang] || plan.meta.en.map(m=>`<div style="font-size:12px;color:var(--mid);margin-top:3px;">${m}</div>`).join('')}
+        ${(plan.meta[lang] || plan.meta.en).map(m=>`<div style="font-size:12px;color:var(--mid);margin-top:3px;">${m}</div>`).join('')}
       </button>`;
   }).join('');
 
@@ -3063,7 +3063,7 @@ function renderPlanDetail(planName) {
       <div style="font-size:15px;line-height:1.7;color:var(--dark);">${(WHY[lang] || WHY.en)[scoreTier][planName]}</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;" class="plan-features-grid">
-      ${plan.features[lang] || plan.features.en.map(f => `
+      ${(plan.features[lang] || plan.features.en).map(f => `
         <div style="border:1px solid var(--border);border-radius:10px;padding:16px;background:white;">
           <div style="font-size:18px;margin-bottom:6px;">${f.icon}</div>
           <div style="font-size:13px;font-weight:700;margin-bottom:10px;">${f.title}</div>
@@ -3073,7 +3073,7 @@ function renderPlanDetail(planName) {
     <div style="font-size:20px;font-weight:800;margin-bottom:4px;">${S.roadmap_title} — ${plan.name}</div>
     <div style="font-size:14px;color:var(--mid);margin-bottom:24px;">${plan.tier[lang] || plan.tier.en}</div>
     <div class="roadmap-steps">
-      ${plan.roadmap[lang] || plan.roadmap.en.map((step,i) => `
+      ${(plan.roadmap[lang] || plan.roadmap.en).map((step,i) => `
         <div class="roadmap-step">
           <div class="step-circle" style="background:${plan.color};">0${i+1}</div>
           <div class="step-content">
