@@ -24,16 +24,18 @@ jobs:
           path: main-src
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Copy index.html to main/staging/
+      - name: Copy files to main/staging/
         run: |
           mkdir -p main-src/staging
+          mkdir -p main-src/staging/enterprise
           cp staging-src/index.html main-src/staging/index.html
+          cp staging-src/enterprise/index.html main-src/staging/enterprise/index.html
 
       - name: Commit and push to main
         run: |
           cd main-src
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add staging/index.html
+          git add staging/index.html staging/enterprise/index.html
           git diff --staged --quiet && echo "No changes" || \
             git commit -m "chore: sync staging → /staging/ [skip ci]" && git push
