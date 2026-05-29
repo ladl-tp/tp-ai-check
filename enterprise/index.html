@@ -1124,13 +1124,13 @@
 
   <div class="hero-stats">
     <div class="hero-stat">
-      <span class="num">60%</span>
-      <span class="label" data-i18n="stat2_lbl">of searches end without a click (Bain, 2025)</span>
+      <span class="num">42%</span>
+      <span class="label" data-i18n="stat2_lbl">of enterprise deals never reach AI consideration (McKinsey)</span>
     </div>
     <div class="hero-divider"></div>
     <div class="hero-stat">
-      <span class="num">62%</span>
-      <span class="label" data-i18n="stat3_lbl">of brands are technically invisible to LLMs (Semrush)</span>
+      <span class="num">98%</span>
+      <span class="label" data-i18n="stat3_lbl">of high-value buyers check reviews before deciding</span>
     </div>
     <div class="hero-divider"></div>
     <div class="hero-stat">
@@ -1532,8 +1532,8 @@ const STRINGS = {
     hero_eyebrow: '★ Enterprise Edition · Basato sui dati Trustpilot',
     hero_h1: 'Il tuo <span>AI Relevance</span> Score<br>& LLM Visibility Audit',
     hero_p: "A che velocità la tua organizzazione sta perdendo opportunità enterprise perché l'AI non conosce il tuo brand?",
-    stat2_lbl: 'delle ricerche si concludono senza un clic (Bain, 2025)',
-    stat3_lbl: 'dei brand sono tecnicamente invisibili agli LLM (Semrush)',
+    stat2_lbl: 'delle trattative enterprise non raggiunge mai la consideration AI (McKinsey)',
+    stat3_lbl: 'dei buyer ad alto valore consulta le recensioni prima di decidere',
     stat4_lbl: 'citation rate per brand con profilo Trustpilot attivo',
     stat5_lbl: 'più menzioni AI rispetto ai brand senza profilo Trustpilot (Trustpilot & SEER, 2026)',
     cta_start: 'Inizia il tuo AI Check ↓',
@@ -1669,8 +1669,8 @@ const STRINGS = {
     hero_eyebrow:'★ Enterprise Edition · Powered by Trustpilot data',
     hero_h1:'Your <span>AI Relevance</span> Score<br>& LLM Visibility Audit',
     hero_p:"How fast is your organisation losing enterprise deals because AI doesn't know your brand?",
-    stat2_lbl:'of searches end without a click (Bain, 2025)',
-    stat3_lbl:'of brands are technically invisible to LLMs (Semrush)',
+    stat2_lbl:'of enterprise deals never reach AI-driven consideration (McKinsey)',
+    stat3_lbl:'of high-value buyers read reviews before every major purchase decision',
     stat4_lbl:'citation rate for brands with active Trustpilot profile',
     stat5_lbl:'more AI mentions vs brands with no profile (Trustpilot & SEER, 2026)',
     cta_start:'Start your AI Check ↓',
@@ -1806,8 +1806,8 @@ const STRINGS = {
     hero_eyebrow:'★ Enterprise Edition · Basado en datos de Trustpilot',
     hero_h1:'Tu <span>AI Relevance</span> Score<br>& LLM Visibility Audit',
     hero_p:"¿A qué velocidad tu organización está perdiendo oportunidades enterprise porque la IA no conoce tu marca?",
-    stat2_lbl:'de las búsquedas terminan sin un clic (Bain, 2025)',
-    stat3_lbl:'de las marcas son técnicamente invisibles para los LLMs (Semrush)',
+    stat2_lbl:'de las operaciones enterprise nunca alcanzan la consideration de IA (McKinsey)',
+    stat3_lbl:'de los compradores de alto valor consulta reseñas antes de decidir',
     stat4_lbl:'tasa de citación para marcas con perfil Trustpilot activo',
     stat5_lbl:'más menciones de IA vs marcas sin perfil Trustpilot (Trustpilot & SEER, 2026)',
     cta_start:'Comienza tu AI Check ↓',
@@ -1942,8 +1942,8 @@ const STRINGS = {
     hero_eyebrow:'★ Enterprise Edition · Basierend auf Trustpilot-Daten',
     hero_h1:'Ihr <span>AI Relevance</span> Score<br>& LLM Visibility Audit',
     hero_p:"Wie viele Enterprise-Chancen verliert Ihre Organisation, weil KI Ihre Marke nicht kennt?",
-    stat2_lbl:'der Suchanfragen enden ohne einen Klick (Bain, 2025)',
-    stat3_lbl:'der Marken sind für LLMs technisch unsichtbar (Semrush)',
+    stat2_lbl:'der Enterprise-Deals erreichen nie die KI-gesteuerte Consideration (McKinsey)',
+    stat3_lbl:'der High-Value-Käufer lesen Bewertungen vor jeder wichtigen Kaufentscheidung',
     stat4_lbl:'Zitationsrate für Marken mit aktivem Trustpilot-Profil',
     stat5_lbl:'mehr KI-Erwähnungen vs. Marken ohne Trustpilot-Profil (Trustpilot & SEER, 2026)',
     cta_start:'Starte deinen AI Check ↓',
@@ -2093,148 +2093,150 @@ const state = {
   planChoice: { recommended: 'Enterprise', light: null }
 };
 
-// ─── SCENARIOS ─────────────────────────────────────────────────────
+// ─── SCENARIOS ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 const SCENARIOS = {
   it: [
-    { id:'A', title:'Nessun profilo / Invisibile per l\'AI',
+    { id:'A', title:'Leader di mercato — invisibile per l\'AI nei processi di acquisto',
       trigger: s => s.d1 <= 3,
-      body: n => `Abbiamo cercato ${n||'la vostra azienda'} su ChatGPT e Perplexity: non appare. Senza un profilo Trustpilot rivendicato, gli LLM non hanno segnali indipendenti su di voi. Tecnicamente esistete — ma per l'AI siete trasparenti. Bain trova che il 60% delle ricerche termina senza un click: se l'AI non vi cita, i buyer non arrivano.`,
-      qw:`Rivendicate il profilo oggi — è gratuito e richiede 10 minuti. Con sole 13 recensioni genuine, il citation rate AI passa dall'1% al 53,5%.` },
-    { id:'B', title:'Profilo attivo ma recensioni stale o poche',
+      body: n => `Abbiamo testato: ${n||'la vostra azienda'} su ChatGPT e Perplexity in contesti di acquisto enterprise — non appare. Per un'organizzazione con forte brand awareness tradizionale, il silenzio nei canali AI è controintuitivo ma devastante: il 42% delle trattative enterprise (McKinsey) non raggiunge mai la consideration quando i segnali AI mancano. Trustpilot è il dominio #5 più citato su ChatGPT — senza un profilo attivo, la vostra reputazione è invisibile ai buyer AI-driven, esattamente quando stanno costruendo la shortlist dei fornitori.`,
+      qw:`Rivendicate il profilo questa settimana — gratuito, meno di un'ora. Con sole 13 recensioni genuine il citation rate AI passa dall'1% al 54%. Per un'organizzazione enterprise questo è il ROI più rapido e immediato disponibile sul mercato.` },
+    { id:'B', title:'Presenza multi-mercato frammentata — segnali AI inconsistenti',
       trigger: s => s.d1 >= 4 && s.d1 <= 6,
-      body: n => `Avete un profilo e alcune recensioni — ma stanno invecchiando. Gli LLM pesano molto la recency: un profilo dormiente è un segnale stale. Semrush conferma che meno di 1 brand su 5 è sia frequentemente citato che considerato autorevole. State perdendo terreno rispetto ai competitor con attività recente.`,
-      qw:`Attivate gli inviti automatizzati post-servizio — anche solo via email. 2–3 nuove recensioni al mese bastano per ristabilire i segnali di recency e spingere il citation rate verso il benchmark del 75,3%.` },
-    { id:'C', title:'Buon volume ma zero risposte alle recensioni',
+      body: n => `Avete recensioni — ma concentrate su un mercato o che stanno invecchiando. I processi di acquisto enterprise si estendono su più geografie: l'AI vede segnali inconsistenti per regione. Il 98% dei buyer ad alto valore consulta le recensioni prima di ogni decisione importante. Gap di recency in mercati chiave si traducono direttamente in opportunità perse — i competitor con attività recente in ogni mercato vi stanno superando nelle shortlist AI.`,
+      qw:`Lanciate inviti automatizzati in tutti i mercati chiave. Target: 5–10 nuove recensioni/mese per mercato. Questo ristabilisce i segnali di recency e porta il citation rate verso il benchmark del 75% in ogni geografia.` },
+    { id:'C', title:'Volume elevato — ma nessun programma di risposta sistematico',
       trigger: s => s.d1 >= 7 && s.d2 <= 4,
-      body: n => `${n||'La vostra azienda'} ha un buon volume di recensioni, ma non ha risposto a nessuna. Gli LLM sintetizzano la qualità del customer service nelle risposte che citano Trustpilot. Nessuna risposta segnala disimpegno: il brand esiste, ma non ascolta.`,
-      qw:`Rispondete alle 5 recensioni negative più recenti questa settimana. Non serve essere difensivi — basta mostrare che c'è un essere umano dall'altra parte.` },
-    { id:'D', title:'Presente ma assente nelle ricerche sui competitor',
+      body: n => `${n||'La vostra organizzazione'} ha un buon volume di recensioni, ma non esiste un programma di risposta sistematico. Nei processi di acquisto enterprise l'AI sintetizza come un brand gestisce la critica — zero risposte segnala disimpegno a livello board. I procurement manager cercano specificamente questa coerenza operativa come segnale di maturità del fornitore: una mancanza visibile che i competitor sfruttano attivamente.`,
+      qw:`Assegnate l'ownership delle risposte per mercato o BU questa settimana. Iniziate con le 10 recensioni negative più visibili. Un programma di risposta sistematico è uno dei segnali più forti per gli LLM — e un differenziatore competitivo misurabile.` },
+    { id:'D', title:'Assente nelle ricerche comparative AI — gap di co-mention critico',
       trigger: s => s.d1 >= 5 && s.total >= 13 && s.total <= 22,
-      body: n => `Abbiamo testato live: "Quali sono le migliori alternative a [Competitor]?" — il vostro nome non appare. I brand con profili Trustpilot ottimizzati ricevono 9.5× più co-mention competitive. Siete invisibili esattamente quando un buyer sta cercando attivamente di cambiare fornitore.`,
-      qw:`Portate le recensioni da dove siete ora a 81+ nei prossimi 60 giorni. Quella soglia di volume è dove si attiva l'effetto co-mention.` },
-    { id:'E', title:'Recensioni poco profonde — narrativa AI debole',
+      body: n => `Testato live: "Migliori vendor enterprise per [categoria]?" e "Alternative a [Competitor]?" — il vostro nome non appare. Le organizzazioni enterprise con profili Trustpilot ottimizzati ricevono 9.5× più co-mention competitive. Siete invisibili esattamente quando un buyer enterprise sta costruendo la shortlist. McKinsey stima che il 42% delle trattative non raggiunga mai la consideration per assenza di segnali AI — e voi siete in quel 42%.`,
+      qw:`Target: 250+ recensioni — la soglia enterprise dove il citation rate supera il 75% in modo consistente. Con il piano Enterprise e inviti illimitati, questo traguardo è raggiungibile in 60 giorni. Ogni co-mention guadagnata equivale a pipeline diretta.` },
+    { id:'E', title:'Recensioni presenti — narrativa AI insufficiente per credibilità enterprise',
       trigger: s => s.d1 >= 7 && s.d2 >= 7 && s.d3 <= 6,
-      body: n => `Le recensioni di ${n||'questa azienda'} coprono pochi temi. L'AI sintetizza le ricorrenze per costruire la narrativa del brand. Quando un buyer chiede "È affidabile ${n||'questa azienda'}?" l'AI non ha abbastanza materiale per rispondere favorevolmente.`,
-      qw:`Inviate template di invito più neutri a una fascia più ampia di clienti. Il volume è la leva: più risposte genuine producono naturalmente la varietà tematica di cui l'AI ha bisogno.` }
+      body: n => `Le recensioni di ${n||'questa organizzazione'} esistono ma coprono pochi temi. Un buyer enterprise che chiede all'AI "\u00c8 affidabile ${n||'questa azienda'} per un contratto multi-milionario?" non riceve una risposta sufficientemente autorevole. Il 78% dei buyer per acquisti ad alto valore (€1.500+) consulta le recensioni — per contratti enterprise la soglia di credibilità è ancora più alta: l'AI ha bisogno di ricchezza tematica per rispondere con autorevolezza.`,
+      qw:`Attivate Invitation Optimization (A/B test) — funzionalità esclusiva Enterprise che ha incrementato il CVR delle invitation dal 2,44% al 3,46% nei test controllati (+1.322 recensioni aggiuntive per ciclo). Più volume e varietà = narrativa AI più ricca e autorevole.` }
   ],
   en: [
-    { id:'A', title:'No profile / Invisible to AI',
+    { id:'A', title:'Market leader — invisible to AI in enterprise buying journeys',
       trigger: s => s.d1 <= 3,
-      body: n => `We searched ${n||'your company'} on ChatGPT and Perplexity: you don't appear. Without a claimed Trustpilot profile, LLMs have no independent signal about you. Technically you exist — but for AI, you're transparent. Bain finds 60% of searches end without a click: if AI doesn't surface you, buyers never arrive.`,
-      qw:`Claim the profile today — it's free and takes 10 minutes. With just 13 genuine reviews, your AI citation rate jumps from 1% to 53.5%.` },
-    { id:'B', title:'Profile active but reviews stale or thin',
+      body: n => `We tested: searching for ${n||'your company'} on ChatGPT and Perplexity in enterprise procurement contexts — you don't appear. For an organisation with strong traditional brand recognition, AI silence is counterintuitive but devastating: McKinsey estimates 42% of enterprise deals never reach consideration when AI signals are absent. Trustpilot is the #5 most-cited domain on ChatGPT — without an active profile, your reputation is invisible to AI-driven buyers precisely when they are building the vendor shortlist.`,
+      qw:`Claim the profile this week — free, under one hour. With just 13 genuine reviews your AI citation rate jumps from 1% to 54%. For an enterprise organisation, that is the fastest ROI on the market.` },
+    { id:'B', title:'Fragmented multi-market presence — inconsistent AI signals',
       trigger: s => s.d1 >= 4 && s.d1 <= 6,
-      body: n => `You have a profile and some reviews — but they're ageing. LLMs weight recency heavily: a dormant profile reads as a stale signal. Semrush confirms fewer than 1 in 5 brands are both frequently mentioned AND cited as authoritative. You're being outpaced by competitors with more recent activity.`,
-      qw:`Activate automated review invitations post-service — even just via email. Two or three new reviews per month is enough to re-establish recency signals and push your AI citation rate toward the 75.3% active-profile benchmark.` },
-    { id:'C', title:'Good volume but zero response to reviews',
+      body: n => `You have reviews — but they are concentrated in one market or ageing. Enterprise procurement spans multiple geographies: AI sees inconsistent signals by region. 98% of high-value buyers read reviews before every major decision. Recency gaps in key markets translate directly into missed opportunities — competitors with recent activity in each market are outranking you on AI-generated shortlists.`,
+      qw:`Launch automated invitations across all key markets. Target: 5–10 new reviews per month per market. This re-establishes recency signals and drives AI citation rate toward the 75% benchmark in every geography.` },
+    { id:'C', title:'High volume — but no systematic response programme at enterprise scale',
       trigger: s => s.d1 >= 7 && s.d2 <= 4,
-      body: n => `${n||'Your company'} has solid review volume, but hasn't responded to reviews. LLMs synthesise customer service quality in their answers citing Trustpilot. No response signals disengagement: the brand exists, but doesn't listen.`,
-      qw:`Respond to the 5 most recent negative reviews this week. No need to be defensive — just show there's a human on the other side.` },
-    { id:'D', title:'Present but absent in competitor searches',
+      body: n => `${n||'Your organisation'} has solid review volume, but no systematic response programme. In enterprise buying journeys, AI synthesises how a brand handles criticism — zero responses signals disengagement at board level. Procurement managers look specifically for this operational consistency as a signal of supplier maturity: a visible gap that competitors are actively exploiting.`,
+      qw:`Assign response ownership by market or BU this week. Start with the 10 most visible negative reviews. A systematic response programme is one of the strongest signals for LLMs — and a measurable competitive differentiator.` },
+    { id:'D', title:'Absent from AI comparison queries — critical co-mention gap',
       trigger: s => s.d1 >= 5 && s.total >= 13 && s.total <= 22,
-      body: n => `We tested live: "What are the best alternatives to [Competitor]?" — your name didn't appear. Brands with optimised Trustpilot profiles receive 9.5× more competitive co-mentions. You're invisible exactly when a buyer is actively looking to switch.`,
-      qw:`Get reviews from your current level to 81+ over the next 60 days. That volume threshold is where the co-mention effect activates.` },
-    { id:'E', title:'Reviews lack depth — weak AI narrative',
+      body: n => `Tested live: "Top enterprise vendors for [category]?" and "Alternatives to [Competitor]?" — your name does not appear. Enterprise organisations with optimised Trustpilot profiles receive 9.5× more competitive co-mentions. You are invisible exactly when an enterprise buyer is building the shortlist. McKinsey estimates 42% of deals never reach consideration due to absent AI signals — and you are in that 42%.`,
+      qw:`Target: 250+ reviews — the enterprise threshold where citation rate consistently exceeds 75%. With the Enterprise plan and unlimited invitations, this milestone is achievable in 60 days. Every co-mention earned equals direct pipeline.` },
+    { id:'E', title:'Reviews present — AI narrative too thin for enterprise credibility',
       trigger: s => s.d1 >= 7 && s.d2 >= 7 && s.d3 <= 6,
-      body: n => `${n||'Your'} reviews cover too few themes. AI synthesises recurring topics to build your brand narrative. When a buyer asks "Is ${n||'your company'} reliable?" AI doesn't have enough material to answer favourably.`,
-      qw:`Send more neutral invitations to a broader set of customers. Volume is the lever: more genuine responses naturally produce the thematic breadth AI needs.` }
+      body: n => `${n||'Your'} reviews exist but cover too few themes. An enterprise buyer asking AI "Is ${n||'this company'} reliable for a multi-million contract?" will not get a sufficiently authoritative answer. 78% of buyers at high-value price points (€1,500+) consult reviews — for enterprise contracts the credibility bar is higher still: AI needs thematic richness to answer with authority.`,
+      qw:`Activate Invitation Optimisation (A/B test) — the Enterprise-exclusive feature that increased invitation CVR from 2.44% to 3.46% in controlled tests (+1,322 additional reviews per cycle). More volume and variety = richer, more authoritative AI narrative.` }
   ],
   es: [
-    { id:'A', title:'Sin perfil / Invisible para la IA',
+    { id:'A', title:'Líder de mercado — invisible para la IA en los procesos de compra enterprise',
       trigger: s => s.d1 <= 3,
-      body: n => `Buscamos ${n||'vuestra empresa'} en ChatGPT y Perplexity: no aparece. Sin un perfil de Trustpilot reclamado, los LLM no tienen señales independientes sobre vosotros. Técnicamente existís — pero para la IA sois transparentes. Bain indica que el 60% de las búsquedas termina sin un clic: si la IA no os cita, los compradores no llegan.`,
-      qw:`Reclamad el perfil hoy — es gratuito y tarda 10 minutos. Con solo 13 reseñas genuinas, vuestra tasa de citación de IA salta del 1% al 53,5%.` },
-    { id:'B', title:'Perfil activo pero reseñas desactualizadas o escasas',
+      body: n => `Buscamos ${n||'vuestra empresa'} en ChatGPT y Perplexity en contextos de adquisición enterprise — no aparece. Para una organización con fuerte reconocimiento de marca tradicional, el silencio en canales de IA es contraintuitivo pero devastador: McKinsey estima que el 42% de las operaciones enterprise nunca alcanza la consideration cuando faltan señales de IA. Trustpilot es el dominio #5 más citado en ChatGPT — sin perfil activo, vuestra reputación es invisible para los compradores impulsados por IA exactamente cuando construyen su lista de candidatos.`,
+      qw:`Reclamad el perfil esta semana — gratuito, menos de una hora. Con solo 13 reseñas genuinas vuestra tasa de citación de IA salta del 1% al 54%. Para una organización enterprise, ese es el ROI más rápido del mercado.` },
+    { id:'B', title:'Presencia multi-mercado fragmentada — señales de IA inconsistentes',
       trigger: s => s.d1 >= 4 && s.d1 <= 6,
-      body: n => `Tenéis un perfil y algunas reseñas — pero están envejeciendo. Los LLM ponderan mucho la actualidad: un perfil inactivo se lee como señal obsoleta. Semrush confirma que menos de 1 de cada 5 marcas es frecuentemente mencionada Y citada como autoridad. Los competidores con actividad reciente os están superando.`,
-      qw:`Activad invitaciones automatizadas de reseñas post-servicio — incluso solo por email. Dos o tres reseñas nuevas al mes bastan para restablecer las señales de actualidad y llevar vuestra tasa de citación hacia el 75,3% de referencia.` },
-    { id:'C', title:'Buen volumen pero cero respuestas a las reseñas',
+      body: n => `Tenéis reseñas — pero concentradas en un mercado o envejeciendo. La adquisición enterprise abarca múltiples geografías: la IA ve señales inconsistentes por región. El 98% de los compradores de alto valor consulta reseñas antes de cada decisión importante. Los gaps de actualidad en mercados clave se traducen directamente en oportunidades perdidas — los competidores con actividad reciente en cada mercado os superan en las listas de candidatos generadas por IA.`,
+      qw:`Lanzad invitaciones automatizadas en todos los mercados clave. Objetivo: 5–10 nuevas reseñas/mes por mercado. Esto restablece las señales de actualidad y lleva la tasa de citación hacia el 75% en cada geografía.` },
+    { id:'C', title:'Alto volumen — sin programa de respuesta sistemático a escala enterprise',
       trigger: s => s.d1 >= 7 && s.d2 <= 4,
-      body: n => `${n||'Vuestra empresa'} tiene buen volumen de reseñas, pero no ha respondido a ninguna. Los LLM sintetizan la calidad del servicio al cliente en sus respuestas que citan Trustpilot. Sin respuestas se transmite desinterés: la marca existe, pero no escucha.`,
-      qw:`Responded a las 5 reseñas negativas más recientes esta semana. No hace falta ser defensivos — solo mostrad que hay un ser humano al otro lado.` },
-    { id:'D', title:'Presente pero ausente en búsquedas de competidores',
-      trigger: s => s.d1 >= 5 && s.total >= 11 && s.total <= 20,
-      body: n => `Testamos en directo: "¿Cuáles son las mejores alternativas a [Competidor]?" — vuestro nombre no aparece. Las marcas con perfiles Trustpilot optimizados reciben 9,5× más co-menciones competitivas. Sois invisibles exactamente cuando un comprador busca activamente cambiar de proveedor.`,
-      qw:`Llevad las reseñas desde vuestro nivel actual a 81+ en los próximos 60 días. Ese umbral de volumen es donde se activa el efecto de co-mención.` },
-    { id:'E', title:'Reseñas sin profundidad — narrativa de IA débil',
+      body: n => `${n||'Vuestra organización'} tiene buen volumen de reseñas, pero no existe un programa de respuesta sistemático. En los procesos de compra enterprise, la IA sintetiza cómo una marca gestiona las críticas — cero respuestas señala desconexión a nivel directivo. Los gestores de compras buscan específicamente esta coherencia operativa como señal de madurez del proveedor: una brecha visible que los competidores explotan activamente.`,
+      qw:`Asignad responsabilidad de respuesta por mercado o BU esta semana. Empezad con las 10 reseñas negativas más visibles. Un programa de respuesta sistemático es una de las señales más fuertes para los LLM — y un diferenciador competitivo medible.` },
+    { id:'D', title:'Ausente en búsquedas comparativas de IA — gap crítico de co-menciones',
+      trigger: s => s.d1 >= 5 && s.total >= 13 && s.total <= 22,
+      body: n => `Testamos: "Mejores proveedores enterprise de [categoría]?" y "Alternativas a [Competidor]?" — vuestro nombre no aparece. Las organizaciones enterprise con perfiles Trustpilot optimizados reciben 9,5× más co-menciones competitivas. Sois invisibles exactamente cuando un comprador enterprise construye su lista de candidatos. McKinsey estima que el 42% de las operaciones nunca alcanza la consideration por ausencia de señales de IA — y vosotros estáis en ese 42%.`,
+      qw:`Objetivo: 250+ reseñas — el umbral enterprise donde la tasa de citación supera el 75% de forma consistente. Con el plan Enterprise e invitaciones ilimitadas, este hito es alcanzable en 60 días. Cada co-mención ganada equivale a pipeline directo.` },
+    { id:'E', title:'Reseñas presentes — narrativa de IA insuficiente para credibilidad enterprise',
       trigger: s => s.d1 >= 7 && s.d2 >= 7 && s.d3 <= 6,
-      body: n => `Las reseñas de ${n||'esta empresa'} cubren pocos temas. La IA sintetiza los temas recurrentes para construir la narrativa de marca. Cuando un comprador pregunta "¿Es fiable ${n||'esta empresa'}?" la IA no tiene suficiente material para responder favorablemente.`,
-      qw:`Enviad plantillas de invitación más neutras a un conjunto más amplio de clientes. El volumen es la palanca: más respuestas genuinas producen naturalmente la amplitud temática que necesita la IA.` }
+      body: n => `Las reseñas de ${n||'vuestra organización'} existen pero cubren pocos temas. Un comprador enterprise que pregunta a la IA "¿Es ${n||'esta empresa'} fiable para un contrato multi-millonario?" no recibirá una respuesta suficientemente autorizada. El 78% de los compradores en segmentos de alto valor (€1.500+) consulta reseñas — para contratos enterprise el umbral de credibilidad es aún más alto: la IA necesita riqueza temática para responder con autoridad.`,
+      qw:`Activad Invitation Optimization (test A/B) — función exclusiva Enterprise que aumentó el CVR de invitaciones del 2,44% al 3,46% en pruebas controladas (+1.322 reseñas adicionales por ciclo). Más volumen y variedad = narrativa de IA más rica y autorizada.` }
   ],
   de: [
-    { id:'A', title:'Kein Profil / Für KI unsichtbar',
+    { id:'A', title:'Marktführer — unsichtbar für KI in Enterprise-Kaufprozessen',
       trigger: s => s.d1 <= 3,
-      body: n => `Wir haben ${n||'Ihr Unternehmen'} auf ChatGPT und Perplexity gesucht: Sie erscheinen nicht. Ohne ein beanspruchtes Trustpilot-Profil haben LLMs kein unabhängiges Signal über Sie. Technisch existieren Sie — aber für die KI sind Sie unsichtbar. Bain stellt fest, dass 60% der Suchen ohne Klick enden: Wenn die KI Sie nicht erwähnt, kommen Käufer nie an.`,
-      qw:`Beanspruchen Sie das Profil noch heute — es ist kostenlos und dauert 10 Minuten. Mit nur 13 echten Bewertungen steigt Ihre KI-Zitierrate von 1% auf 53,5%.` },
-    { id:'B', title:'Profil aktiv, aber Bewertungen veraltet oder dünn',
+      body: n => `Wir haben getestet: ${n||'Ihr Unternehmen'} auf ChatGPT und Perplexity in Enterprise-Beschaffungskontexten — Sie erscheinen nicht. Für eine Organisation mit starker traditioneller Markenbekanntheit ist KI-Stille kontraintuitiv aber verheerend: McKinsey schätzt, dass 42% der Enterprise-Deals nie die Consideration erreichen, wenn KI-Signale fehlen. Trustpilot ist die #5 meistzitierte Domain auf ChatGPT — ohne aktives Profil ist Ihre Reputation für KI-gesteuerte Käufer unsichtbar, genau wenn diese ihre Lieferanten-Shortlist erstellen.`,
+      qw:`Beanspruchen Sie das Profil diese Woche — kostenlos, unter einer Stunde. Mit nur 13 echten Bewertungen steigt Ihre KI-Zitierrate von 1% auf 54%. Für eine Enterprise-Organisation ist das der schnellste ROI auf dem Markt.` },
+    { id:'B', title:'Fragmentierte Multi-Markt-Präsenz — inkonsistente KI-Signale',
       trigger: s => s.d1 >= 4 && s.d1 <= 6,
-      body: n => `Sie haben ein Profil und einige Bewertungen — aber sie altern. LLMs gewichten Aktualität stark: Ein inaktives Profil wirkt wie ein veraltetes Signal. Semrush bestätigt, dass weniger als 1 von 5 Marken sowohl häufig erwähnt als auch als autoritativ zitiert wird. Mitbewerber mit aktuellerer Aktivität holen Sie ein.`,
-      qw:`Aktivieren Sie automatisierte Bewertungseinladungen nach dem Service — auch nur per E-Mail. Zwei oder drei neue Bewertungen pro Monat reichen aus, um Aktualitätssignale wiederherzustellen und Ihre KI-Zitierrate Richtung 75,3% zu treiben.` },
-    { id:'C', title:'Gutes Volumen, aber null Antworten auf Bewertungen',
+      body: n => `Sie haben Bewertungen — aber konzentriert auf einen Markt oder alternde. Enterprise-Beschaffung erstreckt sich über mehrere Geografien: KI sieht inkonsistente Signale nach Region. 98% der High-Value-Käufer lesen Bewertungen vor jeder wichtigen Entscheidung. Aktualitätslücken in Schlüsselmärkten bedeuten direkt verpasste Chancen — Mitbewerber mit aktueller Aktivität in jedem Markt überholen Sie auf KI-generierten Shortlists.`,
+      qw:`Starten Sie automatisierte Einladungen in allen Schlüsselmärkten. Ziel: 5–10 neue Bewertungen pro Monat und Markt. Das stellt Aktualitätssignale wieder her und treibt die KI-Zitierrate in jeder Geographie Richtung 75%-Benchmark.` },
+    { id:'C', title:'Hohes Volumen — kein systematisches Response-Programm auf Enterprise-Ebene',
       trigger: s => s.d1 >= 7 && s.d2 <= 4,
-      body: n => `${n||'Ihr Unternehmen'} hat ein solides Bewertungsvolumen, hat aber auf keine Bewertung geantwortet. LLMs synthetisieren die Servicequalität in ihren Antworten, die Trustpilot zitieren. Keine Antwort signalisiert Desengagement: Die Marke existiert, hört aber nicht zu.`,
-      qw:`Antworten Sie diese Woche auf die 5 neuesten negativen Bewertungen. Keine Defensive nötig — zeigen Sie einfach, dass ein Mensch auf der anderen Seite ist.` },
-    { id:'D', title:'Präsent, aber in Konkurrenzsuchen abwesend',
-      trigger: s => s.d1 >= 5 && s.total >= 11 && s.total <= 20,
-      body: n => `Wir haben live getestet: "Was sind die besten Alternativen zu [Mitbewerber]?" — Ihr Name erschien nicht. Marken mit optimierten Trustpilot-Profilen erhalten 9,5× mehr wettbewerbliche Co-Erwähnungen. Sie sind unsichtbar, genau wenn ein Käufer aktiv nach einem Wechsel sucht.`,
-      qw:`Bringen Sie Bewertungen von Ihrem aktuellen Level auf 81+ in den nächsten 60 Tagen. Dieser Volumenschwellenwert aktiviert den Co-Erwähnungseffekt.` },
-    { id:'E', title:'Bewertungen ohne Tiefe — schwache KI-Narrative',
+      body: n => `${n||'Ihre Organisation'} hat solides Bewertungsvolumen, aber kein systematisches Response-Programm. In Enterprise-Kaufprozessen synthetisiert KI, wie eine Marke Kritik handhabt — null Antworten signalisiert Unengagement auf Vorstandsebene. Beschaffungsmanager suchen gezielt nach dieser operativen Konsistenz als Signal für Lieferantenreife: eine sichtbare Lücke, die Mitbewerber aktiv ausnutzen.`,
+      qw:`Weisen Sie Response-Verantwortung diese Woche nach Markt oder Geschäftseinheit zu. Beginnen Sie mit den 10 sichtbarsten negativen Bewertungen. Ein systematisches Response-Programm ist eines der stärksten Signale für LLMs — und ein messbarer Wettbewerbsvorteil.` },
+    { id:'D', title:'Abwesend bei KI-Vergleichssuchen — kritische Co-Erwähnungslücke',
+      trigger: s => s.d1 >= 5 && s.total >= 13 && s.total <= 22,
+      body: n => `Live getestet: "Beste Enterprise-Anbieter für [Kategorie]?" und "Alternativen zu [Mitbewerber]?" — Ihr Name erscheint nicht. Enterprise-Organisationen mit optimierten Trustpilot-Profilen erhalten 9,5× mehr wettbewerbliche Co-Erwähnungen. Sie sind unsichtbar, genau wenn ein Enterprise-Käufer seine Shortlist erstellt. McKinsey schätzt, dass 42% der Deals nie die Consideration erreichen aufgrund fehlender KI-Signale — und Sie befinden sich in diesen 42%.`,
+      qw:`Ziel: 250+ Bewertungen — der Enterprise-Schwellenwert, bei dem die Zitierrate konsistent 75% übersteigt. Mit dem Enterprise-Plan und unbegrenzten Einladungen ist dieses Ziel in 60 Tagen erreichbar. Jede gewonnene Co-Erwähnung entspricht direkter Pipeline.` },
+    { id:'E', title:'Bewertungen vorhanden — KI-Narrative zu dünn für Enterprise-Glaubwürdigkeit',
       trigger: s => s.d1 >= 7 && s.d2 >= 7 && s.d3 <= 6,
-      body: n => `Die Bewertungen von ${n||'diesem Unternehmen'} decken zu wenige Themen ab. KI synthetisiert wiederkehrende Themen, um Ihre Markennarrative aufzubauen. Wenn ein Käufer fragt "Ist ${n||'dieses Unternehmen'} zuverlässig?" hat die KI nicht genug Material für eine positive Antwort.`,
-      qw:`Senden Sie neutralere Einladungsvorlagen an einen breiteren Kundenkreis. Volumen ist der Hebel: Mehr echte Antworten erzeugen natürlich die thematische Breite, die KI benötigt.` }
+      body: n => `Die Bewertungen von ${n||'Ihrer Organisation'} existieren, decken aber zu wenige Themen ab. Ein Enterprise-Käufer, der KI fragt "Ist ${n||'dieses Unternehmen'} für einen Millionenvertrag zuverlässig?" erhält keine ausreichend autoritative Antwort. 78% der Käufer im High-Value-Segment (€1.500+) konsultieren Bewertungen — für Enterprise-Verträge ist die Glaubwürdigkeitsschwelle noch höher: KI braucht thematische Reichhaltigkeit, um mit Autorität zu antworten.`,
+      qw:`Aktivieren Sie Invitation Optimisation (A/B-Test) — die exklusive Enterprise-Funktion, die die Einladungs-CVR von 2,44% auf 3,46% in kontrollierten Tests erhöhte (+1.322 zusätzliche Bewertungen pro Zyklus). Mehr Volumen und Vielfalt = reichhaltigere, autoritativere KI-Narrative.` }
   ]
+}
 };
 
-// ─── CHECKLIST ─────────────────────────────────────────────────────
+// ─── CHECKLIST ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 const CHECKLIST = {
   it: [
-    { signal:'Profilo Trustpilot rivendicato e attivo', hint:"Test live: cerca '[brand] trustpilot' — appare un profilo rivendicato?" },
-    { signal:'50+ recensioni recenti (ultimi 12 mesi)', hint:'81+ recensioni → 75,3% AI citation rate. Sotto 13 recensioni → effettivamente invisibile (1%).' },
-    { signal:'TrustScore visibile e stabile (non in calo)', hint:"L'AI cita il TrustScore nelle risposte che menzionano Trustpilot." },
-    { signal:'Risposta alle recensioni — positive e negative', hint:"Le risposte attive segnalano legittimità agli LLM e costruiscono la narrativa del customer service." },
-    { signal:'Temi delle recensioni: servizio, consegna, qualità, fiducia & resi', hint:'Questi 5 temi sono quelli che gli LLM privilegiano nelle risposte che citano Trustpilot.' },
-    { signal:'Brand visibile su ChatGPT / Gemini / Perplexity', hint:"Test: 'Chi sono i migliori vendor per [categoria]?' e 'Alternative a [competitor]?'" },
-    { signal:'Inviti alle recensioni automatizzati — non manuali', hint:'Il volume costante guida i segnali di recency. Il 62% dei brand è tecnicamente invisibile agli LLM (Semrush, 2025).' },
-    { signal:'Tutte le tipologie di recensioni ricevono risposta', hint:'Nessuna risposta = segnale di fiducia più debole per gli LLM.' },
-    { signal:'Brand citato nelle ricerche sui competitor (effetto co-mention)', hint:"Test: 'Quali sono le alternative a [competitor]?' I profili ottimizzati ottengono 9.5× più co-mention." },
-    { signal:"Nessun rischio reputazionale segnalato dall'AI", hint:"L'AI segnala l'assenza di Trustpilot come gap di fiducia nelle ricerche dove non esiste profilo." }
+    { signal:'Profilo Trustpilot rivendicato e verificato — in tutti i mercati chiave', hint:"Test: '[brand] trustpilot' in ogni mercato chiave. Un profilo non rivendicato in una geografia = visibilità AI zero in quell'area." },
+    { signal:'250+ recensioni totali (soglia profilo ottimizzato enterprise)', hint:'250+ recensioni = 75%+ AI citation rate consistente. Sotto 81 recensioni il citation rate crolla al 54%.' },
+    { signal:'Invitation Optimization (A/B test) attivo', hint:'Funzionalità esclusiva Enterprise: CVR invitation dal 2,44% al 3,46% nei test controllati (+1.322 recensioni/ciclo aggiuntive).' },
+    { signal:'Cadenza 20+ nuove recensioni/mese su tutti i mercati', hint:'Il volume sistematico è il principale driver del citation rate AI. La recency è ponderata pesantemente dagli LLM.' },
+    { signal:'Programma di risposta: 80%+ entro 7 giorni — ogni mercato', hint:"Le risposte attive segnalano maturità operativa ai procurement enterprise e costruiscono la narrativa customer service per gli LLM." },
+    { signal:'TrustScore 4.0+ stabile — trend stabile o in crescita', hint:"L'AI cita il TrustScore nel 59% delle risposte che menzionano Trustpilot. Un trend in calo è un segnale negativo attivo." },
+    { signal:'Integrazione Salesforce attiva — recensioni sincronizzate al CRM', hint:"L'integrazione Salesforce garantisce che ogni interazione con il cliente generi un'opportunità di raccolta recensione." },
+    { signal:'AI Impressions Dashboard configurato (ChatGPT, Claude, Perplexity, Gemini, Copilot)', hint:'Misura il citation rate effettivo su tutti i principali LLM. KPI board-level: LLM brand visibility metric.' },
+    { signal:'Custom Dashboards configurati per regione e BU', hint:'Le Custom Dashboards enterprise consentono al team strategico di monitorare la performance per business unit e area geografica.' },
+    { signal:'Post-review survey attivi — insight che alimentano miglioramenti prodotto e servizio', hint:'Le survey post-recensione con smart targeting (funzionalità Enterprise) catturano insight operativi che chiudono il loop customer experience.' }
   ],
   en: [
-    { signal:'Trustpilot profile claimed & active', hint:"Test live: search '[brand] trustpilot' — does a claimed profile appear?" },
-    { signal:'50+ recent reviews (last 12 months)', hint:'81+ reviews → 75.3% AI citation rate. Under 13 reviews → effectively invisible (1%).' },
-    { signal:'TrustScore visible and stable (not declining)', hint:'AI surfaces the TrustScore in responses citing Trustpilot.' },
-    { signal:'Responding to reviews — positive and negative', hint:'Active responses signal legitimacy to LLMs and build the customer-service narrative.' },
-    { signal:'Review themes cover service, delivery, quality, trust & returns', hint:'These 5 themes are what LLMs prioritise in Trustpilot-citing answers.' },
-    { signal:'Brand appears in ChatGPT / Gemini / Perplexity unprompted', hint:"Test: 'Who are the best vendors for [category]?' and 'Alternatives to [competitor]?'" },
-    { signal:'Review invitations automated — not manual or ad hoc', hint:'Consistent volume drives recency signals. 62% of brands are technically invisible to LLMs (Semrush, 2025).' },
-    { signal:'All review types receive a response (positive & negative)', hint:'No response = weaker trust signal for LLMs.' },
-    { signal:'Brand cited when competitors are searched (co-mention effect)', hint:"Test: 'What are alternatives to [competitor]?' Optimised profiles get 9.5× more co-mentions." },
-    { signal:'No open reputation risks flagged by AI', hint:'AI flags the absence of a Trustpilot profile as a trust gap in searches where no profile is found.' }
+    { signal:'Trustpilot profile claimed & verified — across all key markets', hint:"Test: '[brand] trustpilot' in each key market. An unclaimed profile in any geography = zero AI visibility in that area." },
+    { signal:'250+ total reviews (enterprise optimised profile threshold)', hint:'250+ reviews = consistent 75%+ AI citation rate. Below 81 reviews, citation rate drops to 54%.' },
+    { signal:'Invitation Optimisation (A/B test) active', hint:'Enterprise-exclusive feature: invitation CVR increased from 2.44% to 3.46% in controlled tests (+1,322 additional reviews per cycle).' },
+    { signal:'Review velocity: 20+ new reviews/month across all markets', hint:'Systematic volume is the primary driver of AI citation rate. LLMs weight recency heavily.' },
+    { signal:'Response programme: 80%+ replies within 7 days — every market', hint:'Active responses signal operational maturity to enterprise procurement and build the customer service narrative for LLMs.' },
+    { signal:'TrustScore 4.0+ stable — upward or stable trend', hint:'AI cites TrustScore in 59% of responses mentioning Trustpilot. A declining trend is an active negative signal.' },
+    { signal:'Salesforce integration active — reviews synced to CRM', hint:'Salesforce integration ensures every customer interaction generates a review collection opportunity.' },
+    { signal:'AI Impressions Dashboard configured (ChatGPT, Claude, Perplexity, Gemini, Copilot)', hint:'Measures actual citation rate across all major LLMs. Board-level KPI: LLM brand visibility metric.' },
+    { signal:'Custom Dashboards configured by region and BU', hint:'Enterprise Custom Dashboards allow the strategic team to monitor performance by business unit and geography.' },
+    { signal:'Post-review surveys active — insights feeding product and service improvements', hint:'Post-review surveys with smart targeting (Enterprise feature) capture operational insights that close the customer experience loop.' }
   ],
   es: [
-    { signal:'Perfil de Trustpilot reclamado y activo', hint:"Prueba en directo: busca '[marca] trustpilot' — ¿aparece un perfil reclamado?" },
-    { signal:'50+ reseñas recientes (últimos 12 meses)', hint:'81+ reseñas → 75,3% tasa de citación de IA. Menos de 13 reseñas → prácticamente invisible (1%).' },
-    { signal:'TrustScore visible y estable (sin caída)', hint:'La IA muestra el TrustScore en respuestas que citan Trustpilot.' },
-    { signal:'Respondiendo a reseñas — positivas y negativas', hint:'Las respuestas activas señalan legitimidad a los LLM y construyen la narrativa de atención al cliente.' },
-    { signal:'Temas de reseñas: servicio, entrega, calidad, confianza y devoluciones', hint:'Estos 5 temas son los que los LLM priorizan en respuestas que citan Trustpilot.' },
-    { signal:'Marca visible en ChatGPT / Gemini / Perplexity sin búsqueda dirigida', hint:"Prueba: '¿Quiénes son los mejores proveedores de [categoría]?' y '¿Alternativas a [competidor]?'" },
-    { signal:'Invitaciones a reseñas automatizadas — no manuales', hint:'El volumen constante impulsa las señales de actualidad. El 62% de las marcas es técnicamente invisible para los LLM (Semrush, 2025).' },
-    { signal:'Todos los tipos de reseñas reciben respuesta (positivas y negativas)', hint:'Sin respuesta = señal de confianza más débil para los LLM.' },
-    { signal:'Marca citada en búsquedas de competidores (efecto co-mención)', hint:"Prueba: '¿Cuáles son las alternativas a [competidor]?' Los perfiles optimizados obtienen 9,5× más co-menciones." },
-    { signal:'Ningún riesgo reputacional señalado por la IA', hint:'La IA señala la ausencia de un perfil Trustpilot como brecha de confianza en búsquedas sin perfil.' }
+    { signal:'Perfil de Trustpilot reclamado y verificado — en todos los mercados clave', hint:"Prueba: '[marca] trustpilot' en cada mercado clave. Un perfil no reclamado en cualquier geografía = visibilidad de IA cero en esa área." },
+    { signal:'250+ reseñas totales (umbral perfil optimizado enterprise)', hint:'250+ reseñas = tasa de citación de IA consistente >75%. Por debajo de 81 reseñas, la tasa cae al 54%.' },
+    { signal:'Invitation Optimization (test A/B) activo', hint:'Función exclusiva Enterprise: CVR de invitaciones aumentó del 2,44% al 3,46% en pruebas controladas (+1.322 reseñas adicionales por ciclo).' },
+    { signal:'Velocidad de reseñas: 20+ nuevas/mes en todos los mercados', hint:'El volumen sistemático es el principal motor de la tasa de citación de IA. Los LLM ponderan fuertemente la actualidad.' },
+    { signal:'Programa de respuesta: 80%+ en 7 días — en cada mercado', hint:'Las respuestas activas señalan madurez operativa a la adquisición enterprise y construyen la narrativa de atención al cliente para los LLM.' },
+    { signal:'TrustScore 4.0+ estable — tendencia ascendente o estable', hint:'La IA cita el TrustScore en el 59% de las respuestas que mencionan Trustpilot. Una tendencia a la baja es una señal negativa activa.' },
+    { signal:'Integración con Salesforce activa — reseñas sincronizadas con el CRM', hint:'La integración con Salesforce garantiza que cada interacción con el cliente genere una oportunidad de recopilación de reseñas.' },
+    { signal:'AI Impressions Dashboard configurado (ChatGPT, Claude, Perplexity, Gemini, Copilot)', hint:'Mide la tasa de citación real en todos los principales LLM. KPI de nivel directivo: métrica de visibilidad de marca LLM.' },
+    { signal:'Dashboards personalizados configurados por región y BU', hint:'Los Custom Dashboards enterprise permiten al equipo estratégico monitorizar el rendimiento por unidad de negocio y geografía.' },
+    { signal:'Encuestas post-reseña activas — insights que alimentan mejoras de producto y servicio', hint:'Las encuestas post-reseña con segmentación inteligente (función Enterprise) capturan insights operativos que cierran el ciclo de experiencia de cliente.' }
   ],
   de: [
-    { signal:'Trustpilot-Profil beansprucht und aktiv', hint:"Live-Test: Suche '[Marke] trustpilot' — erscheint ein beanspruchtes Profil?" },
-    { signal:'50+ aktuelle Bewertungen (letzte 12 Monate)', hint:'81+ Bewertungen → 75,3% KI-Zitierrate. Unter 13 Bewertungen → praktisch unsichtbar (1%).' },
-    { signal:'TrustScore sichtbar und stabil (nicht sinkend)', hint:'KI zeigt den TrustScore in Antworten, die Trustpilot zitieren.' },
-    { signal:'Antworten auf Bewertungen — positive und negative', hint:'Aktive Antworten signalisieren Legitimität an LLMs und bauen die Kundenservice-Narrative auf.' },
-    { signal:'Bewertungsthemen: Service, Lieferung, Qualität, Vertrauen & Retouren', hint:'Diese 5 Themen priorisieren LLMs in Trustpilot-zitierenden Antworten.' },
-    { signal:'Marke erscheint in ChatGPT / Gemini / Perplexity ohne direkte Suche', hint:"Test: 'Wer sind die besten Anbieter für [Kategorie]?' und 'Alternativen zu [Mitbewerber]?'" },
-    { signal:'Bewertungseinladungen automatisiert — nicht manuell', hint:'Konsistentes Volumen treibt Aktualitätssignale. 62% der Marken sind für LLMs technisch unsichtbar (Semrush, 2025).' },
-    { signal:'Alle Bewertungsarten erhalten eine Antwort (positive und negative)', hint:'Keine Antwort = schwächeres Vertrauenssignal für LLMs.' },
-    { signal:'Marke bei Konkurrenzsuchen zitiert (Co-Erwähnungseffekt)', hint:"Test: 'Was sind Alternativen zu [Mitbewerber]?' Optimierte Profile erhalten 9,5× mehr Co-Erwähnungen." },
-    { signal:'Keine offenen Reputationsrisiken von KI gemeldet', hint:'KI markiert das Fehlen eines Trustpilot-Profils als Vertrauenslücke in Suchen ohne Profil.' }
+    { signal:'Trustpilot-Profil beansprucht & verifiziert — in allen Schlüsselmärkten', hint:"Test: '[Marke] trustpilot' in jedem Schlüsselmarkt. Ein nicht beanspruchtes Profil = null KI-Sichtbarkeit in diesem Gebiet." },
+    { signal:'250+ Gesamtbewertungen (Enterprise-Schwelle optimiertes Profil)', hint:'250+ Bewertungen = konsistente KI-Zitierrate >75%. Unter 81 Bewertungen fällt die Zitierrate auf 54%.' },
+    { signal:'Invitation Optimisation (A/B-Test) aktiv', hint:'Exklusive Enterprise-Funktion: Einladungs-CVR von 2,44% auf 3,46% in kontrollierten Tests gesteigert (+1.322 zusätzliche Bewertungen pro Zyklus).' },
+    { signal:'Bewertungsgeschwindigkeit: 20+ neue/Monat in allen Märkten', hint:'Systematisches Volumen ist der primäre Treiber der KI-Zitierrate. LLMs gewichten Aktualität stark.' },
+    { signal:'Response-Programm: 80%+ Antworten innerhalb von 7 Tagen — in jedem Markt', hint:'Aktive Antworten signalisieren operative Reife für Enterprise-Beschaffung und bauen die Kundenservice-Narrative für LLMs auf.' },
+    { signal:'TrustScore 4,0+ stabil — aufwärts oder stabiler Trend', hint:'KI zitiert TrustScore in 59% der Antworten, die Trustpilot erwähnen. Ein sinkender Trend ist ein aktives negatives Signal.' },
+    { signal:'Salesforce-Integration aktiv — Bewertungen mit CRM synchronisiert', hint:'Salesforce-Integration stellt sicher, dass jede Kundeninteraktion eine Bewertungssammlungsgelegenheit generiert.' },
+    { signal:'AI Impressions Dashboard konfiguriert (ChatGPT, Claude, Perplexity, Gemini, Copilot)', hint:'Misst die tatsächliche Zitierrate über alle wichtigen LLMs. Board-Level-KPI: LLM-Marken-Sichtbarkeitsmetrik.' },
+    { signal:'Anpassbare Dashboards nach Region und GE konfiguriert', hint:'Enterprise Custom Dashboards ermöglichen dem strategischen Team, die Performance nach Geschäftseinheit und Geographie zu überwachen.' },
+    { signal:'Post-Bewertungs-Umfragen aktiv — Insights fließen in Produkt- und Serviceverbesserungen', hint:'Post-Bewertungs-Umfragen mit Smart-Targeting (Enterprise-Funktion) erfassen operative Einblicke, die den Customer-Experience-Kreislauf schließen.' }
   ]
+}
 };
 
 // ─── PLANS ─────────────────────────────────────────────────────────
@@ -2383,24 +2385,24 @@ const PLAN_DATA = {
     },
     roadmap: {
       it:[
-        { period:'Settimana 1–2', action:'Mappa il Panorama Competitivo', detail:'AI visibility test sui top 3 competitor. Imposta il baseline LLM citation rate. Identifica i gap di co-mention con il team strategico.', kpi:'200k API calls/anno per controllo operativo completo' },
-        { period:'Settimana 3–6', action:'Attiva il Toolkit Completo', detail:'Lancia inviti illimitati su tutti i touchpoint. Attiva post-review surveys. Deploy smart widget per tag e regione. A/B test sui template.', kpi:'Inviti illimitati ogni mese' },
-        { period:'Settimana 7–12', action:'Vinci la Battaglia dei Co-Mention', detail:'Monitora la LLM visibility settimanalmente. Riporta il citation rate insieme ai KPI di ricerca tradizionale. Muoviti dove i rivali perdono terreno.', kpi:'9.5× più co-mention competitive con profilo ottimizzato' }
+        { period:'Settimana 1–2', action:'Mappa il Panorama Competitivo', detail:'AI visibility test sui top 3 competitor. Imposta il baseline LLM citation rate su 5 piattaforme (ChatGPT, Claude, Perplexity, Gemini, Copilot). Identifica i gap di co-mention. Lancia Invitation Optimization (A/B test) subito.', kpi:'42% delle trattative enterprise mancano la consideration senza segnali AI (McKinsey)' },
+        { period:'Settimana 3–6', action:'Attiva il Toolkit Completo', detail:'Lancia inviti illimitati su tutti i touchpoint. Attiva post-review surveys con smart targeting. Deploy smart widget per tag e regione. Configura Custom Dashboards per ogni BU e mercato.', kpi:'Target 250+ recensioni — soglia profilo ottimizzato enterprise | citation rate costante >75%' },
+        { period:'Settimana 7–12', action:'Vinci la Battaglia Globale dei Co-Mention', detail:"Monitora l'AI Impressions Dashboard settimanalmente su 5 piattaforme LLM. Riporta il citation rate al board insieme ai KPI tradizionali. I referral AI convertono all'11,4% vs 5,3% organico — attribuisci la pipeline alle AI citation.", kpi:'11,4% conversione referral AI vs 5,3% organico (Similarweb, 2025) | 9.5× più co-mention' }
       ],
       en:[
-        { period:'Week 1–2', action:'Map the Competitive Landscape', detail:'AI visibility tests across top 3 competitors. Set baseline LLM citation rate. Identify co-mention gaps with the strategic support team.', kpi:'200k API calls/year for full operational control' },
-        { period:'Week 3–6', action:'Activate the Full Toolkit', detail:'Launch unlimited invitations across all touchpoints. Activate post-review surveys. Deploy smart widgets by tag and region. A/B test invitation templates.', kpi:'Unlimited automated invitations every month' },
-        { period:'Week 7–12', action:'Win the Co-Mention Battle at Scale', detail:'Track LLM visibility weekly. Report AI citation rate alongside traditional search KPIs. Move fast where rivals are losing ground.', kpi:'9.5× more competitive co-mentions with optimised profile' }
+        { period:'Week 1–2', action:'Map the Competitive Landscape', detail:'AI visibility tests across top 3 competitors. Set baseline LLM citation rate across 5 platforms (ChatGPT, Claude, Perplexity, Gemini, Copilot). Identify co-mention gaps. Launch Invitation Optimisation A/B test immediately.', kpi:'42% of enterprise deals miss consideration without AI signals (McKinsey)' },
+        { period:'Week 3–6', action:'Activate the Full Toolkit', detail:'Launch unlimited invitations across all touchpoints. Activate post-review surveys with smart targeting. Deploy smart widgets by tag and region. Configure Custom Dashboards by BU and market.', kpi:'Target 250+ reviews — enterprise optimised profile threshold | consistent >75% citation rate' },
+        { period:'Week 7–12', action:'Win the Global Co-Mention Battle', detail:'Monitor AI Impressions Dashboard weekly across all 5 LLM platforms. Report citation rate to board alongside traditional KPIs. AI referrals convert at 11.4% vs 5.3% organic — attribute pipeline to AI citations.', kpi:'11.4% AI referral conversion vs 5.3% organic (Similarweb, 2025) | 9.5× more co-mentions' }
       ],
       es:[
-        { period:'Semana 1–2', action:'Mapear el Panorama Competitivo', detail:'Tests de visibilidad de IA en los 3 mejores competidores. Estableced la tasa de citación LLM de referencia. Identificad los gaps de co-mención con el equipo de soporte estratégico.', kpi:'200k llamadas API/año para control operacional completo' },
-        { period:'Semana 3–6', action:'Activar el Toolkit Completo', detail:'Lanzad invitaciones ilimitadas en todos los puntos de contacto. Activad encuestas post-reseña. Deployed widgets inteligentes por etiqueta y región. Test A/B de plantillas de invitación.', kpi:'Invitaciones automatizadas ilimitadas cada mes' },
-        { period:'Semana 7–12', action:'Ganar la Batalla de Co-Menciones a Escala', detail:'Monitorizad la visibilidad LLM semanalmente. Reportad la tasa de citación de IA junto a los KPI de búsqueda tradicional. Moved rápido donde los rivales están perdiendo terreno.', kpi:'9,5× más co-menciones competitivas con perfil optimizado' }
+        { period:'Semana 1–2', action:'Mapear el Panorama Competitivo', detail:'Tests de visibilidad de IA en los 3 mejores competidores. Estableced la tasa de citación LLM de referencia en 5 plataformas (ChatGPT, Claude, Perplexity, Gemini, Copilot). Lanzad el test A/B de Invitation Optimization de inmediato.', kpi:'El 42% de las operaciones enterprise no alcanza la consideration sin señales de IA (McKinsey)' },
+        { period:'Semana 3–6', action:'Activar el Toolkit Completo', detail:'Lanzad invitaciones ilimitadas en todos los puntos de contacto. Activad encuestas post-reseña con segmentación inteligente. Deployed widgets inteligentes por etiqueta y región. Configurad Custom Dashboards por BU y mercado.', kpi:'Objetivo 250+ reseñas — umbral perfil optimizado enterprise | tasa de citación constante >75%' },
+        { period:'Semana 7–12', action:'Ganar la Batalla Global de Co-Menciones', detail:'Monitorizad el AI Impressions Dashboard semanalmente en las 5 plataformas LLM. Reportad la tasa de citación al consejo junto a los KPI tradicionales. Los referrals de IA convierten al 11,4% vs 5,3% orgánico — atribuid el pipeline a las citaciones de IA.', kpi:'11,4% conversión de referral IA vs 5,3% orgánico (Similarweb, 2025) | 9,5× más co-menciones' }
       ],
       de:[
-        { period:'Woche 1–2', action:'Wettbewerbslandschaft kartieren', detail:'KI-Sichtbarkeitstests bei den Top 3 Mitbewerbern. Basis-LLM-Zitierrate festlegen. Co-Erwähnungslücken mit dem strategischen Support-Team identifizieren.', kpi:'200k API-Aufrufe/Jahr für vollständige operative Kontrolle' },
-        { period:'Woche 3–6', action:'Das vollständige Toolkit aktivieren', detail:'Unbegrenzte Einladungen über alle Touchpoints starten. Post-Bewertungs-Umfragen aktivieren. Intelligente Widgets nach Tag und Region einsetzen. A/B-Test von Einladungsvorlagen.', kpi:'Unbegrenzte automatisierte Einladungen jeden Monat' },
-        { period:'Woche 7–12', action:'Die Co-Erwähnungsschlacht im großen Maßstab gewinnen', detail:'LLM-Sichtbarkeit wöchentlich tracken. KI-Zitierrate neben traditionellen Such-KPIs berichten. Schnell handeln, wo Rivalen Boden verlieren.', kpi:'9,5× mehr wettbewerbliche Co-Erwähnungen mit optimiertem Profil' }
+        { period:'Woche 1–2', action:'Wettbewerbslandschaft kartieren', detail:'KI-Sichtbarkeitstests bei den Top 3 Mitbewerbern. Basis-LLM-Zitierrate auf 5 Plattformen festlegen (ChatGPT, Claude, Perplexity, Gemini, Copilot). Co-Erwähnungslücken identifizieren. Invitation Optimisation A/B-Test sofort starten.', kpi:'42% der Enterprise-Deals verfehlen die Consideration ohne KI-Signale (McKinsey)' },
+        { period:'Woche 3–6', action:'Das vollständige Toolkit aktivieren', detail:'Unbegrenzte Einladungen über alle Touchpoints starten. Post-Bewertungs-Umfragen mit Smart-Targeting aktivieren. Intelligente Widgets nach Tag und Region einsetzen. Custom Dashboards nach GE und Markt konfigurieren.', kpi:'Ziel 250+ Bewertungen — Enterprise-Schwelle optimiertes Profil | konsistente >75% Zitierrate' },
+        { period:'Woche 7–12', action:'Die globale Co-Erwähnungsschlacht gewinnen', detail:'AI Impressions Dashboard wöchentlich auf allen 5 LLM-Plattformen überwachen. Zitierrate dem Vorstand neben traditionellen KPIs berichten. KI-Referrals konvertieren zu 11,4% vs 5,3% organisch — Pipeline KI-Zitierungen zuordnen.', kpi:'11,4% KI-Referral-Konversion vs 5,3% organisch (Similarweb, 2025) | 9,5× mehr Co-Erwähnungen' }
       ]
     }
   }
@@ -2412,7 +2414,7 @@ const WHY = {
     red: {
       Plus:       "Il punteggio mostra un gap significativo per un'organizzazione enterprise. Premium è il punto d'ingresso minimo: 1.000 inviti/mese, dedicated rep e competitive intelligence per costruire la base in tempi compatibili con i cicli decisionali enterprise.",
       Premium:    "Partite da zero in un contesto enterprise. Premium accelera la costruzione del profilo con 1.000 inviti/mese, competitive intelligence e dedicated rep — ideale per realtà con 1–3 mercati che vogliono recuperare terreno rapidamente.",
-      Enterprise: "Il vostro score indica che l'AI non sa ancora chi siete — in un contesto enterprise questo si traduce in opportunità perse ogni giorno. Enterprise comprime i tempi con inviti illimitati su tutti i touchpoint, integrazione Salesforce per non perdere nemmeno un cliente, e un team strategico dedicato che lavora con voi dalla settimana 1. Con 13 recensioni genuine il citation rate passa dall'1% al 54%: con Enterprise ci arrivate prima di qualsiasi competitor."
+      Enterprise: "Il vostro score indica che l'AI non sa ancora chi siete — in un contesto enterprise questo si traduce in opportunità perse ogni giorno. McKinsey stima che il 42% delle trattative enterprise non raggiunga mai la consideration quando i segnali AI mancano: è la situazione della vostra organizzazione in questo momento. Enterprise comprime i tempi: inviti illimitati su tutti i touchpoint, integrazione Salesforce, Invitation Optimization A/B test per massimizzare il volume di recensioni, e un team strategico dedicato dalla settimana 1. Con 13 recensioni genuine il citation rate passa dall'1% al 54% — e i referral AI convertono poi all'11,4% vs 5,3% organico. Con Enterprise ci arrivate prima di qualsiasi competitor."
     },
     yellow: {
       Plus:       "Avete una presenza parziale, ma i volumi non sono adeguati agli standard enterprise. Premium è il minimo necessario: 1.000 inviti/mese e competitive intelligence per colmare il gap e raggiungere la soglia di credibilità richiesta nei processi di acquisto enterprise.",
@@ -2422,14 +2424,14 @@ const WHY = {
     green: {
       Plus:       "Siete AI-ready, ma una realtà enterprise merita una struttura alla sua altezza. Enterprise è il piano che cementa la leadership: inviti illimitati, 200k API calls e LLM brand tracking per trasformare la fiducia in un asset strategico board-level.",
       Premium:    "Siete AI-ready con una presenza solida. Per un'organizzazione enterprise, Enterprise è il passo naturale: scala globale, 200k API calls e supporto strategico per trasformare la leadership di mercato in un vantaggio competitivo difendibile.",
-      Enterprise: "Il vostro score è solido — siete AI-ready. Ma in un contesto enterprise la domanda non è 'siamo visibili?' bensì 'stiamo dominando la narrativa competitiva?'. Enterprise trasforma una buona posizione in un vantaggio difendibile: LLM brand tracking multi-mercato, post-review surveys con smart targeting, 200k API calls per controllo operativo completo e report settimanali per il board. Le aziende enterprise che ottimizzano a questo livello ricevono 9.5× più co-mention competitive e vedono la fiducia diventare un driver di pipeline misurabile."
+      Enterprise: "Il vostro score è solido — siete AI-ready. Ma in un contesto enterprise la domanda non è 'siamo visibili?' bensì 'stiamo dominando la narrativa competitiva?'. I referral AI convertono all'11,4% vs 5,3% organico (Similarweb, 2025) — ogni co-mention enterprise è pipeline diretta misurabile. Enterprise trasforma questa posizione in un vantaggio difendibile: LLM brand tracking multi-mercato su ChatGPT, Claude, Perplexity, Gemini e Copilot; Invitation Optimization A/B test; post-review surveys con smart targeting; 200k API calls per controllo operativo completo; report settimanali board-ready. Come disse Frank Cooper III (CMO, Visa): 'L'AI amplifica sia la credibilità che il rischio — rendendo la fiducia il differenziatore più critico nel mondo B-to-AI'. Con il vostro score, Enterprise vi posiziona per vincere quella battaglia."
     }
   },
   en: {
     red: {
       Plus:       "Your score shows a significant gap for an enterprise organisation. Premium is the minimum entry point: 1,000 invitations/month, a dedicated rep and competitive intelligence to build the foundation within enterprise decision timelines.",
       Premium:    "Starting from zero in an enterprise context. Premium accelerates profile-building with 1,000 invitations/month, competitive intelligence and a dedicated rep — ideal for organisations operating across 1–3 markets who need to close the gap fast.",
-      Enterprise: "Your score tells us AI doesn't know who you are yet — at enterprise scale, that means missed pipeline every single day. Enterprise compresses timelines: unlimited invitations across every touchpoint, Salesforce integration so no customer interaction is missed, and a dedicated strategic team working with you from week 1. With 13 genuine reviews your citation rate jumps from 1% to 54% — with Enterprise you get there before any competitor does."
+      Enterprise: "Your score tells us AI doesn't know who you are yet — at enterprise scale, that means missed pipeline every single day. McKinsey estimates 42% of enterprise deals never reach consideration when AI signals are absent: this is your situation right now. Enterprise compresses timelines: unlimited invitations across every touchpoint, Salesforce integration so no customer interaction is missed, Invitation Optimisation A/B test to maximise review volume, and a dedicated strategic team from week 1. With 13 genuine reviews your citation rate jumps from 1% to 54% — and AI referrals then convert at 11.4% vs 5.3% organic. With Enterprise you get there before any competitor does."
     },
     yellow: {
       Plus:       "You have partial presence, but volumes fall short of enterprise standards. Premium is the minimum required: 1,000 invitations/month and competitive intelligence to close the gap and reach the credibility threshold enterprise buyers expect.",
@@ -2439,14 +2441,14 @@ const WHY = {
     green: {
       Plus:       "You're AI-ready, but an enterprise organisation deserves an enterprise-grade structure. Enterprise cements leadership: unlimited invitations, 200k API calls and LLM brand tracking to turn trust into a board-level strategic asset.",
       Premium:    "You're AI-ready with a strong presence. For an enterprise organisation, Enterprise is the natural next step: global scale, 200k API calls and strategic support to turn market leadership into a defensible competitive advantage.",
-      Enterprise: "Your score is strong — you're AI-ready. But at enterprise level the question isn't 'are we visible?' it's 'are we owning the competitive narrative?'. Enterprise turns a strong position into a defensible advantage: multi-market LLM brand tracking, post-review surveys with smart targeting, 200k API calls for full operational control and weekly board-ready reports. Enterprise organisations that optimise at this level receive 9.5× more competitive co-mentions and see trust become a measurable pipeline driver."
+      Enterprise: "Your score is strong — you're AI-ready. But at enterprise level the question isn't 'are we visible?' it's 'are we owning the competitive narrative?'. AI referrals convert at 11.4% vs 5.3% organic (Similarweb, 2025) — every enterprise co-mention is measurable direct pipeline. Enterprise turns this into a defensible advantage: multi-market LLM brand tracking across ChatGPT, Claude, Perplexity, Gemini and Copilot; Invitation Optimisation A/B test; post-review surveys with smart targeting; 200k API calls for full operational control; weekly board-ready reports. As Frank Cooper III (CMO, Visa) put it: AI will amplify both credibility and risk — making trust the most critical differentiator in a B-to-AI world. With your score, Enterprise positions you to win that battle."
     }
   },
   es: {
     red: {
       Plus:       "Vuestro score muestra una brecha significativa para una organización enterprise. Premium es el punto de entrada mínimo: 1.000 invitaciones/mes, un rep dedicado e inteligencia competitiva para construir la base dentro de los plazos de decisión enterprise.",
       Premium:    "Partís desde cero en un contexto enterprise. Premium acelera la construcción del perfil con 1.000 invitaciones/mes, inteligencia competitiva y un rep dedicado — ideal para organizaciones que operan en 1–3 mercados y necesitan cerrar el gap rápido.",
-      Enterprise: "Vuestro score nos dice que la IA aún no os conoce — a escala enterprise, eso significa pipeline perdida cada día. Enterprise comprime los tiempos: invitaciones ilimitadas en todos los touchpoints, integración con Salesforce y un equipo estratégico dedicado desde la semana 1. Con 13 reseñas genuinas vuestra tasa de citación salta del 1% al 54% — con Enterprise llegáis antes que cualquier competidor."
+      Enterprise: "Vuestro score nos dice que la IA aún no os conoce — a escala enterprise, eso significa pipeline perdida cada día. McKinsey estima que el 42% de las operaciones enterprise nunca alcanza la consideration cuando faltan señales de IA: esta es vuestra situación ahora mismo. Enterprise comprime los tiempos: invitaciones ilimitadas, integración con Salesforce, test A/B de Invitation Optimization y un equipo estratégico dedicado desde la semana 1. Con 13 reseñas genuinas vuestra tasa de citación salta del 1% al 54% — y los referrals de IA convierten al 11,4% vs 5,3% orgánico. Con Enterprise llegáis antes que cualquier competidor."
     },
     yellow: {
       Plus:       "Tenéis presencia parcial, pero los volúmenes no alcanzan los estándares enterprise. Premium es el mínimo requerido: 1.000 invitaciones/mes e inteligencia competitiva para cerrar el gap y alcanzar el umbral de credibilidad que esperan los compradores enterprise.",
@@ -2456,14 +2458,14 @@ const WHY = {
     green: {
       Plus:       "Estáis listos para la IA, pero una organización enterprise merece una estructura a su altura. Enterprise consolida el liderazgo: invitaciones ilimitadas, 200k llamadas API y seguimiento de marca LLM para convertir la confianza en un activo estratégico de nivel directivo.",
       Premium:    "Estáis listos para la IA con una presencia sólida. Para una organización enterprise, Enterprise es el siguiente paso natural: escala global, 200k llamadas API y soporte estratégico para convertir el liderazgo de mercado en una ventaja competitiva defendible.",
-      Enterprise: "Vuestro score es sólido — estáis listos para la IA. Pero a nivel enterprise la pregunta no es '¿somos visibles?' sino '¿estamos dominando la narrativa competitiva?'. Enterprise convierte una posición fuerte en una ventaja defendible: seguimiento de marca LLM multi-mercado, encuestas post-reseña con segmentación inteligente, 200k llamadas API y informes semanales listos para el consejo. Las organizaciones enterprise que optimizan a este nivel reciben 9,5× más co-menciones competitivas."
+      Enterprise: "Vuestro score es sólido — estáis listos para la IA. Pero a nivel enterprise la pregunta no es '¿somos visibles?' sino '¿estamos dominando la narrativa competitiva?'. Los referrals de IA convierten al 11,4% vs 5,3% orgánico (Similarweb, 2025) — cada co-mención enterprise es pipeline directo medible. Enterprise convierte esta posición en una ventaja defendible: seguimiento de marca LLM multi-mercado en ChatGPT, Claude, Perplexity, Gemini y Copilot; test A/B de Invitation Optimization; encuestas post-reseña con segmentación inteligente; 200k llamadas API; informes semanales listos para el consejo. Como dijo Frank Cooper III (CMO, Visa): 'La IA amplificará tanto la credibilidad como el riesgo, haciendo de la confianza el diferenciador más crítico en un mundo B-to-AI'. Con vuestro score, Enterprise os posiciona para ganar esa batalla."
     }
   },
   de: {
     red: {
       Plus:       "Ihr Score zeigt eine erhebliche Lücke für eine Enterprise-Organisation. Premium ist der minimale Einstiegspunkt: 1.000 Einladungen/Monat, ein dedizierter Rep und Wettbewerbsintelligenz, um die Grundlage innerhalb der Enterprise-Entscheidungszeiträume aufzubauen.",
       Premium:    "Sie starten bei null in einem Enterprise-Kontext. Premium beschleunigt den Profilaufbau mit 1.000 Einladungen/Monat, Wettbewerbsintelligenz und einem dedizierten Rep — ideal für Organisationen, die in 1–3 Märkten tätig sind und den Rückstand schnell aufholen müssen.",
-      Enterprise: "Ihr Score sagt uns, dass die KI Sie noch nicht kennt — im Enterprise-Maßstab bedeutet das täglich verlorene Pipeline. Enterprise komprimiert die Zeitpläne: unbegrenzte Einladungen über alle Touchpoints, Salesforce-Integration und ein dediziertes strategisches Team ab Woche 1. Mit 13 echten Bewertungen steigt Ihre Zitierrate von 1% auf 54% — mit Enterprise kommen Sie vor jedem Mitbewerber an."
+      Enterprise: "Ihr Score sagt uns, dass die KI Sie noch nicht kennt — im Enterprise-Maßstab bedeutet das täglich verlorene Pipeline. McKinsey schätzt, dass 42% der Enterprise-Deals nie die Consideration erreichen, wenn KI-Signale fehlen: das ist Ihre aktuelle Situation. Enterprise komprimiert die Zeitpläne: unbegrenzte Einladungen, Salesforce-Integration, Invitation Optimisation A/B-Test zur Maximierung des Bewertungsvolumens und ein dediziertes strategisches Team ab Woche 1. Mit 13 echten Bewertungen steigt Ihre Zitierrate von 1% auf 54% — und KI-Referrals konvertieren dann zu 11,4% vs 5,3% organisch. Mit Enterprise kommen Sie vor jedem Mitbewerber an."
     },
     yellow: {
       Plus:       "Sie haben teilweise Präsenz, aber die Volumina erfüllen nicht die Enterprise-Standards. Premium ist das Minimum: 1.000 Einladungen/Monat und Wettbewerbsintelligenz, um die Lücke zu schließen.",
@@ -2473,7 +2475,7 @@ const WHY = {
     green: {
       Plus:       "Sie sind KI-bereit, aber eine Enterprise-Organisation verdient eine Enterprise-Struktur. Enterprise festigt die Führungsposition: unbegrenzte Einladungen, 200k API-Aufrufe und LLM-Marken-Tracking.",
       Premium:    "Sie sind KI-bereit mit starker Präsenz. Für eine Enterprise-Organisation ist Enterprise der natürliche nächste Schritt: globale Skalierung, 200k API-Aufrufe und strategischer Support.",
-      Enterprise: "Ihr Score ist stark — Sie sind KI-bereit. Aber auf Enterprise-Ebene lautet die Frage nicht 'Sind wir sichtbar?' sondern 'Dominieren wir die wettbewerbliche Narrative?'. Enterprise verwandelt eine starke Position in einen verteidigbaren Vorteil: Multi-Markt-LLM-Marken-Tracking, Post-Bewertungs-Umfragen, 200k API-Aufrufe und wöchentliche Board-ready-Berichte. Enterprise-Organisationen, die auf diesem Niveau optimieren, erhalten 9,5× mehr wettbewerbliche Co-Erwähnungen."
+      Enterprise: "Ihr Score ist stark — Sie sind KI-bereit. Aber auf Enterprise-Ebene lautet die Frage nicht 'Sind wir sichtbar?' sondern 'Dominieren wir die wettbewerbliche Narrative?'. KI-Referrals konvertieren zu 11,4% vs 5,3% organisch (Similarweb, 2025) — jede Enterprise-Co-Erwähnung ist messbare direkte Pipeline. Enterprise verwandelt diese Position in einen verteidigbaren Vorteil: Multi-Markt-LLM-Marken-Tracking auf ChatGPT, Claude, Perplexity, Gemini und Copilot; Invitation Optimisation A/B-Test; Post-Bewertungs-Umfragen mit Smart-Targeting; 200k API-Aufrufe; wöchentliche Board-ready-Berichte. Wie Frank Cooper III (CMO, Visa) sagte: 'KI wird sowohl Glaubwürdigkeit als auch Risiko verstärken — und Vertrauen zum entscheidendsten Differenzierungsmerkmal in einer B-to-AI-Welt machen'. Mit Ihrem Score positioniert Enterprise Sie, um diesen Kampf zu gewinnen."
     }
   }
 };
