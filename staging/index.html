@@ -2084,6 +2084,50 @@ const SCENARIOS = {
       trigger: s => s.d1 >= 7 && s.d2 >= 7 && s.d3 <= 6,
       body: n => `${n||'Your'} reviews cover too few themes. AI synthesises recurring topics to build your brand narrative. When a buyer asks "Is ${n||'your company'} reliable?" AI doesn't have enough material to answer favourably.`,
       qw:`Send more neutral invitations to a broader set of customers. Volume is the lever: more genuine responses naturally produce the thematic breadth AI needs.` }
+  ],
+  es: [
+    { id:'A', title:'Sin perfil / Invisible para la IA',
+      trigger: s => s.d1 <= 3,
+      body: n => `Buscamos ${n||'vuestra empresa'} en ChatGPT y Perplexity: no aparece. Sin un perfil de Trustpilot reclamado, los LLM no tienen señales independientes sobre vosotros. Técnicamente existís — pero para la IA sois transparentes. Bain indica que el 60% de las búsquedas termina sin un clic: si la IA no os cita, los compradores no llegan.`,
+      qw:`Reclamad el perfil hoy — es gratuito y tarda 10 minutos. Con solo 13 reseñas genuinas, vuestra tasa de citación de IA salta del 1% al 53,5%.` },
+    { id:'B', title:'Perfil activo pero reseñas desactualizadas o escasas',
+      trigger: s => s.d1 >= 4 && s.d1 <= 6,
+      body: n => `Tenéis un perfil y algunas reseñas — pero están envejeciendo. Los LLM ponderan mucho la actualidad: un perfil inactivo se lee como señal obsoleta. Semrush confirma que menos de 1 de cada 5 marcas es frecuentemente mencionada Y citada como autoridad. Los competidores con actividad reciente os están superando.`,
+      qw:`Activad invitaciones automatizadas de reseñas post-servicio — incluso solo por email. Dos o tres reseñas nuevas al mes bastan para restablecer las señales de actualidad y llevar vuestra tasa de citación hacia el 75,3% de referencia.` },
+    { id:'C', title:'Buen volumen pero cero respuestas a las reseñas',
+      trigger: s => s.d1 >= 7 && s.d2 <= 4,
+      body: n => `${n||'Vuestra empresa'} tiene buen volumen de reseñas, pero no ha respondido a ninguna. Los LLM sintetizan la calidad del servicio al cliente en sus respuestas que citan Trustpilot. Sin respuestas se transmite desinterés: la marca existe, pero no escucha.`,
+      qw:`Responded a las 5 reseñas negativas más recientes esta semana. No hace falta ser defensivos — solo mostrad que hay un ser humano al otro lado.` },
+    { id:'D', title:'Presente pero ausente en búsquedas de competidores',
+      trigger: s => s.d1 >= 5 && s.total >= 11 && s.total <= 20,
+      body: n => `Testamos en directo: "¿Cuáles son las mejores alternativas a [Competidor]?" — vuestro nombre no aparece. Las marcas con perfiles Trustpilot optimizados reciben 9,5× más co-menciones competitivas. Sois invisibles exactamente cuando un comprador busca activamente cambiar de proveedor.`,
+      qw:`Llevad las reseñas desde vuestro nivel actual a 81+ en los próximos 60 días. Ese umbral de volumen es donde se activa el efecto de co-mención.` },
+    { id:'E', title:'Reseñas sin profundidad — narrativa de IA débil',
+      trigger: s => s.d1 >= 7 && s.d2 >= 7 && s.d3 <= 6,
+      body: n => `Las reseñas de ${n||'esta empresa'} cubren pocos temas. La IA sintetiza los temas recurrentes para construir la narrativa de marca. Cuando un comprador pregunta "¿Es fiable ${n||'esta empresa'}?" la IA no tiene suficiente material para responder favorablemente.`,
+      qw:`Enviad plantillas de invitación más neutras a un conjunto más amplio de clientes. El volumen es la palanca: más respuestas genuinas producen naturalmente la amplitud temática que necesita la IA.` }
+  ],
+  de: [
+    { id:'A', title:'Kein Profil / Für KI unsichtbar',
+      trigger: s => s.d1 <= 3,
+      body: n => `Wir haben ${n||'Ihr Unternehmen'} auf ChatGPT und Perplexity gesucht: Sie erscheinen nicht. Ohne ein beanspruchtes Trustpilot-Profil haben LLMs kein unabhängiges Signal über Sie. Technisch existieren Sie — aber für die KI sind Sie unsichtbar. Bain stellt fest, dass 60% der Suchen ohne Klick enden: Wenn die KI Sie nicht erwähnt, kommen Käufer nie an.`,
+      qw:`Beanspruchen Sie das Profil noch heute — es ist kostenlos und dauert 10 Minuten. Mit nur 13 echten Bewertungen steigt Ihre KI-Zitierrate von 1% auf 53,5%.` },
+    { id:'B', title:'Profil aktiv, aber Bewertungen veraltet oder dünn',
+      trigger: s => s.d1 >= 4 && s.d1 <= 6,
+      body: n => `Sie haben ein Profil und einige Bewertungen — aber sie altern. LLMs gewichten Aktualität stark: Ein inaktives Profil wirkt wie ein veraltetes Signal. Semrush bestätigt, dass weniger als 1 von 5 Marken sowohl häufig erwähnt als auch als autoritativ zitiert wird. Mitbewerber mit aktuellerer Aktivität holen Sie ein.`,
+      qw:`Aktivieren Sie automatisierte Bewertungseinladungen nach dem Service — auch nur per E-Mail. Zwei oder drei neue Bewertungen pro Monat reichen aus, um Aktualitätssignale wiederherzustellen und Ihre KI-Zitierrate Richtung 75,3% zu treiben.` },
+    { id:'C', title:'Gutes Volumen, aber null Antworten auf Bewertungen',
+      trigger: s => s.d1 >= 7 && s.d2 <= 4,
+      body: n => `${n||'Ihr Unternehmen'} hat ein solides Bewertungsvolumen, hat aber auf keine Bewertung geantwortet. LLMs synthetisieren die Servicequalität in ihren Antworten, die Trustpilot zitieren. Keine Antwort signalisiert Desengagement: Die Marke existiert, hört aber nicht zu.`,
+      qw:`Antworten Sie diese Woche auf die 5 neuesten negativen Bewertungen. Keine Defensive nötig — zeigen Sie einfach, dass ein Mensch auf der anderen Seite ist.` },
+    { id:'D', title:'Präsent, aber in Konkurrenzsuchen abwesend',
+      trigger: s => s.d1 >= 5 && s.total >= 11 && s.total <= 20,
+      body: n => `Wir haben live getestet: "Was sind die besten Alternativen zu [Mitbewerber]?" — Ihr Name erschien nicht. Marken mit optimierten Trustpilot-Profilen erhalten 9,5× mehr wettbewerbliche Co-Erwähnungen. Sie sind unsichtbar, genau wenn ein Käufer aktiv nach einem Wechsel sucht.`,
+      qw:`Bringen Sie Bewertungen von Ihrem aktuellen Level auf 81+ in den nächsten 60 Tagen. Dieser Volumenschwellenwert aktiviert den Co-Erwähnungseffekt.` },
+    { id:'E', title:'Bewertungen ohne Tiefe — schwache KI-Narrative',
+      trigger: s => s.d1 >= 7 && s.d2 >= 7 && s.d3 <= 6,
+      body: n => `Die Bewertungen von ${n||'diesem Unternehmen'} decken zu wenige Themen ab. KI synthetisiert wiederkehrende Themen, um Ihre Markennarrative aufzubauen. Wenn ein Käufer fragt "Ist ${n||'dieses Unternehmen'} zuverlässig?" hat die KI nicht genug Material für eine positive Antwort.`,
+      qw:`Senden Sie neutralere Einladungsvorlagen an einen breiteren Kundenkreis. Volumen ist der Hebel: Mehr echte Antworten erzeugen natürlich die thematische Breite, die KI benötigt.` }
   ]
 };
 
@@ -2112,6 +2156,30 @@ const CHECKLIST = {
     { signal:'All review types receive a response (positive & negative)', hint:'No response = weaker trust signal for LLMs.' },
     { signal:'Brand cited when competitors are searched (co-mention effect)', hint:"Test: 'What are alternatives to [competitor]?' Optimised profiles get 9.5× more co-mentions." },
     { signal:'No open reputation risks flagged by AI', hint:'AI flags the absence of a Trustpilot profile as a trust gap in searches where no profile is found.' }
+  ],
+  es: [
+    { signal:'Perfil de Trustpilot reclamado y activo', hint:"Prueba en directo: busca '[marca] trustpilot' — ¿aparece un perfil reclamado?" },
+    { signal:'50+ reseñas recientes (últimos 12 meses)', hint:'81+ reseñas → 75,3% tasa de citación de IA. Menos de 13 reseñas → prácticamente invisible (1%).' },
+    { signal:'TrustScore visible y estable (sin caída)', hint:'La IA muestra el TrustScore en respuestas que citan Trustpilot.' },
+    { signal:'Respondiendo a reseñas — positivas y negativas', hint:'Las respuestas activas señalan legitimidad a los LLM y construyen la narrativa de atención al cliente.' },
+    { signal:'Temas de reseñas: servicio, entrega, calidad, confianza y devoluciones', hint:'Estos 5 temas son los que los LLM priorizan en respuestas que citan Trustpilot.' },
+    { signal:'Marca visible en ChatGPT / Gemini / Perplexity sin búsqueda dirigida', hint:"Prueba: '¿Quiénes son los mejores proveedores de [categoría]?' y '¿Alternativas a [competidor]?'" },
+    { signal:'Invitaciones a reseñas automatizadas — no manuales', hint:'El volumen constante impulsa las señales de actualidad. El 62% de las marcas es técnicamente invisible para los LLM (Semrush, 2025).' },
+    { signal:'Todos los tipos de reseñas reciben respuesta (positivas y negativas)', hint:'Sin respuesta = señal de confianza más débil para los LLM.' },
+    { signal:'Marca citada en búsquedas de competidores (efecto co-mención)', hint:"Prueba: '¿Cuáles son las alternativas a [competidor]?' Los perfiles optimizados obtienen 9,5× más co-menciones." },
+    { signal:'Ningún riesgo reputacional señalado por la IA', hint:'La IA señala la ausencia de un perfil Trustpilot como brecha de confianza en búsquedas sin perfil.' }
+  ],
+  de: [
+    { signal:'Trustpilot-Profil beansprucht und aktiv', hint:"Live-Test: Suche '[Marke] trustpilot' — erscheint ein beanspruchtes Profil?" },
+    { signal:'50+ aktuelle Bewertungen (letzte 12 Monate)', hint:'81+ Bewertungen → 75,3% KI-Zitierrate. Unter 13 Bewertungen → praktisch unsichtbar (1%).' },
+    { signal:'TrustScore sichtbar und stabil (nicht sinkend)', hint:'KI zeigt den TrustScore in Antworten, die Trustpilot zitieren.' },
+    { signal:'Antworten auf Bewertungen — positive und negative', hint:'Aktive Antworten signalisieren Legitimität an LLMs und bauen die Kundenservice-Narrative auf.' },
+    { signal:'Bewertungsthemen: Service, Lieferung, Qualität, Vertrauen & Retouren', hint:'Diese 5 Themen priorisieren LLMs in Trustpilot-zitierenden Antworten.' },
+    { signal:'Marke erscheint in ChatGPT / Gemini / Perplexity ohne direkte Suche', hint:"Test: 'Wer sind die besten Anbieter für [Kategorie]?' und 'Alternativen zu [Mitbewerber]?'" },
+    { signal:'Bewertungseinladungen automatisiert — nicht manuell', hint:'Konsistentes Volumen treibt Aktualitätssignale. 62% der Marken sind für LLMs technisch unsichtbar (Semrush, 2025).' },
+    { signal:'Alle Bewertungsarten erhalten eine Antwort (positive und negative)', hint:'Keine Antwort = schwächeres Vertrauenssignal für LLMs.' },
+    { signal:'Marke bei Konkurrenzsuchen zitiert (Co-Erwähnungseffekt)', hint:"Test: 'Was sind Alternativen zu [Mitbewerber]?' Optimierte Profile erhalten 9,5× mehr Co-Erwähnungen." },
+    { signal:'Keine offenen Reputationsrisiken von KI gemeldet', hint:'KI markiert das Fehlen eines Trustpilot-Profils als Vertrauenslücke in Suchen ohne Profil.' }
   ]
 };
 
@@ -2120,10 +2188,12 @@ const PLAN_DATA = {
   Plus: {
     name: 'Plus',
     color: '#e74c3c', bg: '#fef2f2',
-    tier: { it:'🔴 Score 0–10 · Piano base', en:'🔴 Score 0–10 · Foundation plan' },
+    tier: { it:'🔴 Score 0–10 · Piano base', en:'🔴 Score 0–10 · Foundation plan', es:'🔴 Score 0–10 · Plan base', de:'🔴 Score 0–10 · Basisplan' },
     meta: {
       it:['👥 3 utenti','📧 300 inviti/mese','💬 Chat & telefono'],
-      en:['👥 3 users','📧 300 invitations/month','💬 Chat & phone']
+      en:['👥 3 users','📧 300 invitations/month','💬 Chat & phone'],
+      es:['👥 3 usuarios','📧 300 invitaciones/mes','💬 Chat y teléfono'],
+      de:['👥 3 Nutzer','📧 300 Einladungen/Monat','💬 Chat & Telefon']
     },
     features: {
       it:[
@@ -2135,6 +2205,16 @@ const PLAN_DATA = {
         { icon:'📥', title:'Collect', items:['300 automated invitations/month','In-app collector widget','HubSpot, Mailchimp, Zendesk integrations'] },
         { icon:'📡', title:'Get Visible', items:['LLM & search visibility tracking','Google Store Ratings qualified','Profile with custom branding & FAQs'] },
         { icon:'📣', title:'Amplify', items:['8 essential widgets (TrustScore, stars)','Social & video assets from reviews','Profile & widget analytics'] }
+      ],
+      es:[
+        { icon:'📥', title:'Recopilar', items:['300 invitaciones automatizadas/mes','Widget recopilador integrado en la app','Integraciones HubSpot, Mailchimp, Zendesk'] },
+        { icon:'📡', title:'Ser Visible', items:['Seguimiento de visibilidad LLM y búsqueda','Google Store Ratings cualificado','Perfil con branding y FAQ personalizados'] },
+        { icon:'📣', title:'Amplificar', items:['8 widgets esenciales (TrustScore, estrellas)','Assets sociales y de vídeo de las reseñas','Analítica de perfil y widgets'] }
+      ],
+      de:[
+        { icon:'📥', title:'Sammeln', items:['300 automatisierte Einladungen/Monat','In-App-Collector-Widget','HubSpot, Mailchimp, Zendesk Integrationen'] },
+        { icon:'📡', title:'Sichtbar werden', items:['LLM & Suchsichtbarkeits-Tracking','Google Store Ratings qualifiziert','Profil mit individuellem Branding & FAQs'] },
+        { icon:'📣', title:'Verstärken', items:['8 wesentliche Widgets (TrustScore, Sterne)','Social- & Video-Assets aus Bewertungen','Profil- & Widget-Analysen'] }
       ]
     },
     roadmap: {
@@ -2147,16 +2227,28 @@ const PLAN_DATA = {
         { period:'Week 1–2', action:'Claim & Activate', detail:'Claim and customise your Trustpilot profile. Launch automated invitations from your first integration.', kpi:'LLM tracking live from day 1' },
         { period:'Week 3–6', action:'Hit the Threshold', detail:'Reach 13+ genuine reviews — your AI citation rate jumps from 1% to 54%. Respond to every review.', kpi:'1% → 54% citation rate at 13 reviews' },
         { period:'Week 7–12', action:'Build Consistency', detail:'Maintain 5+ reviews/month. Deploy TrustScore widgets on your highest-traffic pages.', kpi:'300 verified invitations per month' }
+      ],
+      es:[
+        { period:'Semana 1–2', action:'Reclamar y Activar', detail:'Reclamad y personalizad vuestro perfil de Trustpilot. Lanzad invitaciones automatizadas desde vuestra primera integración.', kpi:'Seguimiento LLM activo desde el día 1' },
+        { period:'Semana 3–6', action:'Alcanzar el Umbral', detail:'Conseguid 13+ reseñas genuinas — vuestra tasa de citación de IA salta del 1% al 54%. Responded a cada reseña.', kpi:'1% → 54% tasa de citación con 13 reseñas' },
+        { period:'Semana 7–12', action:'Construir Consistencia', detail:'Mantened 5+ reseñas/mes. Deployed widgets TrustScore en vuestras páginas de mayor tráfico.', kpi:'300 invitaciones verificadas al mes' }
+      ],
+      de:[
+        { period:'Woche 1–2', action:'Beanspruchen & Aktivieren', detail:'Beanspruchen und gestalten Sie Ihr Trustpilot-Profil. Starten Sie automatisierte Einladungen über Ihre erste Integration.', kpi:'LLM-Tracking ab Tag 1 aktiv' },
+        { period:'Woche 3–6', action:'Den Schwellenwert erreichen', detail:'Erreichen Sie 13+ echte Bewertungen — Ihre KI-Zitierrate steigt von 1% auf 54%. Antworten Sie auf jede Bewertung.', kpi:'1% → 54% Zitierrate bei 13 Bewertungen' },
+        { period:'Woche 7–12', action:'Konsistenz aufbauen', detail:'Halten Sie 5+ Bewertungen/Monat. Setzen Sie TrustScore-Widgets auf Ihren meistbesuchten Seiten ein.', kpi:'300 verifizierte Einladungen pro Monat' }
       ]
     }
   },
   Premium: {
     name: 'Premium',
     color: '#f5a623', bg: '#fffbeb',
-    tier: { it:'🟡 Score 11–20 · Piano scalabile', en:'🟡 Score 11–20 · Scale plan' },
+    tier: { it:'🟡 Score 11–20 · Piano scalabile', en:'🟡 Score 11–20 · Scale plan', es:'🟡 Score 11–20 · Plan escalable', de:'🟡 Score 11–20 · Wachstumsplan' },
     meta: {
       it:['👥 10 utenti','📧 1.000 inviti/mese','🧑‍💼 Dedicated rep'],
-      en:['👥 10 users','📧 1,000 invitations/month','🧑‍💼 Dedicated rep']
+      en:['👥 10 users','📧 1,000 invitations/month','🧑‍💼 Dedicated rep'],
+      es:['👥 10 usuarios','📧 1.000 invitaciones/mes','🧑‍💼 Rep dedicado'],
+      de:['👥 10 Nutzer','📧 1.000 Einladungen/Monat','🧑‍💼 Dedizierter Rep']
     },
     features: {
       it:[
@@ -2168,6 +2260,16 @@ const PLAN_DATA = {
         { icon:'📥', title:'Collect at Scale', items:['1,000 automated invitations/month','In-app collector + advanced integrations (HubSpot, Slack, Webhooks)','A/B test invitation templates','Dedicated Trustpilot representative'] },
         { icon:'🔭', title:'Intelligence', items:['LLM visibility tracking — measure your citation rate','Competitor benchmarking & market trend analysis','Sentiment & topic analysis by segment','Customisable dashboards'] },
         { icon:'📣', title:'Amplify & Convert', items:['Full widget library — web & newsletter','Targeted widgets by tag','Ad-ready & social-ready marketing assets','Customisable TrustScore widget'] }
+      ],
+      es:[
+        { icon:'📥', title:'Recopilar a Escala', items:['1.000 invitaciones automatizadas/mes','Recopilador integrado + integraciones avanzadas (HubSpot, Slack, Webhooks)','Test A/B de plantillas de invitación','Rep dedicado de Trustpilot'] },
+        { icon:'🔭', title:'Inteligencia', items:['Seguimiento de visibilidad LLM — mide tu tasa de citación','Benchmarking de competidores y análisis de tendencias','Análisis de sentimiento y temas por segmento','Dashboards personalizables'] },
+        { icon:'📣', title:'Amplificar y Convertir', items:['Biblioteca completa de widgets — web y newsletter','Widgets segmentados por etiqueta','Assets de marketing listos para anuncios y redes sociales','Widget TrustScore personalizable'] }
+      ],
+      de:[
+        { icon:'📥', title:'Skaliertes Sammeln', items:['1.000 automatisierte Einladungen/Monat','In-App-Collector + erweiterte Integrationen (HubSpot, Slack, Webhooks)','A/B-Test von Einladungsvorlagen','Dedizierter Trustpilot-Repräsentant'] },
+        { icon:'🔭', title:'Intelligence', items:['LLM-Sichtbarkeits-Tracking — messen Sie Ihre Zitierrate','Wettbewerber-Benchmarking & Markttrend-Analyse','Sentiment- & Themenanalyse nach Segment','Anpassbare Dashboards'] },
+        { icon:'📣', title:'Verstärken & Konvertieren', items:['Vollständige Widget-Bibliothek — Web & Newsletter','Zielgerichtete Widgets nach Tag','Anzeigen- und Social-Media-fähige Marketing-Assets','Anpassbares TrustScore-Widget'] }
       ]
     },
     roadmap: {
@@ -2180,16 +2282,30 @@ const PLAN_DATA = {
         { period:'Week 1–2', action:'Diagnose & Relaunch', detail:'Identify the root cause: volume, recency or response rate. Restart invitations. Benchmark top 3 competitors in LLM visibility dashboard.', kpi:'1,000 verified invitations per month' },
         { period:'Week 3–6', action:'Restart the Engine', detail:'Target 5–8 new reviews per month. Respond to all — start with the most visible negatives. Use sentiment analysis to spot the top 3 AI themes.', kpi:'75% citation rate at active-profile status (81+ reviews)' },
         { period:'Week 7–12', action:'Outpace Competitors', detail:'Run co-mention test: "Alternatives to [competitor]?" Use market insights to find where rivals are losing ground.', kpi:'9.5× more co-mentions with optimised profile' }
+      ],
+      es:[
+        { period:'Semana 1–2', action:'Diagnosticar y Relanzar', detail:'Identificad la causa raíz: volumen, actualidad o tasa de respuesta. Reiniciad las invitaciones. Comparad los 3 mejores competidores en el dashboard de visibilidad LLM.', kpi:'1.000 invitaciones verificadas al mes' },
+        { period:'Semana 3–6', action:'Reiniciar el Motor', detail:'Objetivo: 5–8 nuevas reseñas al mes. Responded a todas — empezad por los negativos más visibles. Usad el análisis de sentimiento para identificar los 3 temas principales de IA.', kpi:'75% tasa de citación con perfil activo (81+ reseñas)' },
+        { period:'Semana 7–12', action:'Superar a los Competidores', detail:'Realizad el test de co-mención: "¿Alternativas a [competidor]?" Usad los insights de mercado para encontrar dónde los rivales están perdiendo terreno.', kpi:'9,5× más co-menciones con perfil optimizado' }
+      ],
+      de:[
+        { period:'Woche 1–2', action:'Diagnose & Neustart', detail:'Identifizieren Sie die Grundursache: Volumen, Aktualität oder Antwortrate. Starten Sie Einladungen neu. Benchmarken Sie die Top 3 Mitbewerber im LLM-Sichtbarkeits-Dashboard.', kpi:'1.000 verifizierte Einladungen pro Monat' },
+        { period:'Woche 3–6', action:'Den Motor neu starten', detail:'Ziel: 5–8 neue Bewertungen pro Monat. Antworten Sie auf alle — beginnen Sie mit den sichtbarsten negativen. Nutzen Sie Sentiment-Analyse, um die Top 3 KI-Themen zu identifizieren.', kpi:'75% Zitierrate bei aktivem Profil (81+ Bewertungen)' },
+        { period:'Woche 7–12', action:'Mitbewerber überholen', detail:'Führen Sie den Co-Erwähnungstest durch: "Alternativen zu [Mitbewerber]?" Nutzen Sie Markteinblicke, um zu finden, wo Rivalen schwach werden.', kpi:'9,5× mehr Co-Erwähnungen mit optimiertem Profil' }
       ]
     }
   },
   Enterprise: {
     name: 'Enterprise',
     color: '#00b67a', bg: '#f0fdf8',
-    tier: { it:'🟢 Score 21–30 · Piano enterprise', en:'🟢 Score 21–30 · Enterprise plan' },
+    tier: { it:'🟢 Score 21–30 · Piano enterprise', en:'🟢 Score 21–30 · Enterprise plan', es:'🟢 Score 21–30 · Plan Enterprise', de:'🟢 Score 21–30 · Enterprise-Plan' },
     meta: {
       it:['👥 1.000 utenti','📧 Inviti illimitati','🎯 Strategic support'],
-      en:['👥 1,000 users','📧 Unlimited invitations','🎯 Strategic support']
+      en:['👥 1,000 users','📧 Unlimited invitations','🎯 Strategic support'],
+      es:['👥 1.000 usuarios','📧 Invitaciones ilimitadas','🎯 Soporte estratégico'],
+      de:['👥 1.000 Nutzer','📧 Unbegrenzte Einladungen','🎯 Strategischer Support'],
+      es:['👥 1.000 usuarios','📧 Invitaciones ilimitadas','🎯 Soporte estratégico'],
+      de:['👥 1.000 Nutzer','📧 Unbegrenzte Einladungen','🎯 Strategischer Support']
     },
     features: {
       it:[
@@ -2201,6 +2317,16 @@ const PLAN_DATA = {
         { icon:'📥', title:'Collect at Massive Scale', items:['Unlimited automated invitations/month','Email, in-app, API & Salesforce','A/B test with industry benchmarks','Expert implementation & dedicated strategic support'] },
         { icon:'🔭', title:'Enterprise Intelligence', items:['LLM brand visibility tracking','Post-review surveys with smart targeting','In-depth competitor, market & search insights','Weekly reports + regional team dashboards'] },
         { icon:'⚙️', title:'API Control & Global Reach', items:['200k API calls/year','Smart & targeted widgets','Multi-market & multi-language','Privacy module included'] }
+      ],
+      es:[
+        { icon:'📥', title:'Recopilar a Gran Escala', items:['Invitaciones automatizadas ilimitadas/mes','Email, in-app, API y Salesforce','Test A/B con benchmarks del sector','Implementación experta y soporte estratégico dedicado'] },
+        { icon:'🔭', title:'Inteligencia Enterprise', items:['Seguimiento de visibilidad de marca LLM','Encuestas post-reseña con segmentación inteligente','Insights profundos de competidores, mercado y búsqueda','Informes semanales + dashboards de equipos regionales'] },
+        { icon:'⚙️', title:'Control API y Alcance Global', items:['200k llamadas API/año','Widgets inteligentes y segmentados','Multi-mercado y multi-idioma','Módulo de privacidad incluido'] }
+      ],
+      de:[
+        { icon:'📥', title:'Massenhaftes Sammeln', items:['Unbegrenzte automatisierte Einladungen/Monat','E-Mail, In-App, API & Salesforce','A/B-Test mit Branchen-Benchmarks','Expertenimplementierung & dedizierter strategischer Support'] },
+        { icon:'🔭', title:'Enterprise Intelligence', items:['LLM-Marken-Sichtbarkeits-Tracking','Post-Bewertungs-Umfragen mit Smart-Targeting','Tiefgehende Wettbewerber-, Markt- & Sucheinblicke','Wöchentliche Berichte + regionale Team-Dashboards'] },
+        { icon:'⚙️', title:'API-Kontrolle & Globale Reichweite', items:['200k API-Aufrufe/Jahr','Intelligente & zielgerichtete Widgets','Multi-Markt & Mehrsprachig','Datenschutz-Modul inklusive'] }
       ]
     },
     roadmap: {
@@ -2213,6 +2339,16 @@ const PLAN_DATA = {
         { period:'Week 1–2', action:'Map the Competitive Landscape', detail:'AI visibility tests across top 3 competitors. Set baseline LLM citation rate. Identify co-mention gaps with the strategic support team.', kpi:'200k API calls/year for full operational control' },
         { period:'Week 3–6', action:'Activate the Full Toolkit', detail:'Launch unlimited invitations across all touchpoints. Activate post-review surveys. Deploy smart widgets by tag and region. A/B test invitation templates.', kpi:'Unlimited automated invitations every month' },
         { period:'Week 7–12', action:'Win the Co-Mention Battle at Scale', detail:'Track LLM visibility weekly. Report AI citation rate alongside traditional search KPIs. Move fast where rivals are losing ground.', kpi:'9.5× more competitive co-mentions with optimised profile' }
+      ],
+      es:[
+        { period:'Semana 1–2', action:'Mapear el Panorama Competitivo', detail:'Tests de visibilidad de IA en los 3 mejores competidores. Estableced la tasa de citación LLM de referencia. Identificad los gaps de co-mención con el equipo de soporte estratégico.', kpi:'200k llamadas API/año para control operacional completo' },
+        { period:'Semana 3–6', action:'Activar el Toolkit Completo', detail:'Lanzad invitaciones ilimitadas en todos los puntos de contacto. Activad encuestas post-reseña. Deployed widgets inteligentes por etiqueta y región. Test A/B de plantillas de invitación.', kpi:'Invitaciones automatizadas ilimitadas cada mes' },
+        { period:'Semana 7–12', action:'Ganar la Batalla de Co-Menciones a Escala', detail:'Monitorizad la visibilidad LLM semanalmente. Reportad la tasa de citación de IA junto a los KPI de búsqueda tradicional. Moved rápido donde los rivales están perdiendo terreno.', kpi:'9,5× más co-menciones competitivas con perfil optimizado' }
+      ],
+      de:[
+        { period:'Woche 1–2', action:'Wettbewerbslandschaft kartieren', detail:'KI-Sichtbarkeitstests bei den Top 3 Mitbewerbern. Basis-LLM-Zitierrate festlegen. Co-Erwähnungslücken mit dem strategischen Support-Team identifizieren.', kpi:'200k API-Aufrufe/Jahr für vollständige operative Kontrolle' },
+        { period:'Woche 3–6', action:'Das vollständige Toolkit aktivieren', detail:'Unbegrenzte Einladungen über alle Touchpoints starten. Post-Bewertungs-Umfragen aktivieren. Intelligente Widgets nach Tag und Region einsetzen. A/B-Test von Einladungsvorlagen.', kpi:'Unbegrenzte automatisierte Einladungen jeden Monat' },
+        { period:'Woche 7–12', action:'Die Co-Erwähnungsschlacht im großen Maßstab gewinnen', detail:'LLM-Sichtbarkeit wöchentlich tracken. KI-Zitierrate neben traditionellen Such-KPIs berichten. Schnell handeln, wo Rivalen Boden verlieren.', kpi:'9,5× mehr wettbewerbliche Co-Erwähnungen mit optimiertem Profil' }
       ]
     }
   }
@@ -2252,6 +2388,40 @@ const WHY = {
       Plus:       "You're AI-ready. Plus is the right entry point to maintain your position with a lighter structure and controlled costs — ideal if the goal is to consolidate before scaling.",
       Premium:    "AI-ready position with room to dominate. Premium amplifies your presence with competitive intelligence, benchmarking and advanced widgets. The winning combination for brands that have the foundation and want to pull ahead.",
       Enterprise: "You're AI-ready — now the question is whether you dominate or just participate. Enterprise cements the position: unlimited invitations, 200k API calls, LLM brand tracking and strategic support to make trust a board-level metric. Optimised Enterprise profiles get 9.5× more competitive co-mentions."
+    }
+  },
+  es: {
+    red: {
+      Plus:       "Vuestro score muestra que sois invisibles para la IA. Plus es la base correcta: perfil activo, 300 invitaciones/mes y seguimiento LLM desde el día 1. Con 13 reseñas genuinas, vuestra tasa de citación salta del 1% al 54% — el camino más rápido hacia la visibilidad de IA.",
+      Premium:    "Partís desde cero, pero con la escala y ambición correctas para acelerar. Premium os da 1.000 invitaciones/mes, inteligencia competitiva y un rep dedicado: cerráis el gap en la mitad del tiempo vs Plus y ya tenéis las herramientas para dominar.",
+      Enterprise: "Partís desde cero en un mercado altamente competitivo o a gran escala. Enterprise comprime los tiempos: invitaciones ilimitadas, 200k llamadas API y soporte estratégico para alcanzar el 75% de tasa de citación mucho más rápido que cualquier otro plan."
+    },
+    yellow: {
+      Plus:       "Tenéis presencia, pero no está trabajando lo suficiente. Plus proporciona la base técnica y las invitaciones automatizadas para consolidar el perfil — la elección correcta si el objetivo es estabilizarse con una estructura más ligera.",
+      Premium:    "Presencia parcial con gaps de volumen, actualidad o engagement. Premium es la elección natural: 1.000 invitaciones/mes, análisis de sentimiento y benchmarking de competidores para cerrar el gap y superar a los rivales. El plan diseñado exactamente para esta situación.",
+      Enterprise: "Presencia parcial en un contexto que requiere escala e inteligencia competitiva. Enterprise supera los límites de volumen con invitaciones ilimitadas y os da el toolkit completo — insights, 200k llamadas API y soporte estratégico — desde el día 1."
+    },
+    green: {
+      Plus:       "Estáis listos para la IA. Plus es el punto de entrada correcto para mantener vuestra posición con una estructura más ligera y costes controlados — ideal si el objetivo es consolidar antes de escalar.",
+      Premium:    "Posición lista para la IA con margen para dominar. Premium amplifica vuestra presencia con inteligencia competitiva, benchmarking y widgets avanzados. La combinación ganadora para marcas que tienen la base y quieren distanciarse.",
+      Enterprise: "Estáis listos para la IA — ahora la pregunta es si dominéis o simplemente participéis. Enterprise consolida la posición: invitaciones ilimitadas, 200k llamadas API, seguimiento de marca LLM y soporte estratégico para convertir la confianza en un activo de nivel directivo. Los perfiles Enterprise optimizados obtienen 9,5× más co-menciones competitivas."
+    }
+  },
+  de: {
+    red: {
+      Plus:       "Ihr Score zeigt, dass Sie für die KI unsichtbar sind. Plus ist das richtige Fundament: aktives Profil, 300 Einladungen/Monat und LLM-Tracking ab Tag 1. Mit 13 echten Bewertungen steigt Ihre Zitierrate von 1% auf 54% — der schnellste Weg zur KI-Sichtbarkeit.",
+      Premium:    "Sie starten bei null, aber mit der richtigen Größe und Ambition zum Beschleunigen. Premium gibt Ihnen 1.000 Einladungen/Monat, Wettbewerbsintelligenz und einen dedizierten Rep: Sie schließen den Abstand in der halben Zeit gegenüber Plus und haben bereits die Werkzeuge zum Dominieren.",
+      Enterprise: "Sie starten bei null in einem stark umkämpften oder großangelegten Markt. Enterprise komprimiert die Zeitpläne: unbegrenzte Einladungen, 200k API-Aufrufe und strategischer Support, um die 75% Zitierrate viel schneller als jeder andere Plan zu erreichen."
+    },
+    yellow: {
+      Plus:       "Sie haben Präsenz, aber sie arbeitet nicht hart genug. Plus bietet das technische Fundament und automatisierte Einladungen, um Ihr Profil zu konsolidieren — die richtige Wahl, wenn das Ziel ist, mit einer leichteren Struktur zu stabilisieren.",
+      Premium:    "Teilweise Präsenz mit Lücken in Volumen, Aktualität oder Engagement. Premium ist die natürliche Wahl: 1.000 Einladungen/Monat, Sentiment-Analyse und Wettbewerber-Benchmarking, um den Abstand zu schließen und Rivalen zu überholen. Der Plan, der genau für diese Situation entwickelt wurde.",
+      Enterprise: "Teilweise Präsenz in einem Kontext, der Skalierung und Wettbewerbsintelligenz erfordert. Enterprise umgeht Volumengrenzen mit unbegrenzten Einladungen und gibt Ihnen das vollständige Toolkit — Einblicke, 200k API-Aufrufe und strategischen Support — ab Tag 1."
+    },
+    green: {
+      Plus:       "Sie sind KI-bereit. Plus ist der richtige Einstiegspunkt, um Ihre Position mit einer leichteren Struktur und kontrollierten Kosten zu halten — ideal, wenn das Ziel ist, vor der Skalierung zu konsolidieren.",
+      Premium:    "KI-bereite Position mit Raum zum Dominieren. Premium verstärkt Ihre Präsenz mit Wettbewerbsintelligenz, Benchmarking und erweiterten Widgets. Die Gewinnerkombination für Marken, die das Fundament haben und sich absetzen wollen.",
+      Enterprise: "Sie sind KI-bereit — jetzt ist die Frage, ob Sie dominieren oder nur teilnehmen. Enterprise festigt die Position: unbegrenzte Einladungen, 200k API-Aufrufe, LLM-Marken-Tracking und strategischer Support, um Vertrauen zu einer Kennzahl auf Vorstandsebene zu machen. Optimierte Enterprise-Profile erhalten 9,5× mehr wettbewerbliche Co-Erwähnungen."
     }
   }
 };
@@ -2895,6 +3065,52 @@ const ROADMAPS = {
         { period:'Week 1–2', action:'Activate the Co-mention Effect', detail:"Test competitor searches live: 'Best alternatives to [competitor]?' If you're not appearing, prioritise volume growth beyond 81+ reviews. Optimised brands get 9.5× more competitive co-mentions. AI referrals convert at 11.4% vs 5.3% organic — every co-mention is direct revenue.", kpi:'9.5× more co-mentions at optimised profile status (Trustpilot & SEER, 2026) | 11.4% AI conversion' },
         { period:'Week 3–6', action:'Deepen the Narrative', detail:"Analyse which themes your reviews cover vs the 5 key AI themes: service, delivery, quality, trust & returns. Celebrate review milestones in PR and social — AI cross-references reputation across multiple platforms. Use review insights to create content that reflects what customers love.", kpi:'5 key AI themes: service, delivery, quality, trust, returns' },
         { period:'Week 7–12', action:'Maintain & Monitor', detail:"Monthly AI search monitoring on ChatGPT, Gemini and Perplexity. Track AI citations as a KPI and share co-mention wins with stakeholders. Maintain review cadence and 80%+ response rate. Amplify trust signals across all channels to consolidate your competitive advantage.", kpi:'Monthly AI visibility cadence | +1,490% AI traffic to Trustpilot last year' }
+      ]
+    }
+  },
+  es: {
+    red: { header:'🔴 Score 0–10 — Empezando desde Cero', color:'#e74c3c', bg:'#fef2f2',
+      steps:[
+        { period:'Semana 1–2', action:'Reclamar y Activar', detail:"Reclamad el perfil de Trustpilot (gratuito, 10 minutos). Completad todos los campos de empresa y el Guarantee Box y Promotion Box con garantías, FAQ y servicios clave. Configurad invitaciones automatizadas desde al menos un punto de contacto — email post-compra o AFS. Activad el seguimiento de citaciones de IA como KPI desde el día uno.", kpi:'1% → 53,5% tasa de citación con 13+ reseñas (Trustpilot & SEER, 2026)' },
+        { period:'Semana 3–6', action:'Alcanzar el Primer Umbral', detail:"Objetivo: 13+ reseñas genuinas. La tasa de citación de IA salta del 1% al 53,5% en este umbral. Responded a cada reseña — responder dobla el contenido accesible para la IA. Integrad con HubSpot, Mailchimp o Zendesk para una gestión sencilla a escala.", kpi:'13 reseñas = umbral crítico de visibilidad | respuestas = doble contenido para IA' },
+        { period:'Semana 7–12', action:'Construir hacia el Estado Activo', detail:"Objetivo: 81+ reseñas con cadencia mensual constante. Mantened la tasa de respuesta por encima del 80%. Instalad widgets TrustBox en páginas de alto tráfico para crear 'puentes digitales' hacia vuestras reseñas de Trustpilot. Realizad tests de IA mensuales en ChatGPT, Gemini y Perplexity para seguir el progreso.", kpi:'75,3% tasa de citación con perfil activo | +1.490% tráfico de IA a Trustpilot el último año' }
+      ]
+    },
+    yellow: { header:'🟡 Score 11–20 — Parcialmente Visible', color:'#f5a623', bg:'#fffbeb',
+      steps:[
+        { period:'Semana 1–2', action:'Diagnosticar el Gap', detail:"Identificad si el score débil es por volumen (objetivo 81+), actualidad (últimas 4 semanas) o tasa de respuesta (objetivo 80%+). Realizad el test de IA en ChatGPT, Gemini y Perplexity y documentad qué falta en la narrativa de vuestra marca. Comprobad la coherencia entre vuestro sitio web y el perfil de Trustpilot.", kpi:'Test en 3 plataformas: ChatGPT, Gemini, Perplexity' },
+        { period:'Semana 3–6', action:'Reiniciar el Motor', detail:"Reactivad o automatizad el flujo de invitaciones via AFS, integraciones o APIs. Objetivo: 5–8 nuevas reseñas genuinas al mes para restaurar las señales de actualidad. Empezad a responder a todas las reseñas — incluid palabras clave sobre vuestro servicio. Actualizad el Promotion Box y el Guarantee Box con promociones y garantías frescas.", kpi:'5–8 nuevas reseñas/mes | tasa de respuesta hacia el 80%+' },
+        { period:'Semana 7–12', action:'Alcanzar el Estado Activo', detail:"Conseguid 81+ reseñas auténticas con actualidad inferior a 30 días. Instalad TrustBox en vuestro sitio web (tasas de conversión hasta +23%). Usad los insights de reseñas para identificar los 5 temas clave de IA (servicio, entrega, calidad, confianza, devoluciones) y cread contenido que los refleje. Test mensual: ¿quién aparece cuando los compradores buscan vuestra categoría?", kpi:'75,3% tasa de citación con perfil activo | TrustBox: +23% tasas de conversión' }
+      ]
+    },
+    green: { header:'🟢 Score 21–30 — Listo para la IA', color:'#00b67a', bg:'#f0fdf8',
+      steps:[
+        { period:'Semana 1–2', action:'Activar el Efecto Co-mención', detail:"Testad búsquedas de competidores en directo: '¿Mejores alternativas a [competidor]?' Si no aparecéis, priorizad el crecimiento del volumen más allá de 81+ reseñas. Las marcas optimizadas obtienen 9,5× más co-menciones competitivas. Los referrals de IA convierten al 11,4% vs 5,3% orgánico — cada co-mención es revenue directa.", kpi:'9,5× más co-menciones con perfil optimizado (Trustpilot & SEER, 2026) | 11,4% conversión IA' },
+        { period:'Semana 3–6', action:'Profundizar la Narrativa', detail:"Analizad qué temas cubren vuestras reseñas vs los 5 temas clave de IA: servicio, entrega, calidad, confianza y devoluciones. Celebrad los hitos de reseñas en PR y redes sociales — la IA cruza referencias de reputación en múltiples plataformas. Usad los insights de reseñas para crear contenido que refleje lo que los clientes aman.", kpi:'5 temas clave de IA: servicio, entrega, calidad, confianza, devoluciones' },
+        { period:'Semana 7–12', action:'Mantener y Monitorizar', detail:"Monitorización mensual de búsquedas de IA en ChatGPT, Gemini y Perplexity. Rastrear las citaciones de IA como KPI y compartir los éxitos de co-mención con los stakeholders. Mantened la cadencia de reseñas y la tasa de respuesta del 80%+. Amplificad las señales de confianza en todos los canales para consolidar vuestra ventaja competitiva.", kpi:'Cadencia mensual de visibilidad de IA | +1.490% tráfico de IA a Trustpilot el último año' }
+      ]
+    }
+  },
+  de: {
+    red: { header:'🔴 Score 0–10 — Von Null starten', color:'#e74c3c', bg:'#fef2f2',
+      steps:[
+        { period:'Woche 1–2', action:'Beanspruchen & Aktivieren', detail:"Beanspruchen Sie das Trustpilot-Profil (kostenlos, 10 Minuten). Füllen Sie alle Unternehmensfelder sowie den Guarantee Box und Promotion Box mit Garantien, FAQs und Schlüsselleistungen aus. Richten Sie automatisierte Einladungen von mindestens einem Touchpoint ein — Post-Kauf-E-Mail oder AFS. Aktivieren Sie KI-Zitations-Tracking als KPI von Tag eins an.", kpi:'1% → 53,5% Zitierrate mit 13+ Bewertungen (Trustpilot & SEER, 2026)' },
+        { period:'Woche 3–6', action:'Den ersten Schwellenwert erreichen', detail:"Ziel: 13+ echte Bewertungen. Die KI-Zitierrate springt bei diesem Schwellenwert von 1% auf 53,5%. Antworten Sie auf jede Bewertung — Antworten verdoppeln den KI-zugänglichen Inhalt. Integrieren Sie HubSpot, Mailchimp oder Zendesk für einfaches Management im großen Maßstab.", kpi:'13 Bewertungen = kritischer Sichtbarkeitsschwellenwert | Antworten = doppelter KI-Inhalt' },
+        { period:'Woche 7–12', action:'Auf aktiven Status hinarbeiten', detail:"Ziel: 81+ Bewertungen mit konsistenter monatlicher Kadenz. Halten Sie die Antwortrate über 80%. Installieren Sie TrustBox-Widgets auf stark frequentierten Seiten, um 'digitale Brücken' zu Ihren Trustpilot-Bewertungen zu schaffen. Führen Sie monatliche KI-Tests auf ChatGPT, Gemini und Perplexity durch.", kpi:'75,3% Zitierrate bei aktivem Profil | +1.490% KI-Traffic zu Trustpilot letztes Jahr' }
+      ]
+    },
+    yellow: { header:'🟡 Score 11–20 — Teilweise sichtbar', color:'#f5a623', bg:'#fffbeb',
+      steps:[
+        { period:'Woche 1–2', action:'Die Lücke diagnostizieren', detail:"Ermitteln Sie, ob der schwache Score am Volumen (Ziel 81+), der Aktualität (letzte 4 Wochen) oder der Antwortrate (Ziel 80%+) liegt. Führen Sie den KI-Test auf ChatGPT, Gemini und Perplexity durch und dokumentieren Sie, was in Ihrer Markennarrative fehlt. Prüfen Sie die Konsistenz zwischen Ihrer Website und Ihrem Trustpilot-Profil.", kpi:'Test auf 3 Plattformen: ChatGPT, Gemini, Perplexity' },
+        { period:'Woche 3–6', action:'Den Motor neu starten', detail:"Reaktivieren oder automatisieren Sie den Einladungsfluss über AFS, Integrationen oder APIs. Ziel: 5–8 neue echte Bewertungen pro Monat, um Aktualitätssignale wiederherzustellen. Beginnen Sie, auf alle Bewertungen zu antworten — fügen Sie Keywords über Ihren Service ein. Aktualisieren Sie den Promotion Box und Guarantee Box mit frischen Angeboten und Garantien.", kpi:'5–8 neue Bewertungen/Monat | Antwortrate Richtung 80%+' },
+        { period:'Woche 7–12', action:'Aktiven Status erreichen', detail:"Erreichen Sie 81+ authentische Bewertungen mit Aktualität unter 30 Tagen. Installieren Sie TrustBox auf Ihrer Website (Konversionsraten bis +23%). Nutzen Sie Bewertungseinblicke, um die 5 KI-Schlüsselthemen zu identifizieren (Service, Lieferung, Qualität, Vertrauen, Retouren). Monatlicher Test: Wer erscheint, wenn Käufer Ihre Kategorie recherchieren?", kpi:'75,3% Zitierrate bei aktivem Profil | TrustBox: +23% Konversionsraten' }
+      ]
+    },
+    green: { header:'🟢 Score 21–30 — KI-bereit', color:'#00b67a', bg:'#f0fdf8',
+      steps:[
+        { period:'Woche 1–2', action:'Den Co-Erwähnungseffekt aktivieren', detail:"Testen Sie Konkurrenzsuchen live: 'Beste Alternativen zu [Mitbewerber]?' Wenn Sie nicht erscheinen, priorisieren Sie Volumenwachstum über 81+ Bewertungen hinaus. Optimierte Marken erhalten 9,5× mehr wettbewerbliche Co-Erwähnungen. KI-Referrals konvertieren zu 11,4% vs 5,3% organisch — jede Co-Erwähnung ist direkter Umsatz.", kpi:'9,5× mehr Co-Erwähnungen bei optimiertem Profil (Trustpilot & SEER, 2026) | 11,4% KI-Konversion' },
+        { period:'Woche 3–6', action:'Die Narrative vertiefen', detail:"Analysieren Sie, welche Themen Ihre Bewertungen vs die 5 KI-Schlüsselthemen abdecken: Service, Lieferung, Qualität, Vertrauen & Retouren. Feiern Sie Bewertungsmeilensteine in PR und Social Media — KI querverweist Reputation über mehrere Plattformen. Nutzen Sie Bewertungseinblicke, um Inhalte zu erstellen, die widerspiegeln, was Kunden lieben.", kpi:'5 KI-Schlüsselthemen: Service, Lieferung, Qualität, Vertrauen, Retouren' },
+        { period:'Woche 7–12', action:'Aufrechterhalten & Überwachen', detail:"Monatliches KI-Suchmonitoring auf ChatGPT, Gemini und Perplexity. KI-Zitierungen als KPI tracken und Co-Erwähnungserfolge mit Stakeholdern teilen. Bewertungskadenz und 80%+ Antwortrate aufrechterhalten. Vertrauenssignale über alle Kanäle verstärken, um den Wettbewerbsvorteil zu festigen.", kpi:'Monatliche KI-Sichtbarkeitskadenz | +1.490% KI-Traffic zu Trustpilot letztes Jahr' }
       ]
     }
   }
