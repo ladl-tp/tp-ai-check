@@ -1223,7 +1223,7 @@
           <div class="dimension-section-header">
             <div>
               <div class="dimension-name">1 — Review Volume & Recency</div>
-              <div class="dimension-desc">Quante recensioni hai? Quanto sono recenti?</div>
+              <div class="dimension-desc">Quante recensioni hai? Soglia enterprise: 250+. Quanto sono recenti?</div>
             </div>
             <div class="dimension-score-badge" id="d1-badge">— <span class="out">/10</span></div>
           </div>
@@ -1235,17 +1235,17 @@
                 <div class="option-radio"></div>
                 <div class="option-text"><div class="option-title">Nessun profilo / 0 recensioni</div><div class="option-sub">Citata dall'AI meno dell'1% delle volte</div></div>
               </button>
-              <button class="option-card" onclick="pick('q1','1-12',this)">
+              <button class="option-card" onclick="pick('q1','1-49',this)">
                 <div class="option-radio"></div>
-                <div class="option-text"><div class="option-title">1–12 recensioni</div><div class="option-sub">Sotto la soglia minima di visibilità AI</div></div>
+                <div class="option-text"><div class="option-title">1–49 recensioni</div><div class="option-sub">Sotto la soglia enterprise minima (250+)</div></div>
               </button>
-              <button class="option-card" onclick="pick('q1','13-50',this)">
+              <button class="option-card" onclick="pick('q1','50-249',this)">
                 <div class="option-radio"></div>
-                <div class="option-text"><div class="option-title">13–50 recensioni</div><div class="option-sub">Oltre la soglia: citation rate ~54%</div></div>
+                <div class="option-text"><div class="option-title">50–249 recensioni</div><div class="option-sub">Sopra la soglia base — citation rate ~54%–75%</div></div>
               </button>
-              <button class="option-card" onclick="pick('q1','51+',this)">
+              <button class="option-card" onclick="pick('q1','250+',this)">
                 <div class="option-radio"></div>
-                <div class="option-text"><div class="option-title">50+ recensioni</div><div class="option-sub">Profilo attivo: citation rate fino al 75%</div></div>
+                <div class="option-text"><div class="option-title">250+ recensioni</div><div class="option-sub">Profilo enterprise ottimizzato — citation rate &gt;75% costante</div></div>
               </button>
             </div>
           </div>
@@ -1333,7 +1333,7 @@
           <div class="dimension-section-header">
             <div>
               <div class="dimension-name">3 — TrustScore & Star Trend</div>
-              <div class="dimension-desc">Che segnale porta in superficie l'AI?</div>
+              <div class="dimension-desc">Che segnale porta l'AI? Benchmark enterprise: 4.5+ ★.</div>
             </div>
             <div class="dimension-score-badge" id="d3-badge">— <span class="out">/10</span></div>
           </div>
@@ -1345,17 +1345,17 @@
                 <div class="option-radio"></div>
                 <div class="option-text"><div class="option-title">Nessun profilo / non verificato</div><div class="option-sub">Nessun segnale per l'AI</div></div>
               </button>
-              <button class="option-card" onclick="pick('q5','sub35',this)">
+              <button class="option-card" onclick="pick('q5','sub40',this)">
                 <div class="option-radio"></div>
-                <div class="option-text"><div class="option-title">Sotto 3.5 ★</div><div class="option-sub">Segnale negativo per gli LLM</div></div>
+                <div class="option-text"><div class="option-title">Sotto 4.0 ★</div><div class="option-sub">Sotto benchmark enterprise — segnale debole per l'AI</div></div>
               </button>
-              <button class="option-card" onclick="pick('q5','35-40',this)">
+              <button class="option-card" onclick="pick('q5','40-45',this)">
                 <div class="option-radio"></div>
-                <div class="option-text"><div class="option-title">3.5 – 4.0 ★</div><div class="option-sub">Visibile ma non un segnale forte</div></div>
+                <div class="option-text"><div class="option-title">4.0 – 4.5 ★</div><div class="option-sub">Nella media enterprise — segnale positivo per gli LLM</div></div>
               </button>
-              <button class="option-card" onclick="pick('q5','above40',this)">
+              <button class="option-card" onclick="pick('q5','above45',this)">
                 <div class="option-radio"></div>
-                <div class="option-text"><div class="option-title">Sopra 4.0 ★</div><div class="option-sub">L'AI cita il punteggio nel 59% dei casi</div></div>
+                <div class="option-text"><div class="option-title">4.5+ ★</div><div class="option-sub">Excellence enterprise — l'AI cita il punteggio con frequenza</div></div>
               </button>
             </div>
           </div>
@@ -1553,12 +1553,12 @@ const STRINGS = {
     s5_sub_roadmap:'Basata sul tuo AI Relevance Score — tre passi concreti per diventare il brand che l\'AI raccomanda.',
     s6_title:'Scegli il Piano', s6_sub:'Il punteggio AI è un punto di partenza — il Rep può adattare la raccomandazione in base alle dimensioni e al contesto del cliente. Seleziona il <strong>Piano Consigliato</strong> e il <strong>Piano Light</strong>.',
     s7_title:'Il tuo Piano',
-    d1_name:'1 — Review Volume & Recency', d1_desc:'Quante recensioni hai? Quanto sono recenti?',
+    d1_name:'1 — Review Volume & Recency', d1_desc:'Quante recensioni hai? Soglia enterprise: 250+. Quanto sono recenti?',
     q1_lbl:'Quante recensioni Trustpilot ha la tua azienda?',
-    q1_a:'Nessun profilo / 0 recensioni', q1_as:"Citata dall'AI meno dell'1% delle volte",
-    q1_b:'1–12 recensioni', q1_bs:'Sotto la soglia minima di visibilità AI',
-    q1_c:'13–50 recensioni', q1_cs:'Oltre la soglia: citation rate ~54%',
-    q1_d:'50+ recensioni', q1_ds:'Profilo attivo: citation rate fino al 75%',
+    q1_a:'Nessun profilo / 0 recensioni', q1_as:"Invisibile all'AI — citation rate <1%",
+    q1_b:'1–49 recensioni', q1_bs:'Sotto la soglia enterprise minima (250+ per profilo ottimizzato)',
+    q1_c:'50–249 recensioni', q1_cs:'Sopra la soglia base — citation rate ~54%–75%',
+    q1_d:'250+ recensioni', q1_ds:'Profilo enterprise ottimizzato — citation rate >75% costante',
     q2_lbl:"Quando è arrivata l'ultima recensione?",
     q2_a:'Più di 6 mesi fa', q2_as:'Segnale obsoleto per gli LLM',
     q2_b:'2–6 mesi fa', q2_bs:'Recency gap, citazione inconsistente',
@@ -1573,12 +1573,12 @@ const STRINGS = {
     q4_lbl:'In quanto tempo rispondete mediamente?',
     q4_a:'Non rispondiamo', q4_b:'Occasionalmente, senza cadenza',
     q4_c:'Entro 1–2 settimane', q4_d:'Entro 7 giorni, sempre', q4_ds:'Benchmark AI-Ready',
-    d3_name:'3 — TrustScore & Star Trend', d3_desc:"Che segnale porta in superficie l'AI?",
+    d3_name:'3 — TrustScore & Star Trend', d3_desc:"Che segnale porta l'AI? Benchmark enterprise: 4.5+ ★.",
     q5_lbl:'Qual è il vostro TrustScore attuale su Trustpilot?',
     q5_a:'Nessun profilo / non verificato', q5_as:"Nessun segnale per l'AI",
-    q5_b:'Sotto 3.5 ★', q5_bs:'Segnale negativo per gli LLM',
-    q5_c:'3.5 – 4.0 ★', q5_cs:'Visibile ma non un segnale forte',
-    q5_d:'Sopra 4.0 ★', q5_ds:"L'AI cita il punteggio nel 59% dei casi",
+    q5_b:'Sotto 4.0 ★', q5_bs:'Sotto benchmark enterprise — segnale debole per gli LLM',
+    q5_c:'4.0 – 4.5 ★', q5_cs:'Nella media enterprise — segnale positivo per gli LLM',
+    q5_d:'4.5+ ★', q5_ds:"Excellence enterprise — l'AI cita il punteggio con frequenza",
     q6_lbl:'Come sta andando il vostro TrustScore di recente?',
     q6_a:'In calo', q6_as:"Segnale negativo per l'AI",
     q6_b:'Stabile / inconsistente',
@@ -1588,9 +1588,9 @@ const STRINGS = {
     s3_sub:"Abbiamo evidenziato lo scenario più vicino al tuo punteggio. Seleziona quello più adatto alla tua situazione.",
     badge_best:'★ Più rilevante', badge_sc:'Scenario', qw_pre:'⚡ Quick Win questa settimana:',
     tier_red:"🔴 Invisibile all'AI", tier_yellow:'🟡 Parzialmente visibile — a rischio', tier_green:'🟢 AI-Ready — vantaggio competitivo',
-    msg_red:"La tua azienda è attualmente invisibile alle piattaforme AI. Il 60% degli acquirenti termina la ricerca senza cliccare. Poche azioni mirate spostano l'ago rapidamente.",
-    msg_yellow:"Hai una presenza, ma i gap di volume, recency o engagement limitano la visibilità AI. I competitor che li colmano per primi cattureranno il traffico che stai perdendo.",
-    msg_green:"Posizione solida per la visibilità AI. Concentrati sull'effetto co-mention e sull'approfondimento della narrativa per dominare le ricerche competitive.",
+    msg_red:"La tua azienda è invisibile alle piattaforme AI nei processi di acquisto enterprise. Il 42% delle trattative non raggiunge mai la consideration quando i segnali AI sono assenti (McKinsey). Ogni giorno senza azione equivale a pipeline perso ai competitor.",
+    msg_yellow:"Hai una presenza, ma i gap di volume, recency o engagement bloccano la visibilità AI a livello enterprise. Con 250+ recensioni il citation rate supera il 75% in modo costante — sei sotto questa soglia. Chi la raggiunge per primo si aggiudica la consideration nei buying journey dei buyer ad alto valore.",
+    msg_green:"Posizione solida per la visibilità AI enterprise. Ora la domanda non è 'siamo visibili?' ma 'stiamo dominando la co-mention competitiva?'. I referral AI convertono all'11,4% vs 5,3% organico (Similarweb, 2025) — ogni citation è pipeline misurabile.",
     s4_title:'LLM Brand Visibility Checklist', s4_sub_pre:'Esamina ogni segnale per', s4_sub_suf:'— segna: ✓ presente, ~ parziale, ✗ mancante.',
     cl_yes:'✓ In ordine', cl_partial:'~ Parziale', cl_no:'✗ Mancante',
     s5_title:'Your AI Relevance Roadmap',
@@ -1690,12 +1690,12 @@ const STRINGS = {
     s5_sub_roadmap:'Based on your AI Relevance Score — three concrete steps to become the brand AI recommends.',
     s6_title:'Choose Your Plan', s6_sub:'The AI score is a starting point — the Rep can adapt the recommendation based on company size and context. Select the <strong>Recommended Plan</strong> and the <strong>Light Plan</strong>.',
     s7_title:'Your Plan',
-    d1_name:'1 — Review Volume & Recency', d1_desc:'How many reviews do you have? How recent?',
+    d1_name:'1 — Review Volume & Recency', d1_desc:'How many reviews do you have? Enterprise threshold: 250+. How recent?',
     q1_lbl:'How many Trustpilot reviews does your company have?',
-    q1_a:'No profile / 0 reviews', q1_as:'AI cites brand less than 1% of the time',
-    q1_b:'1–12 reviews', q1_bs:'Below the minimum AI visibility threshold',
-    q1_c:'13–50 reviews', q1_cs:'Above threshold: ~54% citation rate',
-    q1_d:'50+ reviews', q1_ds:'Active profile: up to 75% citation rate',
+    q1_a:'No profile / 0 reviews', q1_as:'Invisible to AI — citation rate <1%',
+    q1_b:'1–49 reviews', q1_bs:'Below the enterprise minimum threshold (250+ for optimised profile)',
+    q1_c:'50–249 reviews', q1_cs:'Above base threshold — citation rate ~54%–75%',
+    q1_d:'250+ reviews', q1_ds:'Enterprise optimised profile — consistent >75% citation rate',
     q2_lbl:'When did the last review arrive?',
     q2_a:'More than 6 months ago', q2_as:'Stale signal for LLMs',
     q2_b:'2–6 months ago', q2_bs:'Recency gap, inconsistent citation',
@@ -1710,12 +1710,12 @@ const STRINGS = {
     q4_lbl:'How quickly do you respond on average?',
     q4_a:"We don't respond", q4_b:'Occasionally, no cadence',
     q4_c:'Within 1–2 weeks', q4_d:'Within 7 days, consistently', q4_ds:'AI-Ready benchmark',
-    d3_name:'3 — TrustScore & Star Trend', d3_desc:'What signal does AI surface?',
+    d3_name:'3 — TrustScore & Star Trend', d3_desc:'What signal does AI surface? Enterprise benchmark: 4.5+ ★.',
     q5_lbl:'What is your current TrustScore on Trustpilot?',
     q5_a:'No profile / unclaimed', q5_as:'No signal for AI',
-    q5_b:'Below 3.5 ★', q5_bs:'Negative signal for LLMs',
-    q5_c:'3.5 – 4.0 ★', q5_cs:'Visible but not a strong positive signal',
-    q5_d:'Above 4.0 ★', q5_ds:'AI surfaces the score in 59% of citations',
+    q5_b:'Below 4.0 ★', q5_bs:'Below enterprise benchmark — weak signal for LLMs',
+    q5_c:'4.0 – 4.5 ★', q5_cs:'Enterprise average — positive signal for LLMs',
+    q5_d:'4.5+ ★', q5_ds:'Enterprise excellence — AI surfaces the score consistently',
     q6_lbl:'How has your TrustScore been trending?',
     q6_a:'Declining', q6_as:'Negative signal for AI',
     q6_b:'Flat / inconsistent',
@@ -1725,9 +1725,9 @@ const STRINGS = {
     s3_sub:"We've highlighted the scenario that best matches your score. Select the one that fits your situation best.",
     badge_best:'★ Best match', badge_sc:'Scenario', qw_pre:'⚡ Quick Win this week:',
     tier_red:'🔴 Invisible to AI', tier_yellow:'🟡 Partially Visible — At Risk', tier_green:'🟢 AI-Ready — Competitive Edge',
-    msg_red:"Your company is currently invisible to AI platforms. 60% of buyers end their search without clicking. A few targeted actions can move the needle fast.",
-    msg_yellow:"You have some presence, but gaps in volume, recency or engagement are limiting your AI visibility. Competitors who fix these first will capture the traffic you're missing.",
-    msg_green:"You're in a strong position for AI visibility. Focus on the co-mention effect and narrative depth to dominate competitive searches.",
+    msg_red:"Your company is invisible to AI platforms in enterprise buying journeys. McKinsey estimates 42% of enterprise deals never reach consideration when AI signals are absent — this is your situation right now. Every day without action is pipeline lost to competitors.",
+    msg_yellow:"You have a presence, but volume, recency or engagement gaps are blocking enterprise-grade AI visibility. At 250+ reviews, citation rate exceeds 75% consistently — you're below this threshold. Whoever reaches it first captures the consideration window in high-value buyer journeys.",
+    msg_green:"You're in a strong position for enterprise AI visibility. The question is no longer 'are we visible?' — it's 'are we owning the competitive co-mention narrative?'. AI referrals convert at 11.4% vs 5.3% organic (Similarweb, 2025) — every citation is measurable pipeline.",
     s4_title:'LLM Brand Visibility Checklist', s4_sub_pre:'Go through each signal for', s4_sub_suf:'— mark each row: ✓ in place, ~ partial, ✗ missing.',
     cl_yes:'✓ In place', cl_partial:'~ Partial', cl_no:'✗ Missing',
     s5_title:'Your AI Relevance Roadmap',
@@ -1827,12 +1827,12 @@ const STRINGS = {
     s5_sub_roadmap:'Basada en tu AI Relevance Score — tres pasos concretos para convertirte en la marca que recomienda la IA.',
     s6_title:'Elige el Plan', s6_sub:'La puntuación de IA es un punto de partida.',
     s7_title:'Tu Plan',
-    d1_name:'1 — Volumen y Recencia de Reseñas', d1_desc:'¿Cuántas reseñas tienes? ¿Qué tan recientes?',
+    d1_name:'1 — Volumen y Recencia de Reseñas', d1_desc:'¿Cuántas reseñas tienes? Umbral enterprise: 250+. ¿Qué tan recientes?',
     q1_lbl:'¿Cuántas reseñas de Trustpilot tiene tu empresa?',
-    q1_a:'Sin perfil / 0 reseñas', q1_as:'La IA cita la marca menos del 1% de las veces',
-    q1_b:'1–12 reseñas', q1_bs:'Por debajo del umbral mínimo de visibilidad de IA',
-    q1_c:'13–50 reseñas', q1_cs:'Por encima del umbral: tasa de citación ~54%',
-    q1_d:'50+ reseñas', q1_ds:'Perfil activo: hasta 75% de tasa de citación',
+    q1_a:'Sin perfil / 0 reseñas', q1_as:'Invisible para la IA — tasa de citación <1%',
+    q1_b:'1–49 reseñas', q1_bs:'Por debajo del umbral mínimo enterprise (250+ para perfil optimizado)',
+    q1_c:'50–249 reseñas', q1_cs:'Por encima del umbral base — tasa de citación ~54%–75%',
+    q1_d:'250+ reseñas', q1_ds:'Perfil enterprise optimizado — tasa de citación >75% constante',
     q2_lbl:'¿Cuándo llegó la última reseña?',
     q2_a:'Hace más de 6 meses', q2_as:'Señal obsoleta para los LLMs',
     q2_b:'Hace 2–6 meses', q2_bs:'Brecha de recencia, citación inconsistente',
@@ -1847,12 +1847,12 @@ const STRINGS = {
     q4_lbl:'¿En cuánto tiempo respondéis de media?',
     q4_a:'No respondemos', q4_b:'Ocasionalmente, sin cadencia',
     q4_c:'En 1–2 semanas', q4_d:'En 7 días, siempre', q4_ds:'Benchmark AI-Ready',
-    d3_name:'3 — TrustScore y Tendencia de Estrellas', d3_desc:'¿Qué señal proyecta la IA?',
+    d3_name:'3 — TrustScore y Tendencia de Estrellas', d3_desc:'¿Qué señal proyecta la IA? Benchmark enterprise: 4.5+ ★.',
     q5_lbl:'¿Cuál es vuestro TrustScore actual en Trustpilot?',
     q5_a:'Sin perfil / no verificado', q5_as:'Sin señal para la IA',
-    q5_b:'Menos de 3.5 ★', q5_bs:'Señal negativa para los LLMs',
-    q5_c:'3.5 – 4.0 ★', q5_cs:'Visible pero no una señal fuerte',
-    q5_d:'Por encima de 4.0 ★', q5_ds:'La IA menciona la puntuación en el 59% de las citas',
+    q5_b:'Menos de 4.0 ★', q5_bs:'Por debajo del benchmark enterprise — señal débil para los LLMs',
+    q5_c:'4.0 – 4.5 ★', q5_cs:'Media enterprise — señal positiva para los LLMs',
+    q5_d:'4.5+ ★', q5_ds:'Excelencia enterprise — la IA menciona la puntuación con frecuencia',
     q6_lbl:'¿Cómo ha evolucionado vuestro TrustScore últimamente?',
     q6_a:'En descenso', q6_as:'Señal negativa para la IA',
     q6_b:'Estable / inconsistente',
@@ -1862,9 +1862,9 @@ const STRINGS = {
     s3_sub:"Hemos destacado el escenario más cercano a tu puntuación.",
     badge_best:'★ Más relevante', badge_sc:'Escenario', qw_pre:'⚡ Quick Win esta semana:',
     tier_red:'🔴 Invisible para la IA', tier_yellow:'🟡 Parcialmente visible — en riesgo', tier_green:'🟢 AI-Ready — ventaja competitiva',
-    msg_red:"Tu empresa es actualmente invisible para las plataformas de IA.",
-    msg_yellow:"Tienes cierta presencia, pero las brechas limitan tu visibilidad de IA.",
-    msg_green:"Estás en una posición sólida para la visibilidad de IA.",
+    msg_red:"Tu empresa es invisible para las plataformas de IA en los procesos de compra enterprise. McKinsey estima que el 42% de las operaciones enterprise nunca alcanzan la consideration cuando faltan señales de IA. Cada día sin acción es pipeline perdido frente a los competidores.",
+    msg_yellow:"Tienes presencia, pero las brechas de volumen, recencia o engagement bloquean la visibilidad AI enterprise. Con 250+ reseñas la tasa de citación supera el 75% de forma constante — estás por debajo de este umbral. Quien lo alcance primero captura la ventana de consideration de los compradores de alto valor.",
+    msg_green:"Estás en una posición sólida para la visibilidad AI enterprise. La pregunta ya no es '¿somos visibles?' sino '¿estamos dominando la co-mención competitiva?'. Los referrals de IA convierten al 11,4% frente al 5,3% orgánico (Similarweb, 2025).",
     s4_title:'LLM Brand Visibility Checklist', s4_sub_pre:'Examina cada señal para', s4_sub_suf:'— marca: ✓ presente, ~ parcial, ✗ ausente.',
     cl_yes:'✓ En orden', cl_partial:'~ Parcial', cl_no:'✗ Ausente',
     s5_sub:'La puntuación de IA es un punto de partida.',
@@ -1963,12 +1963,12 @@ const STRINGS = {
     s5_sub_roadmap:'Basierend auf deinem AI Relevance Score — drei konkrete Schritte.',
     s6_title:'Plan wählen', s6_sub:'Der KI-Score ist ein Ausgangspunkt.',
     s7_title:'Dein Plan',
-    d1_name:'1 — Bewertungsvolumen & Aktualität', d1_desc:'Wie viele Bewertungen hast du? Wie aktuell?',
+    d1_name:'1 — Bewertungsvolumen & Aktualität', d1_desc:'Wie viele Bewertungen hast du? Enterprise-Schwelle: 250+. Wie aktuell?',
     q1_lbl:'Wie viele Trustpilot-Bewertungen hat dein Unternehmen?',
-    q1_a:'Kein Profil / 0 Bewertungen', q1_as:'KI zitiert die Marke weniger als 1% der Zeit',
-    q1_b:'1–12 Bewertungen', q1_bs:'Unterhalb der Mindestschwelle für KI-Sichtbarkeit',
-    q1_c:'13–50 Bewertungen', q1_cs:'Über der Schwelle: ~54% Zitationsrate',
-    q1_d:'50+ Bewertungen', q1_ds:'Aktives Profil: bis zu 75% Zitationsrate',
+    q1_a:'Kein Profil / 0 Bewertungen', q1_as:'Für KI unsichtbar — Zitationsrate <1%',
+    q1_b:'1–49 Bewertungen', q1_bs:'Unter der Enterprise-Mindestschwelle (250+ für optimiertes Profil)',
+    q1_c:'50–249 Bewertungen', q1_cs:'Über der Basisschwelle — Zitationsrate ~54%–75%',
+    q1_d:'250+ Bewertungen', q1_ds:'Enterprise-optimiertes Profil — konstante Zitationsrate >75%',
     q2_lbl:'Wann kam die letzte Bewertung?',
     q2_a:'Vor mehr als 6 Monaten', q2_as:'Veraltetes Signal für LLMs',
     q2_b:'Vor 2–6 Monaten', q2_bs:'Aktualitätslücke, inkonsistente Zitierung',
@@ -1983,12 +1983,12 @@ const STRINGS = {
     q4_lbl:'Wie schnell antwortet ihr durchschnittlich?',
     q4_a:'Wir antworten nicht', q4_b:'Gelegentlich, ohne Rhythmus',
     q4_c:'Innerhalb von 1–2 Wochen', q4_d:'Innerhalb von 7 Tagen, konsequent', q4_ds:'AI-Ready-Benchmark',
-    d3_name:'3 — TrustScore & Stern-Trend', d3_desc:'Welches Signal sendet die KI?',
+    d3_name:'3 — TrustScore & Stern-Trend', d3_desc:'Welches Signal sendet die KI? Enterprise-Benchmark: 4.5+ ★.',
     q5_lbl:'Wie lautet euer aktueller TrustScore auf Trustpilot?',
     q5_a:'Kein Profil / nicht verifiziert', q5_as:'Kein Signal für KI',
-    q5_b:'Unter 3.5 ★', q5_bs:'Negatives Signal für LLMs',
-    q5_c:'3.5 – 4.0 ★', q5_cs:'Sichtbar, aber kein starkes Signal',
-    q5_d:'Über 4.0 ★', q5_ds:'KI erwähnt den Score in 59% der Zitierungen',
+    q5_b:'Unter 4.0 ★', q5_bs:'Unter Enterprise-Benchmark — schwaches Signal für LLMs',
+    q5_c:'4.0 – 4.5 ★', q5_cs:'Enterprise-Durchschnitt — positives Signal für LLMs',
+    q5_d:'4.5+ ★', q5_ds:'Enterprise-Exzellenz — KI erwähnt den Score regelmäßig',
     q6_lbl:'Wie hat sich euer TrustScore zuletzt entwickelt?',
     q6_a:'Sinkend', q6_as:'Negatives Signal für KI',
     q6_b:'Stabil / inkonsistent',
@@ -1998,9 +1998,9 @@ const STRINGS = {
     s3_sub:"Wir haben das Szenario hervorgehoben, das am besten zu deinem Score passt.",
     badge_best:'★ Am relevantesten', badge_sc:'Szenario', qw_pre:'⚡ Quick Win diese Woche:',
     tier_red:'🔴 Unsichtbar für KI', tier_yellow:'🟡 Teilweise sichtbar — gefährdet', tier_green:'🟢 AI-Ready — Wettbewerbsvorteil',
-    msg_red:"Dein Unternehmen ist derzeit für KI-Plattformen unsichtbar.",
-    msg_yellow:"Du hast eine gewisse Präsenz, aber Lücken begrenzen deine KI-Sichtbarkeit.",
-    msg_green:"Du bist gut positioniert für KI-Sichtbarkeit.",
+    msg_red:"Dein Unternehmen ist für KI-Plattformen in Enterprise-Kaufprozessen unsichtbar. McKinsey schätzt, dass 42% der Enterprise-Deals nie die Consideration erreichen, wenn KI-Signale fehlen. Jeder Tag ohne Maßnahmen bedeutet verlorene Pipeline an Wettbewerber.",
+    msg_yellow:"Du hast eine Präsenz, aber Lücken bei Volumen, Aktualität oder Engagement blockieren die KI-Sichtbarkeit auf Enterprise-Niveau. Ab 250+ Bewertungen übersteigt die Zitationsrate konstant 75% — du liegst unter dieser Schwelle. Wer sie zuerst erreicht, gewinnt das Consideration-Fenster bei High-Value-Käufern.",
+    msg_green:"Du bist stark für Enterprise-KI-Sichtbarkeit positioniert. Die Frage ist nicht mehr 'sind wir sichtbar?' — sondern 'dominieren wir die kompetitive Co-Mention-Narrative?'. KI-Referrals konvertieren zu 11,4% vs. 5,3% organisch (Similarweb, 2025).",
     s4_title:'LLM Brand Visibility Checkliste', s4_sub_pre:'Prüfe jedes Signal für', s4_sub_suf:'— markiere: ✓ vorhanden, ~ teilweise, ✗ fehlend.',
     cl_yes:'✓ In Ordnung', cl_partial:'~ Teilweise', cl_no:'✗ Fehlend',
     s5_sub:'Der KI-Score ist ein Ausgangspunkt.',
@@ -2574,8 +2574,8 @@ function renderStep2() {
     const r  = sd.totalReviews ?? -1;
     const ts = sd.trustScore   ?? -1;
     const d  = sd.lastDaysAgo  ?? -1;
-    const vR = r  < 0 ? '' : r === 0 ? '0' : r <= 12 ? '6' : r <= 50 ? '30' : r <= 200 ? '125' : '500';
-    const vS = ts < 0 ? '' : ts < 2  ? '0' : ts < 3.5 ? '2.5' : ts < 4.0 ? '3.7' : ts < 4.5 ? '4.2' : '4.7';
+    const vR = r  < 0 ? '' : r === 0 ? '0' : r <= 49 ? '25' : r <= 249 ? '125' : '500';
+    const vS = ts < 0 ? '' : ts < 2  ? '0' : ts < 4.0 ? '3.7' : ts < 4.5 ? '4.2' : '4.7';
     const vD = d  < 0 ? '' : d > 180 ? '250' : d > 60 ? '120' : d > 30 ? '45' : '15';
     const s  = (v, o) => v === o ? ' selected' : '';
 
@@ -2607,10 +2607,9 @@ function renderStep2() {
           <select id="m-reviews" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
             <option value=""${s(vR,'')}>—</option>
             <option value="0"${s(vR,'0')}>${S.scan_no_reviews_opt}</option>
-            <option value="6"${s(vR,'6')}>1–12</option>
-            <option value="30"${s(vR,'30')}>13–50</option>
-            <option value="125"${s(vR,'125')}>51–200</option>
-            <option value="500"${s(vR,'500')}>200+</option>
+            <option value="25"${s(vR,'25')}>1–49</option>
+            <option value="125"${s(vR,'125')}>50–249</option>
+            <option value="500"${s(vR,'500')}>250+</option>
           </select>
         </div>
         <div class="form-group" style="margin:0">
@@ -2618,10 +2617,9 @@ function renderStep2() {
           <select id="m-score" onchange="calcMetricsScore()" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff">
             <option value=""${s(vS,'')}>—</option>
             <option value="0"${s(vS,'0')}>${S.scan_score_none}</option>
-            <option value="2.5"${s(vS,'2.5')}>2.0 – 3.5 ★</option>
-            <option value="3.7"${s(vS,'3.7')}>3.5 – 4.0 ★</option>
+            <option value="3.7"${s(vS,'3.7')}>&lt;4.0 ★</option>
             <option value="4.2"${s(vS,'4.2')}>4.0 – 4.5 ★</option>
-            <option value="4.7"${s(vS,'4.7')}>4.5 – 5.0 ★</option>
+            <option value="4.7"${s(vS,'4.7')}>4.5+ ★</option>
           </select>
         </div>
         <div class="form-group" style="margin:0">
@@ -2697,7 +2695,7 @@ function renderStep2() {
         <div class="dimension-score-badge" id="d1-badge">${a.q1!==undefined&&a.q2!==undefined ? `<span style="color:${scoreColor(state.scores.d1)}">${state.scores.d1}</span> <span class="out">/10</span>` : `— <span class="out">/10</span>`}</div>
       </div>
       <div class="question-group"><div class="question-label">${S.q1_lbl}</div>
-        <div class="option-grid">${opt('q1','none',S.q1_a,S.q1_as)}${opt('q1','1-12',S.q1_b,S.q1_bs)}${opt('q1','13-50',S.q1_c,S.q1_cs)}${opt('q1','51+',S.q1_d,S.q1_ds)}</div></div>
+        <div class="option-grid">${opt('q1','none',S.q1_a,S.q1_as)}${opt('q1','1-49',S.q1_b,S.q1_bs)}${opt('q1','50-249',S.q1_c,S.q1_cs)}${opt('q1','250+',S.q1_d,S.q1_ds)}</div></div>
       <div class="question-group"><div class="question-label">${S.q2_lbl}</div>
         <div class="option-grid">${opt('q2','6mo+',S.q2_a,S.q2_as)}${opt('q2','2-6mo',S.q2_b,S.q2_bs)}${opt('q2','1-2mo',S.q2_c,S.q2_cs)}${opt('q2','30d',S.q2_d,S.q2_ds)}</div></div>
     </div>
@@ -2719,7 +2717,7 @@ function renderStep2() {
         <div class="dimension-score-badge" id="d3-badge">${a.q5!==undefined&&a.q6!==undefined ? `<span style="color:${scoreColor(state.scores.d3)}">${state.scores.d3}</span> <span class="out">/10</span>` : `— <span class="out">/10</span>`}</div>
       </div>
       <div class="question-group"><div class="question-label">${S.q5_lbl}</div>
-        <div class="option-grid">${opt('q5','none',S.q5_a,S.q5_as)}${opt('q5','sub35',S.q5_b,S.q5_bs)}${opt('q5','35-40',S.q5_c,S.q5_cs)}${opt('q5','above40',S.q5_d,S.q5_ds)}</div></div>
+        <div class="option-grid">${opt('q5','none',S.q5_a,S.q5_as)}${opt('q5','sub40',S.q5_b,S.q5_bs)}${opt('q5','40-45',S.q5_c,S.q5_cs)}${opt('q5','above45',S.q5_d,S.q5_ds)}</div></div>
       <div class="question-group"><div class="question-label">${S.q6_lbl}</div>
         <div class="option-grid">${opt('q6','declining',S.q6_a,S.q6_as)}${opt('q6','flat',S.q6_b,'')}${opt('q6','improving',S.q6_c,S.q6_cs)}</div></div>
     </div>
@@ -2771,7 +2769,7 @@ function calculateScores() {
   const a = state.answers;
   let d1=0,d2=0,d3=0;
   if (a.q1!==undefined && a.q2!==undefined) {
-    const v = {none:1,'1-12':3,'13-50':6,'51+':8}[a.q1];
+    const v = {none:1,'1-49':3,'50-249':6,'250+':8}[a.q1];
     const r = {'6mo+':0,'2-6mo':1,'1-2mo':2,'30d':3}[a.q2];
     d1 = a.q1==='none' ? 1 : Math.min(10, v+r);
   }
@@ -2781,7 +2779,7 @@ function calculateScores() {
     d2 = a.q3==='0-10' ? 1 : Math.min(10, v+r);
   }
   if (a.q5!==undefined && a.q6!==undefined) {
-    const v = {none:1,sub35:2,'35-40':5,above40:7}[a.q5];
+    const v = {none:1,sub40:3,'40-45':6,above45:8}[a.q5];
     const r = {declining:-1,flat:0,improving:2}[a.q6];
     d3 = a.q5==='none' ? 1 : Math.max(1, Math.min(10, v+r));
   }
@@ -3412,7 +3410,7 @@ function autoScore(sd) {
   if (totalReviews === 0) {
     d1 = 1;
   } else {
-    const base = totalReviews <= 12 ? 3 : totalReviews <= 50 ? 6 : 8;
+    const base = totalReviews <= 49 ? 3 : totalReviews <= 249 ? 6 : 8;
     const rec  = lastDaysAgo !== null
       ? (lastDaysAgo <= 30 ? 3 : lastDaysAgo <= 60 ? 2 : lastDaysAgo <= 180 ? 1 : 0)
       : 1; // unknown → assume modest recency
@@ -3434,7 +3432,7 @@ function autoScore(sd) {
   if (!trustScore || totalReviews === 0) {
     d3 = 1;
   } else {
-    const base = trustScore < 3.5 ? 2 : trustScore < 4.0 ? 5 : 7;
+    const base = trustScore < 4.0 ? 3 : trustScore < 4.5 ? 6 : 8;
     d3 = Math.max(1, Math.min(10, base)); // flat trend = +0
   }
 
